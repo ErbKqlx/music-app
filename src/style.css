@@ -15,6 +15,22 @@ body{
     color: lightgray;
 }
 
+#app{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main{
+    background-color: rgb(44, 44, 44);
+    padding: 20px 15px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 15px;
+    /* height: 773px; */
+     flex-grow: 1; 
+}
+
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
