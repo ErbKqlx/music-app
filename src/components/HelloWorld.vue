@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import Header from './Header.vue'
 
 defineProps({
   msg: String,
@@ -9,6 +10,8 @@ const count = ref(0)
 </script>
 
 <template>
+  <Header></Header>
+
   <h1>{{ msg }}</h1>
 
   <div class="card">
