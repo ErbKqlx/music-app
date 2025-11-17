@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Playlist from '../views/Playlist.vue'
+import Playlist from '@/views/Playlist.vue'
 
 const routes = [
     {

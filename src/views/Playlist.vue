@@ -1,8 +1,8 @@
 <script setup>
-    import Header from '../components/Header.vue';
-    import PlaylistsAside from '../components/PlaylistsAside.vue';
-    import PlaylistCard from '../components/PlaylistCard.vue';
-    import PlaylistSongs from '../components/PlaylistSongs.vue';
+    import Header from '@/components/Header.vue';
+    import PlaylistsAside from '@/components/PlaylistsAside.vue';
+    import PlaylistCard from '@/components/PlaylistCard.vue';
+    import PlaylistSongs from '@/components/PlaylistSongs.vue';
 </script>
 
 <template>

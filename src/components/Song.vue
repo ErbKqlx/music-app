@@ -58,7 +58,7 @@
             }
 
             .play-button{
-                
+                background: url();
             }
 
             .misc-buttons{
