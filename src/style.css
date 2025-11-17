@@ -28,7 +28,7 @@ main{
     flex-wrap: nowrap;
     gap: 15px;
     /* height: 773px; */
-     flex-grow: 1; 
+    flex-grow: 1;
 }
 
 

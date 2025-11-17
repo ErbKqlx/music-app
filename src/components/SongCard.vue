@@ -2,12 +2,12 @@
     defineProps({
         title: String,
         artists: Array,
-        // length: String
+        length: String
     })
 </script>
 
 <template>
-    <div class="song">
+    <div class="song-card">
         <div class="image">
             <!-- <img src="" alt="Изображение плейлиста"> -->
         </div>
@@ -16,7 +16,7 @@
             <span class="additional-info">{{ artists.join(', ') }}</span>
         </div>
         <div class="song-actions">
-            <span>3:40</span>
+            <span>{{ Math.trunc(length/60) }}:{{ length%60 }}</span>
             <div class="play-button">
                 
             </div>
@@ -28,16 +28,17 @@
 </template>
 
 <style scoped>
-    .song{
+    .song-card{
         display: flex;
         gap: 10px;
         /* width: 100%; */
-        padding: 5px 10px;
+        padding: 10px;
+        font-size: 14px;
 
         .image{
             background-color: lightgray;
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 5px;
         }
 
@@ -65,5 +66,9 @@
 
             }
         }
+    }
+
+    .song-card:hover{
+        background-color: rgb(70, 70, 70);
     }
 </style>

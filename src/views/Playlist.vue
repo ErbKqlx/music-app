@@ -1,8 +1,9 @@
 <script setup>
     import Header from '@/components/Header.vue';
     import PlaylistsAside from '@/components/PlaylistsAside.vue';
-    import PlaylistCard from '@/components/PlaylistCard.vue';
-    import PlaylistSongs from '@/components/PlaylistSongs.vue';
+    import PlaylistCard from '@/components/Playlist/PlaylistCard.vue';
+    import SongsList from '@/components/SongsList.vue';
+    import PlayerBar from '@/components/PlayerBar/PlayerBar.vue';
 </script>
 
 <template>
@@ -11,9 +12,10 @@
         <PlaylistsAside/>
         <div class="playlist-main-info">
             <PlaylistCard title="Плейлист №1" description="Описание"/>
-            <PlaylistSongs/>
+            <SongsList/>
         </div>
     </main>
+    <PlayerBar/>
 </template>
 
 <style scoped>
