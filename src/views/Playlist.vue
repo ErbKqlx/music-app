@@ -22,8 +22,8 @@
     .playlist-main-info{
         display: flex;
         flex-direction: column;
-        flex-wrap: nowrap;
         gap: 15px;
         flex-grow: 1;
+        
     }
 </style>

@@ -9,8 +9,8 @@
                 <!-- <img src="" alt="Изображение"> -->
             </div>
             <div>
-                <span>Название трека</span>
-                <span class='additional-info'>Название исполнителя</span>
+                <span class="clickable">Название трека</span>
+                <span class='additional-info clickable'>Название исполнителя</span>
             </div>
         </div>
         <div class="main-actions">
@@ -56,7 +56,7 @@
     .player-bar{
         background-color: black;
         width: 100%;
-        height: 10vh;
+        height: 15vh;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -85,10 +85,6 @@
 
             :last-child .additional-info{
                 font-size: 12px;
-            }
-
-            .song-preview, :last-child span:hover{
-                cursor: pointer;
             }
         }
 

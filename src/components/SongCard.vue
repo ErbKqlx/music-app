@@ -1,4 +1,7 @@
 <script setup>
+    import PlayButton from '@/assets/svg/play.svg?component'
+    import MiscButton from '@/assets/svg/ThreeDotsVertical.svg?component'
+
     defineProps({
         title: String,
         artists: Array,
@@ -12,16 +15,19 @@
             <!-- <img src="" alt="Изображение плейлиста"> -->
         </div>
         <div class="song-info">
-            <span>{{title}}</span>
-            <span class="additional-info">{{ artists.join(', ') }}</span>
+            <span class="clickable">{{title}}</span>
+            <span class="additional-info clickable">{{ artists.join(', ') }}</span>
+        </div>
+        <div class="album-name">
+            <span class="additional-info clickable">Альбом №1</span>
         </div>
         <div class="song-actions">
             <span>{{ Math.trunc(length/60) }}:{{ length%60 }}</span>
             <div class="play-button">
-                
+                <PlayButton width="100%" height="100%" viewBox="0 0 15 15"/>
             </div>
-            <div class="misc-actions">
-
+            <div class="misc-button">
+                <MiscButton width="100%" height="100%" viewBox="0 0 16 16"/>
             </div>
         </div>
     </div>
@@ -34,6 +40,8 @@
         /* width: 100%; */
         padding: 10px;
         font-size: 14px;
+        align-items: center;
+        justify-content: space-between;
 
         .image{
             background-color: lightgray;
@@ -50,20 +58,35 @@
             flex-grow: 1;
         }
 
+        .album-name{
+            flex-grow: 1;
+        }
+
         .song-actions{
             display: flex;
-            align-self: center;
+            align-items: center;
+            gap: 10px;
 
             span{
                 font-size: 12px;
             }
 
             .play-button{
-                background: url();
+                /* background: url(); */
+                height: 20px;
+                width: 20px;
+                
             }
 
-            .misc-buttons{
+            .misc-button{
+                height: 20px;
+                width: 20px;
+            }
 
+            .play-button, .misc-button{
+                :hover{
+                    cursor: pointer;
+                }
             }
         }
     }
