@@ -53,7 +53,7 @@
         .song-info{
             display: flex;
             flex-direction: column;
-            align-self: center;
+            align-items: flex-start;
             gap: 3px;
             flex-grow: 1;
         }

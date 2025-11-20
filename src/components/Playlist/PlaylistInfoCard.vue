@@ -1,12 +1,14 @@
 <script setup>
     defineProps({
         title: String,
-        description: String
+        description: String,
+        created_at: Date,
+        created_by: Date
     })
 </script>
 
 <template>
-    <div class="playlist-card">
+    <div class="playlist-info-card">
         <div class="playlist-image">
             <!-- <img src="" alt="Изображение плейлиста"> -->
             <div class="image"></div>
@@ -24,7 +26,7 @@
 </template>
 
 <style scoped>
-    .playlist-card{
+    .playlist-info-card{
         display: flex;
         background-color: rgb(70, 70, 70);
         min-height: 30vh;
