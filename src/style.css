@@ -9,6 +9,7 @@
 body{
   font-family: Inter;
   color: white;
+  background-color: rgb(44, 44, 44);
 }
 
 .additional-info{
@@ -27,7 +28,6 @@ body{
 }
 
 main{
-  background-color: rgb(44, 44, 44);
   padding: 20px 15px;
   display: flex;
   flex-wrap: nowrap;
@@ -36,6 +36,14 @@ main{
   flex-grow: 1;
 }
 
+a{
+  color: rgb(125, 132, 255);
+  text-decoration: none;
+}
+
+a:hover{
+  text-decoration: underline;
+}
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
