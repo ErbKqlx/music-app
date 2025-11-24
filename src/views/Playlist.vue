@@ -13,6 +13,7 @@
         <div class="playlist-main-info">
             <PlaylistInfoCard title="Плейлист №1" description="Описание"/>
             <SongsList/>
+            <Footer></Footer>
         </div>
     </main>
     <PlayerBar/>

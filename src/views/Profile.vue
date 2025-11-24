@@ -1,9 +1,12 @@
 <script setup>
     import Header from '@/components/Header.vue';
     import PlaylistsAside from '@/components/Aside/PlaylistsAside.vue';
-    import PlayerBar from '@/components/PlayerBar/PlayerBar.vue'
+    import PlayerBar from '@/components/PlayerBar/PlayerBar.vue';
     import ProfileCard from '@/components/Profile/ProfileCard.vue';
     import PlaylistCard from '@/components/PlaylistCard.vue';
+    import ArtistCard from '@/components/ArtistCard.vue';
+    import CardsList from '@/components/CardsList.vue';
+    import Footer from '@/components/Footer.vue';
 </script>
 
 <template>
@@ -11,15 +14,24 @@
     <main>
         <PlaylistsAside/>
         <div class="profile-info">
-            <ProfileCard/>
+            <ProfileCard username="username"/>
             <div class="user-info">
-                <div class="user-playlists">
-                    <PlaylistCard name="Плейлист №1"/>
-                </div>
-                <div class="user-artists">
+                <CardsList title="Плейлисты">
+                    <PlaylistCard v-for="i in 5" name="Плейлист №1"/>
+                </CardsList>
+                <!-- <div class="user-playlists">
                     
-                </div>
+                </div> -->
+
+                <CardsList title="Исполнители">
+                    <ArtistCard v-for="i in 5" name="Исполнитель №1"/>
+                </CardsList>
+                
+                <!-- <div class="user-artists">
+                    
+                </div> -->
             </div>
+            <!-- <Footer></Footer> -->
         </div>
     </main>
     <PlayerBar/>
@@ -29,5 +41,17 @@
     .profile-info{
         background-color: rgb(55, 55, 55);
         flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
+
+        .user-info{
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            padding: 20px;
+            height: 1vh;
+            flex-grow: 1;
+        }
     }
 </style>

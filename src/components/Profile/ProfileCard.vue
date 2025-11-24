@@ -9,14 +9,13 @@
         <div class="avatar">
             <!-- <img src="" alt="Аватар"> -->
         </div>
-        <span>username</span>
+        <span>{{ username }}</span>
     </div>
 </template>
 
 <style scoped>
     .top-card{
         background-color: rgb(70, 70, 70);
-        height: 15%;
         display: flex;
         gap: 20px;
         padding: 20px;

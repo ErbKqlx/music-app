@@ -4,18 +4,19 @@
 
 <template>
     <div class="page-header">
-        <span class="header-logo">Название</span>
+        <span class="header-logo clickable">Название</span>
         <SearchInput/>
-        <div>
-            <!-- <div class="avatar">
+        <!-- <div>
+            <div class="avatar">
                 <img src="assets/d.png" alt="Аватарка">
-            </div> -->
-            <!-- <div>
+            </div>
+            <div>
                 <svg width="19" height="11" viewBox="0 0 19 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1.5 1.5L9.5 9.5L17.5 1.5" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-            </div> -->
-        </div>
+            </div>
+        </div> -->
+        <RouterLink to="/profile">Профиль</RouterLink>
     </div>
 </template>
 
@@ -28,5 +29,9 @@
         align-items: center;
         justify-content: space-between;
         padding: 5px 20px;
+    }
+
+    a{
+        color: white;
     }
 </style>

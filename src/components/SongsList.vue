@@ -8,8 +8,10 @@
             title="Трек №1"
             :artists="['Исполнитель №1', 'Исполнитель №2']"
             :length="220"
+
+            v-for="i in 10"
         />
-        <Song 
+        <!-- <Song 
             title="Трек №1"
             :artists="['Исполнитель №1', 'Исполнитель №2']"
             :length="220"
@@ -28,7 +30,7 @@
             title="Трек №1"
             :artists="['Исполнитель №1', 'Исполнитель №2']"
             :length="220"
-        />
+        /> -->
     </div>
 </template>
 
@@ -43,15 +45,5 @@
         /* scrollbar-width: thin; */
         /* scrollbar-color:  */
         
-    }
-
-    .songs-list::-webkit-scrollbar{
-        background-color: rgba(0, 0, 0, 0);
-        width: 5px;
-    }
-
-    .songs-list::-webkit-scrollbar-thumb{
-        background-color: lightgray;
-        border-radius: 10px;
     }
 </style>

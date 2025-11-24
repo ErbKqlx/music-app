@@ -16,10 +16,10 @@
             </div>
         </div>
         <div class="playlist-cards">
+            <PlaylistCard title="Плейлист №1" count="1" v-for="i in 4"/>
+            <!-- <PlaylistCard title="Плейлист №1" count="1"/>
             <PlaylistCard title="Плейлист №1" count="1"/>
-            <PlaylistCard title="Плейлист №1" count="1"/>
-            <PlaylistCard title="Плейлист №1" count="1"/>
-            <PlaylistCard title="Плейлист №1" count="1"/>
+            <PlaylistCard title="Плейлист №1" count="1"/> -->
         </div>
         
     </div>
