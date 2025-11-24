@@ -3,6 +3,7 @@ import Playlist from '@/views/Playlist.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import Auth from '@/views/Auth.vue'
 import Register from '@/views/Register.vue'
+import Profile from '@/views/Profile.vue'
 
 const routes = [
     {
@@ -20,6 +21,10 @@ const routes = [
     {
         path: "/register",
         component: Register,
+    },
+    {
+        path: "/profile",
+        component: Profile,
     }
 ]
 
