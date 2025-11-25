@@ -1,7 +1,11 @@
 <script setup>
     import Input from '@/components/Input/Input.vue';
     import SubmitButton from '@/components/Input/SubmitButton.vue';
+    import router from '@/router/index.js'
 
+    function toProfile(){
+        router.push('/profile')
+    }
 </script>
 
 <template>
@@ -17,16 +21,16 @@
                 <div>
                     <label for="password">Пароль</label>
                     <!-- <input type="text" id="password"> -->
-                    <Input type="text" id="password" name="password"/>
+                    <Input type="password" id="password" name="password"/>
                 </div>
             </div>
             <div class="no-account">
-                <span>Нет аккаунта?</span>
+                <span>Нет аккаунта? </span>
                 <!-- <a href="registration.html">Зарегистрироваться</a> -->
                 <RouterLink to="/register">Зарегистрироваться</RouterLink>
             </div>
             <!-- <input type="submit" value="Войти в аккаунт"> -->
-            <SubmitButton/>
+            <SubmitButton @click="toProfile"/>
             <!-- <a class="forgot-password" href="#">Забыли пароль?</a> -->
             <RouterLink class="forgot-password" to="/forgot-password">Забыли пароль?</RouterLink>
         </form>
@@ -91,10 +95,26 @@
             a:hover{
                 text-decoration: underline;
             }
+
+            input{
+                border-radius: 5px;
+                height: 33px;
+                font-size: 20px;
+                background-color: rgb(217 , 217, 217);
+                border: none;
+                padding: 0 5px;
+            }
+
+            input[type='submit']{
+                height: 40px;
+                font-weight: bold;
+                font-size: 14px;
+            }
+
+            input[type='submit']:hover{
+                cursor: pointer;
+                background-color: rgb(140, 140, 140);
+            }
         }
-
-        
     }
-
-    
 </style>

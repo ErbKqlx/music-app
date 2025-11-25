@@ -2,6 +2,8 @@
     defineProps({
         name: String,
     })
+
+    
 </script>
 
 <template>
@@ -17,16 +19,20 @@
 
 <style scoped>
     .playlist-card{
+        padding: 10px 15px;
+        border-radius: 5px;
+
         .playlist-image{
             aspect-ratio: 1 / 1;
-            width: 175px;
+            width: 10vw;
             background-color: lightgray;
             border-radius: 10px;
             margin-bottom: 10px;
         }
     }
 
-    /* .playlist-card:hover{
+    .playlist-card:hover{
         background-color: rgb(70, 70, 70);
-    } */
+        cursor: pointer;
+    }
 </style>

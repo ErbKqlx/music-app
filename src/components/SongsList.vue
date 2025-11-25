@@ -1,5 +1,6 @@
 <script setup>
     import Song from './SongCard.vue'
+    import router from '@/router/index.js'
 </script>
 
 <template>
@@ -11,26 +12,6 @@
 
             v-for="i in 10"
         />
-        <!-- <Song 
-            title="Трек №1"
-            :artists="['Исполнитель №1', 'Исполнитель №2']"
-            :length="220"
-        />
-        <Song 
-            title="Трек №1"
-            :artists="['Исполнитель №1', 'Исполнитель №2']"
-            :length="220"
-        />
-        <Song 
-            title="Трек №1"
-            :artists="['Исполнитель №1', 'Исполнитель №2']"
-            :length="220"
-        />
-        <Song 
-            title="Трек №1"
-            :artists="['Исполнитель №1', 'Исполнитель №2']"
-            :length="220"
-        /> -->
     </div>
 </template>
 

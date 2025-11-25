@@ -1,5 +1,10 @@
 <script setup>
     import PlaylistCard from './PlaylistCard.vue'
+    import router from '@/router/index.js'
+
+    function toPlaylist(){
+        router.push('/playlist')
+    }
 </script>
 
 <template>
@@ -16,7 +21,7 @@
             </div>
         </div>
         <div class="playlist-cards">
-            <PlaylistCard title="Плейлист №1" count="1" v-for="i in 4"/>
+            <PlaylistCard @click="toPlaylist" title="Плейлист №1" count="1" v-for="i in 4"/>
             <!-- <PlaylistCard title="Плейлист №1" count="1"/>
             <PlaylistCard title="Плейлист №1" count="1"/>
             <PlaylistCard title="Плейлист №1" count="1"/> -->
@@ -42,10 +47,6 @@
         .playlist-cards{
             display: flex;
             flex-direction: column;
-        }
-
-        .playlist-card:hover{
-            background-color: rgb(70, 70, 70);
         }
     }
 </style>

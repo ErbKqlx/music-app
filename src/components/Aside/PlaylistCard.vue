@@ -23,11 +23,12 @@
         gap: 10px;
         font-size: 14px;
         padding: 7px 5px;
+        border-radius: 5px;
 
         .image{
             background-color: lightgray;
             aspect-ratio: 1 / 1;
-            width: 50px;
+            width: 20%;
             border-radius: 5px;
         }
 
@@ -42,5 +43,10 @@
                 font-size: 12px;
             }
         }
+    }
+
+    .playlist-card:hover{
+        background-color: rgb(70, 70, 70);
+        cursor: pointer;
     }
 </style>

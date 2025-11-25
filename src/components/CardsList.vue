@@ -27,6 +27,6 @@
 
     .list{
         display: flex;
-        gap: 50px;
+        /* gap: 50px; */
     }
 </style>

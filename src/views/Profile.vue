@@ -7,6 +7,15 @@
     import ArtistCard from '@/components/ArtistCard.vue';
     import CardsList from '@/components/CardsList.vue';
     import Footer from '@/components/Footer.vue';
+    import router from '@/router/index.js'
+
+    function toPlaylist(){
+        router.push('/playlist')
+    }
+
+    function toArtist(){
+        router.push('/artist')
+    }
 </script>
 
 <template>
@@ -17,14 +26,14 @@
             <ProfileCard username="username"/>
             <div class="user-info">
                 <CardsList title="Плейлисты">
-                    <PlaylistCard v-for="i in 5" name="Плейлист №1"/>
+                    <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1"/>
                 </CardsList>
                 <!-- <div class="user-playlists">
                     
                 </div> -->
 
                 <CardsList title="Исполнители">
-                    <ArtistCard v-for="i in 5" name="Исполнитель №1"/>
+                    <ArtistCard @click="toArtist" v-for="i in 5" name="Исполнитель №1"/>
                 </CardsList>
                 
                 <!-- <div class="user-artists">
@@ -44,6 +53,7 @@
         display: flex;
         flex-direction: column;
         overflow-y: scroll;
+        border-radius: 10px;
 
         .user-info{
             display: flex;

@@ -19,7 +19,8 @@
             <span class="additional-info clickable">{{ artists.join(', ') }}</span>
         </div>
         <div class="album-name">
-            <span class="additional-info clickable">Альбом №1</span>
+            <!-- <span class="additional-info clickable">Альбом №1</span> -->
+            <RouterLink class="additional-info clickable" to="/album">Альбом №1</RouterLink>
         </div>
         <div class="song-actions">
             <span>{{ Math.trunc(length/60) }}:{{ length%60 }}</span>
