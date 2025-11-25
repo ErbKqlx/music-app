@@ -28,7 +28,7 @@
         .image{
             background-color: lightgray;
             aspect-ratio: 1 / 1;
-            width: 20%;
+            width: 15%;
             border-radius: 5px;
         }
 

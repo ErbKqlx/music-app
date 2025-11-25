@@ -33,14 +33,15 @@
 <style scoped>
     .playlists-aside{
         width: 20vw;
-        background-color: rgb(55, 55, 55);
+        background-color: rgb(20, 20, 20);
         padding: 10px 10px;
         border-radius: 10px;
 
         .aside-header{
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: bold;
             margin-bottom: 15px;
         }
 

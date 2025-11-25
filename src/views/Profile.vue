@@ -48,7 +48,8 @@
 
 <style scoped>
     .profile-info{
-        background-color: rgb(55, 55, 55);
+        /* background-color: rgb(55, 55, 55); */
+        background-color: rgb(20, 20, 20);
         flex-grow: 1;
         display: flex;
         flex-direction: column;

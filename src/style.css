@@ -9,7 +9,8 @@
 body{
   font-family: Inter;
   color: white;
-  background-color: rgb(44, 44, 44);
+  /* background-color: rgb(44, 44, 44); */
+  background-color: black;
 }
 
 .additional-info{
@@ -28,7 +29,8 @@ body{
 }
 
 main{
-  padding: 20px 15px;
+  /* padding: 20px 15px; */
+  padding: 0 10px;
   display: flex;
   flex-wrap: nowrap;
   gap: 15px;

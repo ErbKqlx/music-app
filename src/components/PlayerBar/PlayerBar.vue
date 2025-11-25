@@ -56,7 +56,7 @@
     .player-bar{
         background-color: black;
         width: 100%;
-        height: 12vh;
+        height: 10vh;
         display: flex;
         align-items: center;
         justify-content: space-between;

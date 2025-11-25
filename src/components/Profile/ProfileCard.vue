@@ -15,7 +15,7 @@
 
 <style scoped>
     .top-card{
-        background-color: rgb(70, 70, 70);
+        background-color: rgb(55, 55, 55);
         display: flex;
         gap: 20px;
         padding: 20px;
