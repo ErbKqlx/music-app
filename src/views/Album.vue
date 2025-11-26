@@ -7,22 +7,23 @@
 
 <template>
     <Header></Header>
-    <main>
+    <div class="wrapper">
         <PlaylistsAside/>
-        <div class="album-info">
-            
-        </div>
-        <!-- <SongsList/> -->
-    </main>
+        <main>
+            <div class="album-info">
+                
+            </div>
+            <!-- <SongsList/> -->
+        </main>
+    </div>
     <PlayerBar/>
 </template>
 
 <style scoped>
     .album-info{
-        background-color: rgb(55, 55, 55);
+        background-color: rgb(20, 20, 20);
         flex-grow: 1;
-        display: flex;
-        flex-direction: column;
         border-radius: 10px;
+        height: 100%;
     }
 </style>

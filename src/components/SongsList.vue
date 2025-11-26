@@ -1,6 +1,5 @@
 <script setup>
     import Song from './SongCard.vue'
-    import router from '@/router/index.js'
 </script>
 
 <template>
@@ -19,12 +18,11 @@
     .songs-list{
         display: flex;
         flex-direction: column;
-        background-color: rgb(55, 55, 55);
+        background-color: rgb(20, 20, 20);
         flex-grow: 1;
         height: 1vh;
         overflow-y: scroll;
         /* scrollbar-width: thin; */
         /* scrollbar-color:  */
-        
     }
 </style>

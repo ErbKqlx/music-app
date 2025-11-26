@@ -20,29 +20,31 @@
 
 <template>
     <Header></Header>
-    <main>
+    <div class="wrapper">
         <PlaylistsAside/>
-        <div class="profile-info">
-            <ProfileCard username="username"/>
-            <div class="user-info">
-                <CardsList title="Плейлисты">
-                    <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1"/>
-                </CardsList>
-                <!-- <div class="user-playlists">
-                    
-                </div> -->
+        <main>
+            <div class="profile-info">
+                <ProfileCard username="username"/>
+                <div class="user-info">
+                    <CardsList title="Плейлисты">
+                        <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1"/>
+                    </CardsList>
+                    <!-- <div class="user-playlists">
+                        
+                    </div> -->
 
-                <CardsList title="Исполнители">
-                    <ArtistCard @click="toArtist" v-for="i in 5" name="Исполнитель №1"/>
-                </CardsList>
-                
-                <!-- <div class="user-artists">
+                    <CardsList title="Исполнители">
+                        <ArtistCard @click="toArtist" v-for="i in 5" name="Исполнитель №1"/>
+                    </CardsList>
                     
-                </div> -->
+                    <!-- <div class="user-artists">
+                        
+                    </div> -->
+                </div>
+                <!-- <Footer></Footer> -->
             </div>
-            <!-- <Footer></Footer> -->
-        </div>
-    </main>
+        </main>
+    </div>
     <PlayerBar/>
 </template>
 
@@ -50,9 +52,10 @@
     .profile-info{
         /* background-color: rgb(55, 55, 55); */
         background-color: rgb(20, 20, 20);
+        height: 100%;
         flex-grow: 1;
-        display: flex;
-        flex-direction: column;
+        /* display: flex;
+        flex-direction: column; */
         overflow-y: scroll;
         border-radius: 10px;
 

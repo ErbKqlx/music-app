@@ -28,7 +28,7 @@ body{
   min-height: 100vh;
 }
 
-main{
+.wrapper{
   /* padding: 20px 15px; */
   padding: 0 10px;
   display: flex;
@@ -38,8 +38,12 @@ main{
   flex-grow: 1;
 }
 
+main{
+  flex-grow: 1;
+}
+
 a{
-  color: rgb(125, 132, 255);
+  color: white;
   text-decoration: none;
 }
 

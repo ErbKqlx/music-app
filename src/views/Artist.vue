@@ -8,25 +8,28 @@
 
 <template>
     <Header></Header>
-    <main>
+    <div class="wrapper">
         <PlaylistsAside/>
-        <div class="profile-info">
-            <ProfileCard username="artist"/>
-            <div class="artist-info">
-                <!-- <SongsList/> -->
+        <main>
+            <div class="profile-info">
+                <ProfileCard username="artist"/>
+                <div class="artist-info">
+                    <!-- <SongsList/> -->
+                </div>
+                <!-- <Footer></Footer> -->
             </div>
-            <!-- <Footer></Footer> -->
-        </div>
-    </main>
+        </main>
+    </div>
     <PlayerBar/>
 </template>
 
 <style scoped>
     .profile-info{
-        background-color: rgb(55, 55, 55);
+        background-color: rgb(20, 20, 20);
         flex-grow: 1;
-        display: flex;
-        flex-direction: column;
+        height: 100%;
+        /* display: flex;
+        flex-direction: column; */
         border-radius: 10px;
     }
 </style>

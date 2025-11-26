@@ -28,7 +28,7 @@
 <style scoped>
     .playlist-info-card{
         display: flex;
-        background-color: rgb(70, 70, 70);
+        background-color: rgb(55, 55, 55);
         min-height: 30vh;
     
         .playlist-image{

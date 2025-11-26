@@ -15,7 +15,8 @@
             <!-- <img src="" alt="Изображение плейлиста"> -->
         </div>
         <div class="song-info">
-            <span class="clickable">{{title}}</span>
+            <!-- <span class="clickable">{{title}}</span> -->
+            <RouterLink to="/song" class="clickable">{{ title }}</RouterLink>
             <span class="additional-info clickable">{{ artists.join(', ') }}</span>
         </div>
         <div class="album-name">

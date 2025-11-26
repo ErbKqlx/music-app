@@ -8,14 +8,16 @@
 
 <template>
     <Header></Header>
-    <main>
+    <div class="wrapper">
         <PlaylistsAside/>
-        <div class="playlist-main-info">
-            <PlaylistInfoCard title="Плейлист №1" description="Описание"/>
-            <SongsList/>
-            <!-- <Footer></Footer> -->
-        </div>
-    </main>
+        <main>
+            <div class="playlist-main-info">
+                <PlaylistInfoCard title="Плейлист №1" description="Описание"/>
+                <SongsList/>
+                <!-- <Footer></Footer> -->
+            </div>
+        </main>
+    </div>
     <PlayerBar/>
 </template>
 
@@ -25,5 +27,6 @@
         flex-direction: column;
         gap: 15px;
         flex-grow: 1;
+        height: 100%;
     }
 </style>
