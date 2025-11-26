@@ -32,7 +32,7 @@
             <!-- <input type="submit" value="Войти в аккаунт"> -->
             <SubmitButton @click="toProfile"/>
             <!-- <a class="forgot-password" href="#">Забыли пароль?</a> -->
-            <RouterLink class="forgot-password" to="/forgot-password">Забыли пароль?</RouterLink>
+            <RouterLink class="password-recovery" to="/password-recovery">Забыли пароль?</RouterLink>
         </form>
     </div>
 </template>
@@ -70,7 +70,7 @@
                 font-size: 16px;
             }
 
-            .no-account, .forgot-password{
+            .no-account, .password-recovery{
                 align-self: center;
             }
             

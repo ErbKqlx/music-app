@@ -6,6 +6,7 @@ import Register from '@/views/Register.vue'
 import Profile from '@/views/Profile.vue'
 import Artist from '@/views/Artist.vue'
 import Album from '@/views/Album.vue'
+import PasswordRecovery from '@/views/PasswordRecovery.vue'
 
 const routes = [
     {
@@ -35,6 +36,10 @@ const routes = [
     {
         path: "/album",
         component: Album,
+    },
+    {
+        path: "/password-recovery",
+        component: PasswordRecovery,
     }
 ]
 

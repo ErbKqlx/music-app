@@ -19,7 +19,7 @@
                 </div>
                 <div>
                     <label for="email">Email</label>
-                    <Input type="text" id="email" name="email"/>
+                    <Input type="email" id="email" name="email"/>
                 </div>
                 <div>
                     <label for="password">Пароль</label>
@@ -29,7 +29,7 @@
             </div>
             <div class="have-account">
                 <span>Есть аккаунт? </span>
-                <RouterLink to="/auth">Войти</RouterLink>
+                <RouterLink to="/">Войти</RouterLink>
                 <!-- <a href="auth.html">Войти</a> -->
             </div>
             <!-- <input type="submit" value="Создать аккаунт"> -->

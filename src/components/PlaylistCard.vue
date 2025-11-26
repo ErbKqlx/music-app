@@ -13,6 +13,7 @@
         </div>
         <div class="playlist-info">
             <span>{{ name }}</span>
+            <span class="additional-info">Плейлист</span>
         </div>
     </div>
 </template>
@@ -28,6 +29,16 @@
             background-color: lightgray;
             border-radius: 10px;
             margin-bottom: 10px;
+        }
+
+        .playlist-info{
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            .additional-info{
+                font-size: 12px;
+            }
         }
     }
 

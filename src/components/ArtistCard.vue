@@ -10,7 +10,8 @@
             <!-- <img src="" alt="Изображение плейлиста"> -->
         </div>
         <div class="artist-info">
-            <span>{{ name }}</span>   
+            <span>{{ name }}</span>
+            <span class="additional-info">Исполнитель</span>
         </div>
     </div>
 </template>
@@ -26,6 +27,16 @@
             background-color: lightgray;
             border-radius: 100%;
             margin-bottom: 10px;
+        }
+
+        .artist-info{
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            .additional-info{
+                font-size: 12px;
+            }
         }
     }
 
