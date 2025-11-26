@@ -1,9 +1,25 @@
 <script setup>
     import PlaylistCard from './PlaylistCard.vue'
+    import AddPlus from '@/assets/svg/AddPlus.svg?component'
+    import Button from '@/components/Input/Button.vue?component'
     import router from '@/router/index.js'
+
+    defineProps({
+        isOpen: Boolean,
+    })
 
     function toPlaylist(){
         router.push('/playlist')
+    }
+
+    function resizeAside(){
+        if (isOpen){
+            alert('closed')
+        }
+        else{
+            alert('opened')
+        }
+        isOpen = !isOpen
     }
 </script>
 
@@ -14,11 +30,14 @@
                 <span>Моя музыка</span>
             </div>
             <div>
-                <span class="additional-info clickable">Свернуть</span>
+                <span @click="resizeAside" class="additional-info clickable">Свернуть</span>
                 <!-- <div class="resize-button">
 
                 </div> -->
             </div>
+        </div>
+        <div class="playlist-actions">
+            <Button><AddPlus/>Добавить</Button>
         </div>
         <div class="playlist-cards">
             <PlaylistCard @click="toPlaylist" title="Плейлист №1" count="1" v-for="i in 4"/>
@@ -42,7 +61,12 @@
             justify-content: space-between;
             font-size: 14px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+        }
+
+        .playlist-actions{
+            display: flex;
+            margin-bottom: 10px;
         }
 
         .playlist-cards{

@@ -1,11 +1,37 @@
 <script setup>
+    // defineProps({
+    //     value: String,
+    // })
 
+    function onClick(){
+        // alert('d')
+    }
 </script>
 
 <template>
-    
+    <button @click="onClick">
+        <slot></slot>
+    </button>
 </template>
 
 <style scoped>
-    
+    button{
+        padding: 2px 7px;
+        min-width: 50px;
+        /* height: 25px; */
+        border-radius: 20px;
+        border: 2px solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    button:hover{
+        background-color: lightgray;
+        cursor: pointer;
+    }
+
+    button:active{
+        background-color: gray;
+    }
 </style>
