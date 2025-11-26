@@ -2,7 +2,7 @@
     import Header from '@/components/Header.vue';
     import PlaylistsAside from '@/components/Aside/PlaylistsAside.vue';
     import PlayerBar from '@/components/PlayerBar/PlayerBar.vue';
-    import ProfileCard from '@/components/Profile/ProfileCard.vue';
+    import TitleCard from '@/components/TitleCard.vue';
     import PlaylistCard from '@/components/PlaylistCard.vue';
     import ArtistCard from '@/components/ArtistCard.vue';
     import CardsList from '@/components/CardsList.vue';
@@ -24,7 +24,7 @@
         <PlaylistsAside/>
         <main>
             <div class="profile-info">
-                <ProfileCard username="username"/>
+                <TitleCard title="username"/>
                 <div class="user-info">
                     <CardsList title="Плейлисты">
                         <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1"/>

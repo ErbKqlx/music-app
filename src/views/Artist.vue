@@ -2,7 +2,7 @@
     import Header from '@/components/Header.vue';
     import PlaylistsAside from '@/components/Aside/PlaylistsAside.vue';
     import PlayerBar from '@/components/PlayerBar/PlayerBar.vue';
-    import ProfileCard from '@/components/Profile/ProfileCard.vue';
+    import TitleCard from '@/components/TitleCard.vue';
     import SongsList from '@/components/SongsList.vue'
 </script>
 
@@ -12,7 +12,7 @@
         <PlaylistsAside/>
         <main>
             <div class="profile-info">
-                <ProfileCard username="artist"/>
+                <TitleCard title="artist"/>
                 <div class="artist-info">
                     <!-- <SongsList/> -->
                 </div>

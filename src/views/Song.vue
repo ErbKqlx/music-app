@@ -3,6 +3,7 @@
     import Header from '@/components/Header.vue'
     import PlaylistsAside from '@/components/Aside/PlaylistsAside.vue'
     import PlayerBar from '@/components/PlayerBar/PlayerBar.vue'
+import TitleCard from '../components/TitleCard.vue'
 
     function toArtist(){
         router.push('/artist')
@@ -19,7 +20,7 @@
         <PlaylistsAside/>
         <main>
             <div class="song-info">
-                
+                <TitleCard title="Трек №1" created_by="artist" created_at="dd"/>
             </div>
             <!-- <SongsList/> -->
         </main>

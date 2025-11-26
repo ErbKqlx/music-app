@@ -13,13 +13,13 @@
     }
 
     function resizeAside(){
-        if (isOpen){
-            alert('closed')
-        }
-        else{
-            alert('opened')
-        }
-        isOpen = !isOpen
+        // if (){
+        //     alert('closed')
+        // }
+        // else{
+        //     alert('opened')
+        // }
+        // isOpen = !isOpen
     }
 </script>
 
