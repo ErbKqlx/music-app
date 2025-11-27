@@ -2,14 +2,10 @@
     // defineProps({
     //     value: String,
     // })
-
-    function onClick(){
-        // alert('d')
-    }
 </script>
 
 <template>
-    <button @click="onClick">
+    <button>
         <slot></slot>
     </button>
 </template>

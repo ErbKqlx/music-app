@@ -3,10 +3,12 @@
     import AddPlus from '@/assets/svg/AddPlus.svg?component'
     import Button from '@/components/Input/Button.vue?component'
     import router from '@/router/index.js'
+    import Modal from '@/components/Modal.vue'
+    import { ref } from 'vue'
 
-    defineProps({
-        isOpen: Boolean,
-    })
+    // defineProps({
+    //     isOpen: Boolean,
+    // })
 
     function toPlaylist(){
         router.push('/playlist')
@@ -21,6 +23,8 @@
         // }
         // isOpen = !isOpen
     }
+
+    const isOpen = ref(false)
 </script>
 
 <template>
@@ -37,7 +41,12 @@
             </div>
         </div>
         <div class="playlist-actions">
-            <Button><AddPlus/>Добавить</Button>
+            <Button @click="isOpen = true">
+                <AddPlus/>Добавить
+            </Button>
+            <Modal :show="isOpen" @close="isOpen = false">
+
+            </Modal>
         </div>
         <div class="playlist-cards">
             <PlaylistCard @click="toPlaylist" title="Плейлист №1" count="1" v-for="i in 4"/>
