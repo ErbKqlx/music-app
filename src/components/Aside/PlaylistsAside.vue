@@ -4,6 +4,8 @@
     import Button from '@/components/Input/Button.vue?component'
     import router from '@/router/index.js'
     import Modal from '@/components/Modal.vue'
+    import Image from '@/components/Image.vue'
+    import Form from '@/components/Form.vue'
     import { ref } from 'vue'
 
     // defineProps({
@@ -44,8 +46,19 @@
             <Button @click="isOpen = true">
                 <AddPlus/>Добавить
             </Button>
-            <Modal :show="isOpen" @close="isOpen = false">
-
+            <Modal title="Создание плейлиста" :show="isOpen" @close="isOpen = false">
+                <template #image>
+                    <Image/>
+                    <!-- <div class="image">
+                        <img src="" alt="">
+                    </div> -->
+                </template>
+                <template #content>
+                    <Form></Form>
+                </template>
+                <template #button>
+                    <Button>Создать</Button>
+                </template>
             </Modal>
         </div>
         <div class="playlist-cards">

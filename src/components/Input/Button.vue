@@ -12,7 +12,7 @@
 
 <style scoped>
     button{
-        padding: 2px 7px;
+        padding: 7px 15px;
         min-width: 50px;
         /* height: 25px; */
         border-radius: 20px;
