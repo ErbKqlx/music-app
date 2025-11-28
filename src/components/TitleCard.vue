@@ -10,17 +10,18 @@
 
 <template>
     <div class="top-card">
-        <div class="image">
+        <!-- <div class="image"> -->
             <!-- <img src="" alt="Аватар"> -->
-        </div>
-        <!-- <Image/> -->
+        <!-- </div> -->
+        <Image class="image"/>
         <div class="info">
-            <span class="title">{{ title }}</span>
-            <div>
+            <div class="title">
+                <span>{{ title }}</span>
+            </div>
+            <div class="created">
                 <RouterLink to="/artist" class="additional-info clickable">{{ created_by }}</RouterLink>
                 <span class="additional-info">{{ created_at }}</span>
             </div>
-            
         </div>
         <!-- <span class="additional-info clickable">{{ created_by }}</span> -->
     </div>
@@ -33,24 +34,33 @@
         gap: 20px;
         padding: 20px;
 
-        .image{
-            /* position: absolute; */
+        /* .image{
             border-radius: 100%;
             aspect-ratio: 1 / 1;
             min-height: 10vw;
             background-color: lightgray;
-        }
+        } */
 
         .info{
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             gap: 5px;
-        }
+            /* width: 100%; */
+            min-height: 100%;
 
-        .title{
-            font-size: 3rem;
-            font-weight: bold;
+            .title{
+                font-size: 3rem;
+                font-weight: bold;
+                flex-grow: 1;
+            }
+
+            .created{
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                justify-content: space-between;
+            }
         }
 
         .additional-info{

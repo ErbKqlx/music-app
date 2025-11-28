@@ -1,6 +1,7 @@
 <script setup>
     defineProps({
         name: String,
+        description: String,
     })
 
     
@@ -13,7 +14,7 @@
         </div>
         <div class="playlist-info">
             <span>{{ name }}</span>
-            <span class="additional-info">Плейлист</span>
+            <span class="additional-info">{{ description }}</span>
         </div>
     </div>
 </template>

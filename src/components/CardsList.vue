@@ -17,7 +17,7 @@
 
 <style scoped>
     .list-header{
-        margin-bottom: 20px;
+        margin: 10px;
 
         .list-title{
             font-size: 32px;

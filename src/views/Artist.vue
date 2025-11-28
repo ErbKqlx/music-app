@@ -31,5 +31,6 @@
         /* display: flex;
         flex-direction: column; */
         border-radius: 10px;
+        overflow-y: scroll;
     }
 </style>

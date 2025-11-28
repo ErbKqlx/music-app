@@ -48,8 +48,8 @@
 
         .modal-content{
             border-radius: 5px;
-            width: 30vw;
-            height: 40vh;
+            min-width: 30vw;
+            min-height: 40vh;
             background-color: rgb(20, 20, 20);
             padding: 20px;
             display: flex;
