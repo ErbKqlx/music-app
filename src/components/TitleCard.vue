@@ -13,7 +13,7 @@
         <!-- <div class="image"> -->
             <!-- <img src="" alt="Аватар"> -->
         <!-- </div> -->
-        <Image class="image"/>
+        <Image class="round-image"/>
         <div class="info">
             <div class="title">
                 <span>{{ title }}</span>

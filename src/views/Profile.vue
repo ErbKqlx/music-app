@@ -27,7 +27,7 @@
                 <TitleCard title="username"/>
                 <div class="user-info">
                     <CardsList title="Плейлисты">
-                        <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1" desc="Плейлист"/>
+                        <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1" description="Плейлист"/>
                     </CardsList>
                     <!-- <div class="user-playlists">
                         
@@ -52,11 +52,11 @@
     .profile-info{
         /* background-color: rgb(55, 55, 55); */
         background-color: rgb(20, 20, 20);
-        height: 100%;
+        height: 1;
         flex-grow: 1;
         /* display: flex;
         flex-direction: column; */
-        /* overflow-y: scroll; */
+        overflow-y: scroll;
         border-radius: 10px;
 
         .user-info{

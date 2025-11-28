@@ -73,7 +73,7 @@
 
 <style scoped>
     .playlists-aside{
-        width: 20vw;
+        min-width: 20vw;
         background-color: rgb(20, 20, 20);
         padding: 10px 10px;
         border-radius: 10px;
