@@ -13,7 +13,10 @@
         <!-- <div class="image"> -->
             <!-- <img src="" alt="Аватар"> -->
         <!-- </div> -->
-        <Image class="round-image"/>
+        <div class="image">
+            <slot name="image"></slot>
+        </div>
+        <!-- <Image/> -->
         <div class="info">
             <div class="title">
                 <span>{{ title }}</span>
@@ -34,12 +37,10 @@
         gap: 20px;
         padding: 20px;
 
-        /* .image{
-            border-radius: 100%;
+        .image{
             aspect-ratio: 1 / 1;
-            min-height: 10vw;
-            background-color: lightgray;
-        } */
+            width: 10vw;
+        }
 
         .info{
             display: flex;

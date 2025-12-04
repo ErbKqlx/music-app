@@ -1,4 +1,5 @@
 <script setup>
+    import Image from '@/components/Image.vue';
     import ProgressBar from './ProgressBar.vue';
 </script>
 
@@ -7,12 +8,14 @@
         <div class="song-info">
             <div class="song-preview">
                 <!-- <img src="" alt="Изображение"> -->
+                <Image/>
             </div>
             <div>
                 <span class="clickable">Название трека</span>
                 <span class='additional-info clickable'>Название исполнителя</span>
             </div>
         </div>
+        <!-- Потом заменить компонентами -->
         <div class="main-actions">
             <div class="player-buttons">
                 <svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -68,10 +71,8 @@
             gap: 10px;
 
             .song-preview{
+                aspect-ratio: 1 / 1;
                 width: 50px;
-                height: 50px;
-                background-color: lightgrey;
-                border-radius: 5px;
             }
 
             :last-child{

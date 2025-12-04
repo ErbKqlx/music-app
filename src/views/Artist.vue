@@ -4,6 +4,7 @@
     import PlayerBar from '@/components/PlayerBar/PlayerBar.vue';
     import TitleCard from '@/components/TitleCard.vue';
     import SongsList from '@/components/SongsList.vue'
+    import Image from '@/components/Image.vue';
 </script>
 
 <template>
@@ -12,7 +13,11 @@
         <PlaylistsAside/>
         <main>
             <div class="profile-info">
-                <TitleCard title="artist"/>
+                <TitleCard title="artist">
+                    <template #image>
+                        <Image class="round-image"/>
+                    </template>
+                </TitleCard>
                 <div class="artist-info">
                     <!-- <SongsList/> -->
                 </div>

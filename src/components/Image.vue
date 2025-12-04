@@ -1,25 +1,17 @@
 <script setup>
-    defineProps({
-        isRound: Boolean,
-    })
+
 </script>
 
 <template>
-    <!-- Потом переделать -->
-    <!-- <div v-if="isRound" class="round-image">
-        
-    </div> -->
-    <div class="image">
-        
-    </div>
+    <img src="@/assets/placeholder.webp" alt="Изображение">
 </template>
 
 <style scoped>
-    .round-image, .image{
+    .round-image, img{
         aspect-ratio: 1 / 1;
-        min-width: 12vw;
-        background-color: lightgray;
-        border-radius: 10px;
+        /* min-width: 12vw; */
+        width: 100%;
+        border-radius: 5px;
     }
 
     .round-image{

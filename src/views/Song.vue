@@ -10,6 +10,8 @@
     import Lyrics from '@/components/Lyrics.vue'
     import Play from '@/assets/svg/play.svg?component'
     // import AddPlus from '@/assets/svg/AddPlus.svg?component'
+    import Image from '@/components/Image.vue'
+    import Card from '@/components/Card.vue'
 
     function toArtist(){
         router.push('/artist')
@@ -26,7 +28,11 @@
         <PlaylistsAside/>
         <main>
             <div class="song-info">
-                <TitleCard title="Трек №1" created_by="artist" created_at="28.11.2025"/>
+                <TitleCard title="Трек №1" created_by="artist" created_at="28.11.2025">
+                    <template #image>
+                        <Image/>
+                    </template>
+                </TitleCard>
                 <div class="song-actions">
                     <Button class="button play-btn"><Play/></Button>
                     <div>
@@ -36,7 +42,11 @@
                 <div class="info">
                     <div>
                         <CardsList title="Альбомы">
-                            <PlaylistCard @click="toAlbum" v-for="i in 5" name="Альбом №1" description="Альбом"/>
+                            <Card @click="toAlbum" v-for="i in 5" name="Альбом №1" description="Альбом">
+                                <template #image>
+                                    <Image/>
+                                </template>
+                            </Card>
                         </CardsList>
                     </div>
                     <Lyrics/>

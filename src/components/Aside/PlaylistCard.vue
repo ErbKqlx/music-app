@@ -1,4 +1,6 @@
 <script setup>
+    import Image from '@/components/Image.vue'
+
     defineProps({
         title: String,
         count: Number
@@ -8,7 +10,7 @@
 <template>
     <div class="playlist-card">
         <div class="image">
-            <!-- <img src="" alt="Изображение плейлиста"> -->
+            <Image/>
         </div>
         <div class="playlist-info">
             <span>{{title}}</span>
@@ -26,10 +28,10 @@
         border-radius: 5px;
 
         .image{
-            background-color: lightgray;
+            /* background-color: lightgray; */
             aspect-ratio: 1 / 1;
-            width: 17%;
-            border-radius: 5px;
+            width: 15%;
+            overflow: hidden;
         }
 
         .playlist-info{

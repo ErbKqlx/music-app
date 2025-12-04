@@ -1,6 +1,7 @@
 <script setup>
     import PlayButton from '@/assets/svg/play.svg?component'
     import MiscButton from '@/assets/svg/ThreeDotsVertical.svg?component'
+    import Image from '@/components/Image.vue';
 
     defineProps({
         title: String,
@@ -13,6 +14,7 @@
     <div class="song-card">
         <div class="image">
             <!-- <img src="" alt="Изображение плейлиста"> -->
+            <Image/>
         </div>
         <div class="song-info">
             <!-- <span class="clickable">{{title}}</span> -->
@@ -46,10 +48,8 @@
         justify-content: space-between;
 
         .image{
-            background-color: lightgray;
+            aspect-ratio: 1 / 1;
             width: 45px;
-            height: 45px;
-            border-radius: 5px;
         }
 
         .song-info{

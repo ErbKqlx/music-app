@@ -19,7 +19,9 @@
                 <div class="modal-content">
                     <span class="title">{{ title }}</span>
                     <div class="main-content">
-                        <slot name="image"></slot>
+                        <div class="image">
+                            <slot name="image"></slot>
+                        </div>
                         <slot name="content"></slot>
                     </div>
                     <!-- <button @click="close">Закрыть</button> -->
@@ -71,10 +73,10 @@
                 flex-grow: 1;
             }
 
-            /* .image{
-                border-radius: 5px;
-                width: 300px;
-            } */
+            .image{
+                aspect-ratio: 1 / 1;
+                width: 200px;
+            }
 
             .modal-actions{
                 display: flex;
