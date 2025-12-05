@@ -33,7 +33,7 @@ body{
   padding: 0 10px;
   display: flex;
   flex-wrap: nowrap;
-  gap: 15px;
+  gap: 10px;
   /* height: 773px; */
   flex-grow: 1;
 }

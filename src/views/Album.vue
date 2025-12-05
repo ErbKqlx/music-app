@@ -3,6 +3,9 @@
     import PlaylistsAside from '@/components/Aside/PlaylistsAside.vue';
     import PlayerBar from '@/components/PlayerBar/PlayerBar.vue';
     import SongsList from '@/components/SongsList.vue'
+    import TitleCard from '@/components/TitleCard.vue'
+    import Image from '@/components/Image.vue'
+
 </script>
 
 <template>
@@ -11,7 +14,11 @@
         <PlaylistsAside/>
         <main>
             <div class="album-info">
-                
+                <TitleCard title="Альбом №1" created_by="artist" created_at="28.11.2025">
+                    <template #image>
+                        <Image/>
+                    </template>
+                </TitleCard>
             </div>
             <!-- <SongsList/> -->
         </main>
@@ -21,9 +28,11 @@
 
 <style scoped>
     .album-info{
-        background-color: rgb(20, 20, 20);
+        height: 1vh;
         flex-grow: 1;
+        background-color: rgb(20, 20, 20);
         border-radius: 10px;
-        height: 100%;
+        overflow-y: scroll;
+        padding-bottom: 10px;
     }
 </style>

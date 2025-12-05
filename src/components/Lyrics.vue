@@ -28,5 +28,9 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
+
+        p{
+            line-height: 1.5;
+        }
     }
 </style>

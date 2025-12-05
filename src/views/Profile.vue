@@ -81,7 +81,6 @@
             gap: 50px;
             padding: 20px;
             height: 1vh;
-            flex-grow: 1;
         }
     }
 </style>

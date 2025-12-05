@@ -12,6 +12,7 @@
     // import AddPlus from '@/assets/svg/AddPlus.svg?component'
     import Image from '@/components/Image.vue'
     import Card from '@/components/Card.vue'
+    import ThreeDotsVertical from '@/assets/svg/ThreeDotsVertical.svg?component'
 
     function toArtist(){
         router.push('/artist')
@@ -35,6 +36,7 @@
                 </TitleCard>
                 <div class="song-actions">
                     <Button class="button play-btn"><Play/></Button>
+                    <Button class="button misc"><ThreeDotsVertical color="white"/></Button>
                     <div>
                         <Button class="button add">Добавить в плейлист</Button>
                     </div>
@@ -49,7 +51,7 @@
                             </Card>
                         </CardsList>
                     </div>
-                    <Lyrics/>
+                    <!-- <Lyrics/> -->
                 </div>
             </div>
             <!-- <SongsList/> -->
@@ -69,7 +71,7 @@
 
         .song-actions{
             display: flex;
-            justify-content: space-between;
+            /* justify-content: space-between; */
             gap: 5px;
             margin-top: 10px;
             padding: 0 10px;

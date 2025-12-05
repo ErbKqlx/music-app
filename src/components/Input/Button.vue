@@ -16,7 +16,7 @@
         min-width: 50px;
         /* height: 25px; */
         border-radius: 20px;
-        border: 2px solid black;
+        border: none;
         display: flex;
         align-items: center;
         justify-content: center;
