@@ -28,22 +28,6 @@ body{
   min-height: 100vh;
 }
 
-.wrapper{
-  /* padding: 20px 15px; */
-  padding: 0 10px;
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 10px;
-  /* height: 773px; */
-  flex-grow: 1;
-}
-
-main{
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
 a{
   color: white;
   text-decoration: none;

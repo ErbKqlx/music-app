@@ -5,26 +5,24 @@
     import TitleCard from '@/components/TitleCard.vue';
     import SongsList from '@/components/SongsList.vue'
     import Image from '@/components/Image.vue';
+import Wrapper from '../components/Wrapper.vue';
 </script>
 
 <template>
     <Header></Header>
-    <div class="wrapper">
-        <PlaylistsAside/>
-        <main>
-            <div class="profile-info">
-                <TitleCard title="artist">
-                    <template #image>
-                        <Image class="round-image"/>
-                    </template>
-                </TitleCard>
-                <div class="artist-info">
-                    <!-- <SongsList/> -->
-                </div>
-                <!-- <Footer></Footer> -->
+    <Wrapper>
+        <div class="profile-info">
+            <TitleCard title="artist">
+                <template #image>
+                    <Image class="round-image"/>
+                </template>
+            </TitleCard>
+            <div class="artist-info">
+                <!-- <SongsList/> -->
             </div>
-        </main>
-    </div>
+            <!-- <Footer></Footer> -->
+        </div>
+    </Wrapper>
     <PlayerBar/>
 </template>
 

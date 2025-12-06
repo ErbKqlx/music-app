@@ -13,6 +13,7 @@
     import Image from '@/components/Image.vue'
     import Card from '@/components/Card.vue'
     import ThreeDotsVertical from '@/assets/svg/ThreeDotsVertical.svg?component'
+import Wrapper from '../components/Wrapper.vue'
 
     function toArtist(){
         router.push('/artist')
@@ -25,38 +26,35 @@
 
 <template>
     <Header></Header>
-    <div class="wrapper">
-        <PlaylistsAside/>
-        <main>
-            <div class="song-info">
-                <TitleCard title="Трек №1" created_by="artist" created_at="28.11.2025">
-                    <template #image>
-                        <Image/>
-                    </template>
-                </TitleCard>
-                <div class="song-actions">
-                    <Button class="button play-btn"><Play/></Button>
-                    <Button class="button misc"><ThreeDotsVertical color="white"/></Button>
-                    <div>
-                        <Button class="button add">Добавить в плейлист</Button>
-                    </div>
-                </div>
-                <div class="info">
-                    <div>
-                        <CardsList title="Альбомы">
-                            <Card @click="toAlbum" v-for="i in 5" name="Альбом №1" description="Альбом">
-                                <template #image>
-                                    <Image/>
-                                </template>
-                            </Card>
-                        </CardsList>
-                    </div>
-                    <!-- <Lyrics/> -->
+    <Wrapper>
+        <div class="song-info">
+            <TitleCard title="Трек №1" created_by="artist" created_at="28.11.2025">
+                <template #image>
+                    <Image/>
+                </template>
+            </TitleCard>
+            <div class="song-actions">
+                <Button class="button play-btn"><Play/></Button>
+                <Button class="button misc"><ThreeDotsVertical color="white"/></Button>
+                <div>
+                    <Button class="button add">Добавить в плейлист</Button>
                 </div>
             </div>
-            <!-- <SongsList/> -->
-        </main>
-    </div>
+            <div class="info">
+                <div>
+                    <CardsList title="Альбомы">
+                        <Card @click="toAlbum" v-for="i in 5" name="Альбом №1" description="Альбом">
+                            <template #image>
+                                <Image/>
+                            </template>
+                        </Card>
+                    </CardsList>
+                </div>
+                <!-- <Lyrics/> -->
+            </div>
+        </div>
+        <!-- <SongsList/> -->
+    </Wrapper>
     <PlayerBar/>
 </template>
 
