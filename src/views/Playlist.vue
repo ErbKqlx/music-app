@@ -8,6 +8,7 @@
     import TitleCard from '@/components/TitleCard.vue'
     import Image from '@/components/Image.vue'
     import SongCard from '@/components/SongCard.vue';
+    import ActionBar from '@/components/ActionBar.vue'
 </script>
 
 <template>
@@ -19,16 +20,27 @@
                     <Image/>
                 </template>
             </TitleCard>
-            <!-- <PlaylistInfoCard title="Плейлист №1" description="Описание"/> -->
-            <SongsList>
-                <SongCard 
-                    title="Трек №1"
-                    :artists="['Исполнитель №1', 'Исполнитель №2']"
-                    :length="220"
+            <div class="info">
+                <div>
+                    <ActionBar></ActionBar>
+                    <div class="filter">
 
-                    v-for="i in 10"
-                />
-            </SongsList>
+                    </div>
+                    <div class="sort">
+                        <SvgButton/>
+                    </div>
+                </div>
+            <!-- <PlaylistInfoCard title="Плейлист №1" description="Описание"/> -->
+                <SongsList>
+                    <SongCard 
+                        title="Трек №1"
+                        :artists="['Исполнитель №1', 'Исполнитель №2']"
+                        :length="220"
+
+                        v-for="i in 10"
+                    />
+                </SongsList>
+            </div>
             <!-- <Footer></Footer> -->
         </div>
     </Wrapper>
@@ -42,7 +54,11 @@
         background-color: rgb(20, 20, 20);
         border-radius: 10px;
         overflow-y: scroll;
-        padding-bottom: 10px;
+        /* padding-bottom: 10px; */
+    }
+
+    .info{
+        padding: 10px;
     }
     /* .playlist-main-info{
         display: flex;

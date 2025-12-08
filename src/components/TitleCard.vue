@@ -32,6 +32,9 @@
 
 <style scoped>
     .top-card{
+        /* --avg-color меняется в зависимости от обложки */
+        /* background: linear-gradient(--avg-color, rgb(20, 20, 20)); */
+        background: linear-gradient(rgb(55, 55, 55), rgb(20, 20, 20));
         background-color: rgb(55, 55, 55);
         display: flex;
         gap: 20px;

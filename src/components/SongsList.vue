@@ -20,6 +20,7 @@
         display: flex;
         flex-direction: column;
         background-color: rgb(20, 20, 20);
+        /* padding: 0 10px; */
         /* scrollbar-width: thin; */
         /* scrollbar-color:  */
     }

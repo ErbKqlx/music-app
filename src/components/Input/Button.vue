@@ -12,10 +12,10 @@
 
 <style scoped>
     button{
-        padding: 7px 15px;
-        min-width: 50px;
+        padding: 10px;
+        /* min-width: 50px; */
         /* height: 25px; */
-        border-radius: 20px;
+        border-radius: 50%;
         border: none;
         display: flex;
         align-items: center;

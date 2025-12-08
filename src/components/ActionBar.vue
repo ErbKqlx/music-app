@@ -13,6 +13,7 @@
 
 <style scoped>
     .action-bar{
+        margin: 10px 0;
         display: flex;
         gap: 5px;
 

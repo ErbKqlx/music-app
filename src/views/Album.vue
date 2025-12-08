@@ -6,7 +6,7 @@
     import TitleCard from '@/components/TitleCard.vue'
     import Image from '@/components/Image.vue'
     import ActionBar from '@/components/ActionBar.vue';
-import Wrapper from '../components/Wrapper.vue';
+    import Wrapper from '@/components/Wrapper.vue';
 
 </script>
 

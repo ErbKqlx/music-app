@@ -5,7 +5,7 @@
     import TitleCard from '@/components/TitleCard.vue';
     import SongsList from '@/components/SongsList.vue'
     import Image from '@/components/Image.vue';
-import Wrapper from '../components/Wrapper.vue';
+    import Wrapper from '@/components/Wrapper.vue';
 </script>
 
 <template>

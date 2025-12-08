@@ -46,6 +46,7 @@
         font-size: 14px;
         align-items: center;
         justify-content: space-between;
+        border-radius: 5px;
 
         .image{
             aspect-ratio: 1 / 1;

@@ -13,7 +13,8 @@
     import Image from '@/components/Image.vue'
     import Card from '@/components/Card.vue'
     import ThreeDotsVertical from '@/assets/svg/ThreeDotsVertical.svg?component'
-import Wrapper from '../components/Wrapper.vue'
+    import Wrapper from '@/components/Wrapper.vue'
+    import ActionBar from '@/components/ActionBar.vue'
 
     function toArtist(){
         router.push('/artist')
@@ -33,13 +34,14 @@ import Wrapper from '../components/Wrapper.vue'
                     <Image/>
                 </template>
             </TitleCard>
-            <div class="song-actions">
+            <ActionBar></ActionBar>
+            <!-- <div class="song-actions">
                 <Button class="button play-btn"><Play/></Button>
                 <Button class="button misc"><ThreeDotsVertical color="white"/></Button>
                 <div>
                     <Button class="button add">Добавить в плейлист</Button>
                 </div>
-            </div>
+            </div> -->
             <div class="info">
                 <div>
                     <CardsList title="Альбомы">
