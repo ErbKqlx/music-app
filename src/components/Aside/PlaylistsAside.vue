@@ -6,6 +6,7 @@
     import Modal from '@/components/Modal.vue'
     import Image from '@/components/Image.vue'
     import Form from '@/components/Form.vue'
+    import Input from '@/components/Input/Input.vue'
     import { ref } from 'vue'
 
     // defineProps({
@@ -54,7 +55,16 @@
                     </div> -->
                 </template>
                 <template #content>
-                    <Form></Form>
+                    <Form>
+                        <div>
+                            <label for="name">Название</label>
+                            <Input type="text" id="name" name="name"/>
+                        </div>
+                        <div>
+                            <label for="public">Открытый</label>
+                            <input type="checkbox" name="public" id="public">
+                        </div>
+                    </Form>
                 </template>
                 <template #button>
                     <Button>Создать</Button>
@@ -74,7 +84,8 @@
 <style scoped>
     .playlists-aside{
         width: 20vw;
-        background-color: rgb(20, 20, 20);
+        /* background-color: rgb(20, 20, 20); */
+        background-color: var(--primary-color);
         padding: 10px 10px;
         border-radius: 10px;
 

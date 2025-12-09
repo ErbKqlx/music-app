@@ -2,6 +2,7 @@
     import Input from '@/components/Input/Input.vue';
     import SubmitButton from '@/components/Input/SubmitButton.vue';
     import router from '@/router/index.js'
+    import Form from '@/components/Form.vue'
 
     function toProfile(){
         router.push('/profile')
@@ -12,15 +13,23 @@
     <div class="wrapper">
         <form class="authorization-form">
             <span>Авторизация</span>
-            <div class="auth-fields">
+            <!-- <Form>
                 <div>
                     <label for="login-email">Логин или Email</label>
-                    <!-- <input type="text" id="login-email"> -->
                     <Input type="text" id="login-email" name="login-email"/>
                 </div>
                 <div>
                     <label for="password">Пароль</label>
-                    <!-- <input type="text" id="password"> -->
+                    <Input type="password" id="password" name="password"/>
+                </div>
+            </Form> -->
+            <div class="auth-fields">
+                <div>
+                    <label for="login-email">Логин или Email</label>
+                    <Input type="text" id="login-email" name="login-email"/>
+                </div>
+                <div>
+                    <label for="password">Пароль</label>
                     <Input type="password" id="password" name="password"/>
                 </div>
             </div>

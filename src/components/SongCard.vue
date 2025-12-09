@@ -1,12 +1,22 @@
 <script setup>
-    import PlayButton from '@/assets/svg/play.svg?component'
-    import MiscButton from '@/assets/svg/ThreeDotsVertical.svg?component'
+    import PlaySvg from '@/assets/svg/play.svg?component'
+    import MiscSvg from '@/assets/svg/ThreeDotsVertical.svg?component'
     import Image from '@/components/Image.vue';
+    import SvgButton from '@/components/Image.vue';
 
     defineProps({
-        title: String,
-        artists: Array,
-        length: String
+        title: {
+            type: String,
+            default: '',
+        },
+        artists: {
+            type: Array,
+            default: null,
+        },
+        length: {
+            type: String,
+            default: '',
+        },
     })
 </script>
 
@@ -27,12 +37,19 @@
         </div>
         <div class="song-actions">
             <span>{{ Math.trunc(length/60) }}:{{ length%60 }}</span>
-            <div class="play-button">
-                <PlayButton width="100%" height="100%" viewBox="0 0 15 15"/>
-            </div>
-            <div class="misc-button">
-                <MiscButton width="100%" height="100%" viewBox="0 0 16 16"/>
-            </div>
+            <!-- <SvgButton>
+                <PlaySvg width="100%" height="100%" viewBox="0 0 15 15"/>
+            </SvgButton>
+            <SvgButton>
+                <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
+            </SvgButton> -->
+            
+            <!-- <div class="play-button">
+                <PlaySvg width="100%" height="100%" viewBox="0 0 15 15"/>
+            </div> -->
+            <!-- <div class="misc-button">
+                <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
+            </div> -->
         </div>
     </div>
 </template>
@@ -95,6 +112,7 @@
     }
 
     .song-card:hover{
-        background-color: rgb(70, 70, 70);
+        /* background-color: rgb(70, 70, 70); */
+        background-color: var(--secondary-color);
     }
 </style>

@@ -2,6 +2,7 @@
     import router from '@/router/index.js'
     import Input from '@/components/Input/Input.vue';
     import SubmitButton from '@/components/Input/SubmitButton.vue';
+    import Form from '@/components/Form.vue'
 
     function toProfile(){
         router.push('/profile')
@@ -10,6 +11,12 @@
 
 <template>
     <div class="wrapper">
+        <!-- <Form>
+            <div>
+                <label for="email">Почта</label>
+                <Input type="email" id="email" name="email"/>
+            </div>
+        </Form> -->
         <form class="password-recovery-form">
             <div class="form-title">
                 <span>Восстановление пароля</span>

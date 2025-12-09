@@ -52,7 +52,7 @@
             border-radius: 5px;
             min-width: 30vw;
             min-height: 40vh;
-            background-color: rgb(20, 20, 20);
+            background-color: var(--primary-color);
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -75,7 +75,7 @@
 
             .image{
                 aspect-ratio: 1 / 1;
-                width: 200px;
+                min-width: 200px;
             }
 
             .modal-actions{
@@ -83,7 +83,7 @@
                 gap: 5px;
                 align-self: flex-end;
             }
-            
+
         }
     }
 

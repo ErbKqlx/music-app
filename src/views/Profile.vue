@@ -33,7 +33,7 @@
             <div class="user-info">
                 <CardsList title="Плейлисты">
                     <!-- <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1" description="Плейлист"/> -->
-                    <Card @click="toPlaylist" v-for="i in 5" name="Плейлист №1" description="Плейлист">
+                    <Card @click="toPlaylist" v-for="i in 5" title="Плейлист №1" description="Плейлист">
                         <template #image>
                             <Image/>
                         </template>
@@ -45,7 +45,7 @@
 
                 <CardsList title="Исполнители">
                     <!-- <ArtistCard @click="toArtist" v-for="i in 5" name="Исполнитель №1"/> -->
-                    <Card @click="toArtist" v-for="i in 5" name="Исполнитель №1" description="Исполнитель">
+                    <Card @click="toArtist" v-for="i in 5" title="Исполнитель №1" description="Исполнитель">
                         <template #image>
                             <Image class="round-image"/>
                         </template>

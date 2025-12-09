@@ -48,7 +48,8 @@
     }
 
     .playlist-card:hover{
-        background-color: rgb(70, 70, 70);
+        /* background-color: rgb(70, 70, 70); */
+        background-color: var(--secondary-color);
         cursor: pointer;
     }
 </style>

@@ -15,7 +15,7 @@
         padding: 10px;
         /* min-width: 50px; */
         /* height: 25px; */
-        border-radius: 50%;
+        border-radius: 20px;
         border: none;
         display: flex;
         align-items: center;
@@ -28,6 +28,11 @@
     }
 
     button:active{
-        background-color: gray;
+        /* background-color: gray; */
+        background-color: var(--active-color);
     }
+
+    /* .round-button{
+        border-radius: 50%;
+    } */
 </style>

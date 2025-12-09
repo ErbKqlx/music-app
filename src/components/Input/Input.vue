@@ -14,5 +14,6 @@
         background-color: rgb(217 , 217, 217);
         border: none;
         padding-left: 5px;
+        width: 100%;
     }
 </style>

@@ -51,7 +51,8 @@
     .playlist-info{
         height: 1vh;
         flex-grow: 1;
-        background-color: rgb(20, 20, 20);
+        /* background-color: rgb(20, 20, 20); */
+        background-color: var(--primary-color);
         border-radius: 10px;
         overflow-y: scroll;
         /* padding-bottom: 10px; */

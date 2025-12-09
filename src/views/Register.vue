@@ -2,6 +2,7 @@
     import Input from '@/components/Input/Input.vue';
     import SubmitButton from '@/components/Input/SubmitButton.vue';
     import router from '@/router/index.js'
+    import Form from '@/components/Form.vue'
 
     function toProfile(){
         router.push('/profile')
@@ -12,6 +13,21 @@
     <div class="wrapper">
         <form class="registration-form">
             <span>Регистрация</span>
+            <!-- <Form>
+                <div>
+                    <label for="login">Логин</label>
+                    <Input type="text" id="login" name="login"/>
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    <Input type="email" id="email" name="email"/>
+                </div>
+                <div>
+                    <label for="password">Пароль</label>
+                    <Input type="password" id="password" name="password"/>
+                    <span class="requirements">Требования к паролю</span>
+                </div>
+            </Form> -->
             <div class="register-fields">
                 <div>
                     <label for="login">Логин</label>

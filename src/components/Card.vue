@@ -1,6 +1,6 @@
 <script setup>
     defineProps({
-        name: String,
+        title: String,
         description: String,
     })
 
@@ -12,7 +12,7 @@
             <slot name="image"></slot>
         </div>
         <div class="info">
-            <span>{{ name }}</span>
+            <span>{{ title }}</span>
             <span class="additional-info">
                 {{ description }}
             </span>

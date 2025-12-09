@@ -3,31 +3,34 @@
 </script>
 
 <template>
-    <!-- Потом переделать -->
     <form>
         <div class="fields">
-            <div>
+            <slot></slot>
+            <!-- <div>
                 <label for="name">Название</label>
                 <Input type="text" id="name" name="name"/>
             </div>
             <div>
                 <label for="public">Открытый</label>
                 <input type="checkbox" name="public" id="public">
-            </div>
+            </div> -->
         </div>
     </form>
 </template>
 
 <style scoped>
-    .fields{
+    /* .fields{
         width: 100%;
+    } */
+    form{
+        width: 100%;
+    }
 
-        > div{
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 5px;
-            margin-bottom: 20px;
-        }
+    .fields :deep(div){
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        margin-bottom: 20px;
     }
 </style>
