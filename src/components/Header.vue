@@ -4,7 +4,8 @@
 
 <template>
     <div class="page-header">
-        <span class="header-logo clickable">Название</span>
+        <RouterLink to="/home" class="clickable">Название</RouterLink>
+        <!-- <span class="header-logo clickable">Название</span> -->
         <SearchInput/>
         <!-- <div>
             <div class="avatar">

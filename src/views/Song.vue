@@ -45,7 +45,7 @@
             <div class="info">
                 <div>
                     <CardsList title="Альбомы">
-                        <Card @click="toAlbum" v-for="i in 5" name="Альбом №1" description="Альбом">
+                        <Card @click="toAlbum" v-for="i in 5" title="Альбом №1" description="Альбом">
                             <template #image>
                                 <Image/>
                             </template>

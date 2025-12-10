@@ -8,6 +8,7 @@ import Artist from '@/views/Artist.vue'
 import Album from '@/views/Album.vue'
 import PasswordRecovery from '@/views/PasswordRecovery.vue'
 import Song from '@/views/Song.vue'
+import Home from '@/views/Home.vue'
 
 const routes = [
     {
@@ -45,6 +46,10 @@ const routes = [
     {
         path: "/song",
         component: Song,
+    },
+    {
+        path: "/home",
+        component: Home,
     }
 ]
 
