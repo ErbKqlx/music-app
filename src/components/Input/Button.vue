@@ -6,22 +6,41 @@
 
 <template>
     <button>
-        <slot></slot>
+        <span>
+            <slot></slot>
+        </span>
     </button>
 </template>
 
 <style scoped>
     button{
-        padding: 10px;
+        padding: 7px 14px;
         /* min-width: 50px; */
         /* height: 25px; */
         border-radius: 20px;
         border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        /* width: 100%; */
+
+        span{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        span :deep(svg){
+            width: 1.25rem;
+            height: 1.25rem;
+        }
     }
 
+    .no-background{
+        background: none !important;
+    }
+
+    .round-button{
+        padding: 7px;
+    }
+    
     button:hover{
         background-color: lightgray;
         cursor: pointer;

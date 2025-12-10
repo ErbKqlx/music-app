@@ -43,6 +43,12 @@
                 </div> -->
             </div>
         </div>
+        <div class="playlist-cards">
+            <PlaylistCard @click="toPlaylist" title="Плейлист №1" count="1" v-for="i in 4"/>
+            <!-- <PlaylistCard title="Плейлист №1" count="1"/>
+            <PlaylistCard title="Плейлист №1" count="1"/>
+            <PlaylistCard title="Плейлист №1" count="1"/> -->
+        </div>
         <div class="playlist-actions">
             <Button @click="isOpen = true">
                 <AddPlus/>Добавить
@@ -71,13 +77,6 @@
                 </template>
             </Modal>
         </div>
-        <div class="playlist-cards">
-            <PlaylistCard @click="toPlaylist" title="Плейлист №1" count="1" v-for="i in 4"/>
-            <!-- <PlaylistCard title="Плейлист №1" count="1"/>
-            <PlaylistCard title="Плейлист №1" count="1"/>
-            <PlaylistCard title="Плейлист №1" count="1"/> -->
-        </div>
-        
     </div>
 </template>
 
@@ -88,23 +87,31 @@
         background-color: var(--primary-color);
         padding: 10px 10px;
         border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
 
         .aside-header{
             display: flex;
             justify-content: space-between;
             font-size: 14px;
             font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .playlist-actions{
-            display: flex;
-            margin-bottom: 10px;
+            /* margin-bottom: 10px; */
         }
 
         .playlist-cards{
             display: flex;
             flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .playlist-actions{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* margin-bottom: 10px; */
+            padding-bottom: 10px;
         }
     }
 </style>
