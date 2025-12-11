@@ -1,5 +1,6 @@
 <script setup>
     import Image from '@/components/Image.vue';
+    import ActionBar from '@/components/ActionBar.vue'
 
     defineProps({
         title: String,
@@ -18,12 +19,17 @@
         </div>
         <!-- <Image/> -->
         <div class="info">
-            <div class="title">
-                <span>{{ title }}</span>
+            <div>
+                <div class="title">
+                    <span>{{ title }}</span>
+                </div>
+                <div class="created">
+                    <RouterLink to="/artist" class="additional-info clickable">{{ created_by }}</RouterLink>
+                    <span class="additional-info">{{ created_at }}</span>
+                </div>
             </div>
-            <div class="created">
-                <RouterLink to="/artist" class="additional-info clickable">{{ created_by }}</RouterLink>
-                <span class="additional-info">{{ created_at }}</span>
+            <div class="actions">
+                <ActionBar></ActionBar>
             </div>
         </div>
         <!-- <span class="additional-info clickable">{{ created_by }}</span> -->
@@ -48,18 +54,24 @@
         .info{
             display: flex;
             flex-direction: column;
+            flex-grow: 1;
             align-items: flex-start;
-            gap: 5px;
+            /* gap: 5px; */
             /* width: 100%; */
-            min-height: 100%;
+            /* min-height: 100%; */
+
+            :first-child{
+                flex-grow: 1;
+            }
 
             .title{
                 font-size: 3rem;
                 font-weight: bold;
-                flex-grow: 1;
+                /* flex-grow: 1; */
             }
 
             .created{
+                width: fit-content;
                 display: flex;
                 flex-direction: column;
                 gap: 5px;

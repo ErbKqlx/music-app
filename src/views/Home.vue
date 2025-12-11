@@ -12,7 +12,9 @@
             <Carousel>
                 
             </Carousel>
-            
+            <div class="info">
+                
+            </div>
         </div>
     </Wrapper>
     <PlayerBar></PlayerBar>

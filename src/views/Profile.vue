@@ -66,7 +66,7 @@
     .profile-info{
         /* background-color: rgb(55, 55, 55); */
         background-color: rgb(20, 20, 20);
-        height: 1;
+        height: 1vh;
         flex-grow: 1;
         /* display: flex;
         flex-direction: column; */
@@ -78,7 +78,6 @@
             flex-direction: column;
             gap: 50px;
             padding: 20px;
-            height: 1vh;
         }
     }
 </style>

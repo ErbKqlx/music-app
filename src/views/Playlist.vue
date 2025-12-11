@@ -20,8 +20,8 @@
                     <Image/>
                 </template>
             </TitleCard>
-            <div class="info">
-                <div>
+            <div>
+                <!-- <div class="actions">
                     <ActionBar></ActionBar>
                     <div class="filter">
 
@@ -29,17 +29,19 @@
                     <div class="sort">
                         <SvgButton/>
                     </div>
-                </div>
-            <!-- <PlaylistInfoCard title="Плейлист №1" description="Описание"/> -->
-                <SongsList>
-                    <SongCard 
-                        title="Трек №1"
-                        :artists="['Исполнитель №1', 'Исполнитель №2']"
-                        :length="220"
+                </div> -->
+                <div class="info">
+                <!-- <PlaylistInfoCard title="Плейлист №1" description="Описание"/> -->
+                    <SongsList>
+                        <SongCard 
+                            title="Трек №1"
+                            :artists="['Исполнитель №1', 'Исполнитель №2']"
+                            :length="220"
 
-                        v-for="i in 10"
-                    />
-                </SongsList>
+                            v-for="i in 10"
+                        />
+                    </SongsList>
+                </div>
             </div>
             <!-- <Footer></Footer> -->
         </div>
@@ -56,11 +58,19 @@
         border-radius: 10px;
         overflow-y: scroll;
         /* padding-bottom: 10px; */
+        
     }
 
-    .info{
-        padding: 10px;
+    .playlist-info > div{
+        /* padding-left: 20px;
+        padding-right: 20px; */
+        /* padding: 20px; */
     }
+
+    /* .actions{
+        padding: 10px 0;
+    } */
+
     /* .playlist-main-info{
         display: flex;
         flex-direction: column;
