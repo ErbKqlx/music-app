@@ -39,7 +39,7 @@
                 <RouterLink to="/register">Зарегистрироваться</RouterLink>
             </div>
             <!-- <input type="submit" value="Войти в аккаунт"> -->
-            <SubmitButton @click="toProfile"/>
+            <SubmitButton @click="toProfile" value="Войти в аккаунт"/>
             <!-- <a class="forgot-password" href="#">Забыли пароль?</a> -->
             <RouterLink class="password-recovery" to="/password-recovery">Забыли пароль?</RouterLink>
         </form>

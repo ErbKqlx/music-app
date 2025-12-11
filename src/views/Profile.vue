@@ -30,7 +30,7 @@
                     <Image class="round-image"/>
                 </template>
             </TitleCard>
-            <div class="user-info">
+            <div class="info">
                 <CardsList title="Плейлисты">
                     <!-- <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1" description="Плейлист"/> -->
                     <Card @click="toPlaylist" v-for="i in 5" title="Плейлист №1" description="Плейлист">
@@ -76,8 +76,8 @@
         .user-info{
             display: flex;
             flex-direction: column;
-            gap: 50px;
-            padding: 20px;
+            /* gap: 50px; */
+            /* padding: 20px; */
         }
     }
 </style>

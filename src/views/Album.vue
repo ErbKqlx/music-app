@@ -14,12 +14,12 @@
     <Header></Header>
     <Wrapper>
         <div class="album-info">
-            <TitleCard title="Альбом №1" created_by="artist" created_at="28.11.2025">
+            <TitleCard title="Альбом №1" created_by="artist" created_at="28.11.2025" hasActions>
                 <template #image>
                     <Image/>
                 </template>
             </TitleCard>
-            <ActionBar></ActionBar>
+            <!-- <ActionBar></ActionBar> -->
         </div>
         <!-- <SongsList/> -->
     </Wrapper>

@@ -3,9 +3,22 @@
     import ActionBar from '@/components/ActionBar.vue'
 
     defineProps({
-        title: String,
-        created_by: String,
-        created_at: Date,
+        title: {
+            type: String,
+            default: '',
+        },
+        created_by: {
+            type: String,
+            default: '',
+        },
+        created_at: {
+            type: Date,
+            default: '',
+        },
+        hasActions: {
+            type: Boolean,
+            default: false,
+        },
     })
 </script>
 
@@ -28,7 +41,7 @@
                     <span class="additional-info">{{ created_at }}</span>
                 </div>
             </div>
-            <div class="actions">
+            <div v-if="hasActions" class="actions">
                 <ActionBar></ActionBar>
             </div>
         </div>

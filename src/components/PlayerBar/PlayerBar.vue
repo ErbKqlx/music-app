@@ -1,7 +1,6 @@
 <script setup>
     import Image from '@/components/Image.vue';
     import ProgressBar from './ProgressBar.vue';
-    import SvgButton from '@/components/SvgButton.vue'
     import Button from '@/components/Input/Button.vue'
 
     // SVG

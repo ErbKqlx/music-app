@@ -1,7 +1,10 @@
 <script setup>
-    defineProps({
-        text: String
-    })
+    // defineProps({
+    //     text: {
+    //         type: String,
+    //         default: 'Отправить'
+    //     }
+    // })
 </script>
 
 <template>

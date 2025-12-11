@@ -1,26 +1,22 @@
 <script setup>
     import Header from '@/components/Header.vue';
-    import PlaylistsAside from '@/components/Aside/PlaylistsAside.vue';
-    import PlaylistInfoCard from '@/components/Playlist/PlaylistInfoCard.vue';
     import SongsList from '@/components/SongsList.vue';
     import PlayerBar from '@/components/PlayerBar/PlayerBar.vue';
     import Wrapper from '@/components/Wrapper.vue'
     import TitleCard from '@/components/TitleCard.vue'
     import Image from '@/components/Image.vue'
     import SongCard from '@/components/SongCard.vue';
-    import ActionBar from '@/components/ActionBar.vue'
 </script>
 
 <template>
     <Header></Header>
     <Wrapper>
         <div class="playlist-info">
-            <TitleCard title="Плейлист №1" created_by="username" created_at="28.11.2025">
+            <TitleCard title="Плейлист №1" created_by="username" created_at="28.11.2025" hasActions>
                 <template #image>
                     <Image/>
                 </template>
             </TitleCard>
-            <div>
                 <!-- <div class="actions">
                     <ActionBar></ActionBar>
                     <div class="filter">
@@ -30,18 +26,16 @@
                         <SvgButton/>
                     </div>
                 </div> -->
-                <div class="info">
-                <!-- <PlaylistInfoCard title="Плейлист №1" description="Описание"/> -->
-                    <SongsList>
-                        <SongCard 
-                            title="Трек №1"
-                            :artists="['Исполнитель №1', 'Исполнитель №2']"
-                            :length="220"
+            <div class="info">
+                <SongsList>
+                    <SongCard 
+                        title="Трек №1"
+                        :artists="['Исполнитель №1', 'Исполнитель №2']"
+                        :length="220"
 
-                            v-for="i in 10"
-                        />
-                    </SongsList>
-                </div>
+                        v-for="i in 10"
+                    />
+                </SongsList>
             </div>
             <!-- <Footer></Footer> -->
         </div>
@@ -57,25 +51,7 @@
         background-color: var(--primary-color);
         border-radius: 10px;
         overflow-y: scroll;
-        /* padding-bottom: 10px; */
+        padding-bottom: 10px;
         
     }
-
-    .playlist-info > div{
-        /* padding-left: 20px;
-        padding-right: 20px; */
-        /* padding: 20px; */
-    }
-
-    /* .actions{
-        padding: 10px 0;
-    } */
-
-    /* .playlist-main-info{
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        flex-grow: 1;
-        height: 100%;
-    } */
 </style>

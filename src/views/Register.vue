@@ -49,7 +49,7 @@
                 <!-- <a href="auth.html">Войти</a> -->
             </div>
             <!-- <input type="submit" value="Создать аккаунт"> -->
-            <SubmitButton @click="toProfile"/>
+            <SubmitButton @click="toProfile" value="Создать аккаунт"/>
         </form>
     </div>
 </template>

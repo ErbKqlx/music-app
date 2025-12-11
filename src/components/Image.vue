@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <img src="@/assets/placeholder.webp" alt="Изображение">
+    <img src="@/assets/images/placeholder.webp" alt="Изображение">
 </template>
 
 <style scoped>

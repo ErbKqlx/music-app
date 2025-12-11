@@ -16,6 +16,10 @@
 </template>
 
 <style scoped>
+    .cards-list{
+        padding: 0 10px;
+    }
+
     .list-header{
         margin: 10px;
 

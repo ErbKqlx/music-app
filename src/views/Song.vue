@@ -1,20 +1,12 @@
 <script setup>
     import router from '@/router/index.js'
     import Header from '@/components/Header.vue'
-    import PlaylistsAside from '@/components/Aside/PlaylistsAside.vue'
     import PlayerBar from '@/components/PlayerBar/PlayerBar.vue'
     import TitleCard from '@/components/TitleCard.vue'
-    import Button from '@/components/Input/Button.vue'
     import CardsList from '@/components/CardsList.vue'
-    import PlaylistCard from '@/components/PlaylistCard.vue'
-    import Lyrics from '@/components/Lyrics.vue'
-    import Play from '@/assets/svg/play.svg?component'
-    // import AddPlus from '@/assets/svg/AddPlus.svg?component'
     import Image from '@/components/Image.vue'
     import Card from '@/components/Card.vue'
-    import ThreeDotsVertical from '@/assets/svg/ThreeDotsVertical.svg?component'
     import Wrapper from '@/components/Wrapper.vue'
-    import ActionBar from '@/components/ActionBar.vue'
 
     function toArtist(){
         router.push('/artist')
@@ -29,12 +21,12 @@
     <Header></Header>
     <Wrapper>
         <div class="song-info">
-            <TitleCard title="Трек №1" created_by="artist" created_at="28.11.2025">
+            <TitleCard title="Трек №1" created_by="artist" created_at="28.11.2025" hasActions>
                 <template #image>
                     <Image/>
                 </template>
             </TitleCard>
-            <ActionBar></ActionBar>
+            <!-- <ActionBar></ActionBar> -->
             <!-- <div class="song-actions">
                 <Button class="button play-btn"><Play/></Button>
                 <Button class="button misc"><ThreeDotsVertical color="white"/></Button>
