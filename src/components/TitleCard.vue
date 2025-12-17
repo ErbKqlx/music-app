@@ -1,7 +1,8 @@
 <script setup>
-    import Image from '@/components/Image.vue';
     import ActionBar from '@/components/ActionBar.vue'
-
+    import { onMounted, onUpdated } from 'vue';
+    import "../../node_modules/colorthief/dist/color-thief.umd.js"
+    
     defineProps({
         title: {
             type: String,
@@ -20,6 +21,32 @@
             default: false,
         },
     })
+
+    let colorThief = new ColorThief();
+    function getDominantImageColor(){
+        let image = document.querySelector("img");
+        let backgroundd = document.querySelector(".top-card");
+        // console.log(image);
+        // console.log(background);
+        image.addEventListener('load', function() {
+            const color = colorThief.getColor(image);
+            const primaryColor = window.getComputedStyle(document.body).getPropertyValue('--primary-color');
+            backgroundd.style.background = "linear-gradient(rgb(" + color + "), " + primaryColor + ")";
+            
+            console.log(color);
+            console.log(primaryColor);
+            console.log(backgroundd.style.background);
+        });
+    }
+
+    onMounted(() => {
+        getDominantImageColor();
+    })
+
+    onUpdated(() => {
+        getDominantImageColor();
+    })
+    
 </script>
 
 <template>
@@ -54,7 +81,7 @@
         /* --avg-color меняется в зависимости от обложки */
         /* background: linear-gradient(--avg-color, rgb(20, 20, 20)); */
         /* background: linear-gradient(rgb(55, 55, 55), rgb(20, 20, 20)); */
-        background: linear-gradient(rgb(55, 55, 55), var(--primary-color));
+        /* background: linear-gradient(rgb(55, 55, 55), var(--primary-color)); */
         display: flex;
         gap: 20px;
         padding: 20px;

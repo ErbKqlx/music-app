@@ -7,6 +7,7 @@
     import Image from '@/components/Image.vue'
     import Card from '@/components/Card.vue'
     import Wrapper from '@/components/Wrapper.vue'
+    import Lyrics from '@/components/Lyrics.vue'
 
     function toArtist(){
         router.push('/artist')
@@ -44,7 +45,7 @@
                         </Card>
                     </CardsList>
                 </div>
-                <!-- <Lyrics/> -->
+                <Lyrics/>
             </div>
         </div>
         <!-- <SongsList/> -->

@@ -1,9 +1,14 @@
 <script setup>
-
+    defineProps({
+        url: {
+            type: String,
+            default: "src/assets/images/placeholder.webp",
+        },
+    })
 </script>
 
 <template>
-    <img src="@/assets/images/placeholder.webp" alt="Изображение">
+    <img :src="url" alt="Изображение">
 </template>
 
 <style scoped>

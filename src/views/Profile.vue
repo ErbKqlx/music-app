@@ -65,7 +65,7 @@
 <style scoped>
     .profile-info{
         /* background-color: rgb(55, 55, 55); */
-        background-color: rgb(20, 20, 20);
+        background-color: var(--primary-color);
         height: 1vh;
         flex-grow: 1;
         /* display: flex;
