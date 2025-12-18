@@ -21,7 +21,7 @@
         router.push('/playlist')
     }
 
-    const isOpen = ref(false)
+    const isModalOpen = ref(false)
 </script>
 
 <template>
@@ -44,10 +44,10 @@
             <PlaylistCard title="Плейлист №1" count="1"/> -->
         </div>
         <div class="playlist-actions">
-            <Button @click="isOpen = true">
+            <Button @click="isModalOpen = true">
                 <AddPlus/>Добавить
             </Button>
-            <Modal title="Создание плейлиста" :show="isOpen" @close="isOpen = false">
+            <Modal title="Создание плейлиста" :show="isModalOpen" @close="isModalOpen = false">
                 <template #image>
                     <Image/>
                     <!-- <div class="image">
@@ -76,8 +76,9 @@
 
 <style scoped>
     .playlists-aside{
-        width: 20vw;
+        /* width: 20vw; */
         /* background-color: rgb(20, 20, 20); */
+        height: 100%;
         background-color: var(--primary-color);
         padding: 10px 10px;
         border-radius: 10px;

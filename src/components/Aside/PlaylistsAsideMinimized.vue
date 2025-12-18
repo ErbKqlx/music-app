@@ -21,8 +21,6 @@
     function toPlaylist(){
         router.push('/playlist')
     }
-
-    const isOpen = ref(false)
 </script>
 
 <template>
@@ -45,6 +43,8 @@
     .playlists-aside{
         /* width: 7vw; */
         /* background-color: rgb(20, 20, 20); */
+        /* max-width: 85px; */
+        height: 100%;
         background-color: var(--primary-color);
         padding: 10px 10px;
         border-radius: 10px;

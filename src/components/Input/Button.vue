@@ -44,6 +44,8 @@
     button:hover{
         background-color: lightgray;
         cursor: pointer;
+        transform: scale(1.1);
+        transition: transform 0.2s;
     }
 
     button:active{

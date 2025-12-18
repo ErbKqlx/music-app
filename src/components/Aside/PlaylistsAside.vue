@@ -11,10 +11,21 @@
 </script>
 
 <template>
-    <PlaylistsAsideMinimized @resize="resizeAside" v-if="isMinimized"></PlaylistsAsideMinimized>
-    <PlaylistsAsideMaximized @resize="resizeAside" v-else></PlaylistsAsideMaximized>
+    <div class="aside" :class="{minimized: isMinimized}">
+        <PlaylistsAsideMinimized @resize="resizeAside" v-if="isMinimized"></PlaylistsAsideMinimized>
+        <PlaylistsAsideMaximized @resize="resizeAside" v-else></PlaylistsAsideMaximized>
+    </div>
 </template>
 
 <style scoped>
+    .aside{
+        width: 100%;
+        max-width: 20vw;
+        transition: max-width 0.3s;
+    }
     
+    .minimized{
+        max-width: 85px;
+        transition: max-width 0.3s;
+    }
 </style>
