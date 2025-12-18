@@ -21,6 +21,8 @@
     function toPlaylist(){
         router.push('/playlist')
     }
+
+    const isModalOpen = ref(false)
 </script>
 
 <template>
@@ -35,6 +37,34 @@
         </div>
         <div class="playlist-cards">
             <PlaylistCard @click="toPlaylist" title="Плейлист №1" count="1" v-for="i in 4"/>
+        </div>
+        <div class="playlist-actions">
+            <Button class="round-button" @click="isModalOpen = true">
+                <AddPlus/>
+            </Button>
+            <Modal title="Создание плейлиста" :show="isModalOpen" @close="isModalOpen = false">
+                <template #image>
+                    <Image/>
+                    <!-- <div class="image">
+                        <img src="" alt="">
+                    </div> -->
+                </template>
+                <template #content>
+                    <Form>
+                        <div>
+                            <label for="name">Название</label>
+                            <Input type="text" id="name" name="name"/>
+                        </div>
+                        <div>
+                            <label for="public">Открытый</label>
+                            <input type="checkbox" name="public" id="public">
+                        </div>
+                    </Form>
+                </template>
+                <template #button>
+                    <Button>Создать</Button>
+                </template>
+            </Modal>
         </div>
     </div>
 </template>
@@ -69,6 +99,15 @@
 
         .playlist-cards :deep(.playlist-info){
             display: none;
+        }
+
+        .playlist-actions{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* margin-bottom: 10px; */
+            padding-bottom: 10px;
         }
     }
 </style>
