@@ -3,7 +3,7 @@
 
     defineProps({
         title: String,
-        count: Number
+        count: Number,
     })
 </script>
 
@@ -30,7 +30,7 @@
         .image{
             /* background-color: lightgray; */
             aspect-ratio: 1 / 1;
-            width: 15%;
+            width: 55px;
             overflow: hidden;
         }
 

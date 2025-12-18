@@ -7,6 +7,7 @@
     import Image from '@/components/Image.vue'
     import Form from '@/components/Form.vue'
     import Input from '@/components/Input/Input.vue'
+    import RightArrowSvg from '@/assets/svg/rightArrow.svg?component'
     import { ref } from 'vue'
 
     const emit = defineEmits(
@@ -28,24 +29,21 @@
     <div class="playlists-aside">
         <div class="aside-header">
             <div>
-                <span @click="resize" class="additional-info clickable">Свернуть</span>
-                <!-- <div class="resize-button">
-
-                </div> -->
+                <Button @click="resize" class="no-background round-button">
+                    <RightArrowSvg/>
+                </Button>
+                <!-- <span @click="resize" class="additional-info clickable">Развернуть</span> -->
             </div>
         </div>
         <div class="playlist-cards">
             <PlaylistCard @click="toPlaylist" title="Плейлист №1" count="1" v-for="i in 4"/>
-            <!-- <PlaylistCard title="Плейлист №1" count="1"/>
-            <PlaylistCard title="Плейлист №1" count="1"/>
-            <PlaylistCard title="Плейлист №1" count="1"/> -->
         </div>
     </div>
 </template>
 
 <style scoped>
     .playlists-aside{
-        width: 7vw;
+        /* width: 7vw; */
         /* background-color: rgb(20, 20, 20); */
         background-color: var(--primary-color);
         padding: 10px 10px;
@@ -56,7 +54,8 @@
 
         .aside-header{
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
             font-size: 14px;
             font-weight: bold;
             /* margin-bottom: 10px; */
@@ -66,6 +65,10 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+        }
+
+        .playlist-cards :deep(.playlist-info){
+            display: none;
         }
     }
 </style>

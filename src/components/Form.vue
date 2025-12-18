@@ -6,22 +6,11 @@
     <form>
         <div class="fields">
             <slot></slot>
-            <!-- <div>
-                <label for="name">Название</label>
-                <Input type="text" id="name" name="name"/>
-            </div>
-            <div>
-                <label for="public">Открытый</label>
-                <input type="checkbox" name="public" id="public">
-            </div> -->
         </div>
     </form>
 </template>
 
 <style scoped>
-    /* .fields{
-        width: 100%;
-    } */
     form{
         width: 100%;
     }
