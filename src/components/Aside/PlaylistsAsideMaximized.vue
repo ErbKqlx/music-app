@@ -32,16 +32,10 @@
             </div>
             <div>
                 <span @click="resize" class="additional-info clickable">Свернуть</span>
-                <!-- <div class="resize-button">
-
-                </div> -->
             </div>
         </div>
         <div class="playlist-cards">
             <PlaylistCard @click="toPlaylist" title="Плейлист №1" count="1" v-for="i in 4"/>
-            <!-- <PlaylistCard title="Плейлист №1" count="1"/>
-            <PlaylistCard title="Плейлист №1" count="1"/>
-            <PlaylistCard title="Плейлист №1" count="1"/> -->
         </div>
         <div class="playlist-actions">
             <Button @click="isModalOpen = true">
@@ -50,9 +44,6 @@
             <Modal title="Создание плейлиста" :show="isModalOpen" @close="isModalOpen = false">
                 <template #image>
                     <Image/>
-                    <!-- <div class="image">
-                        <img src="" alt="">
-                    </div> -->
                 </template>
                 <template #content>
                     <Form>
