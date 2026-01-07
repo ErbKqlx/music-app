@@ -1,19 +1,31 @@
-const db = require('../db')
+import { getUsers } from "../services/userService.js"
+import Response from "../configs/response.js"
+import { StatusCode } from "../constants.js"
 
-async function getUsers(req, res){
+export async function handleGetUsers(req, res){
     try{
-        const users = await db.query('SELECT * FROM users')
-        res.status(200).json(users.rows)
+        const users = await getUsers()
+        // res.status(200).json(users.rows)
+        return Response.success(
+            res,
+            "Пользователи получены",
+            StatusCode.OK
+        )
     }
     catch(e){
-        return res.status(500).json({
-            message: e.message
-        })
+        // return res.status(500).json({
+        //     message: e.message
+        // })
+        return Response.serverError(
+            res,
+            "Ошибка в запросе",
+            e
+        )
     }
     // res.status(200).json({message: "Get all users"});
 }
 
-async function createUser(req, res){
+export async function handleCreateUser(req, res){
     // console.log(req.body)
     try{
         const {login, password, username, email, avatar} = req.body
@@ -39,12 +51,12 @@ async function createUser(req, res){
     }
 }    
 
-async function getUser(req, res){
+export async function handleGetUser(req, res){
     const user = await db.query('SELECT * FROM users WHERE id = $1', [req.params.id])
     res.status(200).json(user.rows[0]);
 }
 
-async function updateUser(req, res){
+export async function handleUpdateUser(req, res){
     const {password, username, email, avatar} = req.body
 
     const user = await db.query(
@@ -55,9 +67,9 @@ async function updateUser(req, res){
     res.status(200).json(user.rows[0]);
 }
 
-async function deleteUser(req, res){
+export async function handleDeleteUser(req, res){
     const user = await db.query('DELETE FROM users WHERE id = $1 RETURNING *', [req.params.id])
     res.status(200).json(user.rows[0]);
 }
 
-module.exports = { getUsers, createUser, getUser, updateUser, deleteUser }
+// module.exports = { handleGetUsers, handleCreateUser, handleGetUser, handleUpdateUser, handleDeleteUser }
