@@ -1,4 +1,4 @@
-import db from "../configs/db.js"
+import db from "../configs/db.config.js"
 
 export async function getUsers(){
     // const connection = await db

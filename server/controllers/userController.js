@@ -1,14 +1,21 @@
 import { getUsers } from "../services/userService.js"
 import Response from "../configs/response.js"
 import { StatusCode } from "../constants.js"
+import User from "../models/User.js"
+import { Sequelize } from "sequelize"
 
 class UserController{
     static async handleGetUsers(req, res){
         try{
             // console.log(req)
             // console.log(1)
-            const users = await getUsers()
-            res.json(users.rows)
+
+            // const users = await getUsers()
+            
+            const users = await User.findAll({raw: true})
+            // res.json(users)
+            // console.log(JSON.stringify(users, null, 2))
+            res.json(users)
             // console.log(1)
             // res.status(200).json(users.rows)
             // return Response.success(
