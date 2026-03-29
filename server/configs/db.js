@@ -1,4 +1,4 @@
-const { Pool } = require('pg')
+import { Pool } from 'pg'
 
 const db = new Pool({
     user: 'postgres',
@@ -8,4 +8,5 @@ const db = new Pool({
     database: 'music_db'
 })
 
-module.exports = db
+// module.exports = db
+export default db
