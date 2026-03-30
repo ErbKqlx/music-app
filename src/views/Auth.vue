@@ -3,15 +3,63 @@
     import SubmitButton from '@/components/Input/SubmitButton.vue';
     import router from '@/router/index.js'
     import Form from '@/components/Form.vue'
+    import http from '../http';
+    import { ref } from 'vue';
+
+    // const formData = {
+    //     login: {
+
+    //     },
+    //     email: {
+
+    //     },
+    //     password: {
+            
+    //     }
+    // }
+    const form = ref({
+        data: {
+            login_email: '',
+            password: '',
+        },
+        errors: {
+
+        },
+        isSending: false,
+    })
+
 
     function toProfile(){
         router.push('/profile')
     }
+
+    function sendData(){
+        if (form.value.isSending) return
+
+        form.value.isSending = true
+
+        form.value.errors = {}
+
+        // console.log(form.value.data)
+        http.post('/login', form.value.data)
+            // .then(function (response){
+            //     router.push('/profile')
+            // })
+            // .catch(function (error){
+            //     form.value.errors = error
+            //     console.log(error)
+            // })
+
+        form.value.isSending = false
+            
+    }
+
+    
 </script>
 
 <template>
     <div class="wrapper">
-        <form class="authorization-form">
+        <form class="authorization-form" @submit.prevent="sendData()" novalidate>
             <span>Авторизация</span>
             <!-- <Form>
                 <div>
@@ -25,12 +73,15 @@
             </Form> -->
             <div class="auth-fields">
                 <div>
-                    <label for="login-email">Логин или Email</label>
-                    <Input type="text" id="login-email" name="login-email"/>
+                    <!-- <label for="login-email">Логин или Email</label> -->
+                    <label for="login-email">Email</label>
+                    <input type="text" id="login-email" name="login-email" v-model="form.data.login_email">
+                    <!-- <Input type="text" id="login-email" name="login-email" v-model="form.data.login_email"/> -->
                 </div>
                 <div>
                     <label for="password">Пароль</label>
-                    <Input type="password" id="password" name="password"/>
+                    <input type="password" id="password" name="password" v-model="form.data.password">
+                    <!-- <Input type="password" id="password" name="password" v-model="form.data.password"/> -->
                 </div>
             </div>
             <div class="no-account">
@@ -39,8 +90,11 @@
                 <RouterLink to="/register">Зарегистрироваться</RouterLink>
             </div>
             <!-- <input type="submit" value="Войти в аккаунт"> -->
-            <SubmitButton @click="toProfile" value="Войти в аккаунт"/>
+
+            <!-- <SubmitButton @click="toProfile" value="Войти в аккаунт"/> -->
+            <SubmitButton :disabled="form.isSending" value="Войти в аккаунт"/>
             <!-- <a class="forgot-password" href="#">Забыли пароль?</a> -->
+
             <RouterLink class="password-recovery" to="/password-recovery">Забыли пароль?</RouterLink>
         </form>
     </div>

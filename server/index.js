@@ -1,7 +1,7 @@
 // import express from "express"
 // import router from "./routes/userRoutes"
 import express, { json } from 'express';
-import router from './routes/userRoutes.js';
+import router from './routes/index.js';
 import cors from 'cors'
 // const dotenv = require("dotenv");
 // const errorHandler = require('./middleware/errorHandler');
