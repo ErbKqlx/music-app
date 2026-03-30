@@ -22,9 +22,7 @@
             login_email: '',
             password: '',
         },
-        errors: {
-
-        },
+        error: null,
         isSending: false,
     })
 
@@ -38,17 +36,17 @@
 
         form.value.isSending = true
 
-        form.value.errors = {}
+        form.value.error = null
 
         // console.log(form.value.data)
         http.post('/login', form.value.data)
-            // .then(function (response){
-            //     router.push('/profile')
-            // })
-            // .catch(function (error){
-            //     form.value.errors = error
-            //     console.log(error)
-            // })
+            .then(function (response){
+                router.push('/profile')
+            })
+            .catch(function (error){
+                form.value.error = error
+                console.log(error)
+            })
 
         form.value.isSending = false
             
@@ -71,6 +69,9 @@
                     <Input type="password" id="password" name="password"/>
                 </div>
             </Form> -->
+            <div class="errors" v-if="form.error">
+                <span style="color: red">Неверный email или пароль</span>
+            </div>
             <div class="auth-fields">
                 <div>
                     <!-- <label for="login-email">Логин или Email</label> -->
