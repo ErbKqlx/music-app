@@ -60,43 +60,24 @@
     <div class="wrapper">
         <form class="authorization-form" @submit.prevent="sendData()" novalidate>
             <span>Авторизация</span>
-            <!-- <Form>
-                <div>
-                    <label for="login-email">Логин или Email</label>
-                    <Input type="text" id="login-email" name="login-email"/>
-                </div>
-                <div>
-                    <label for="password">Пароль</label>
-                    <Input type="password" id="password" name="password"/>
-                </div>
-            </Form> -->
             <div class="errors" v-if="form.errors">
                 <span style="color: red">Неверный email или пароль</span>
             </div>
             <div class="auth-fields">
                 <div>
-                    <!-- <label for="login-email">Логин или Email</label> -->
                     <label for="login-email">Email</label>
                     <input type="text" id="login-email" name="login-email" v-model="form.data.login_email">
-                    <!-- <Input type="text" id="login-email" name="login-email" v-model="form.data.login_email"/> -->
                 </div>
                 <div>
                     <label for="password">Пароль</label>
                     <input type="password" id="password" name="password" v-model="form.data.password">
-                    <!-- <Input type="password" id="password" name="password" v-model="form.data.password"/> -->
                 </div>
             </div>
             <div class="no-account">
                 <span>Нет аккаунта? </span>
-                <!-- <a href="registration.html">Зарегистрироваться</a> -->
                 <RouterLink to="/register">Зарегистрироваться</RouterLink>
             </div>
-            <!-- <input type="submit" value="Войти в аккаунт"> -->
-
-            <!-- <SubmitButton @click="toProfile" value="Войти в аккаунт"/> -->
             <SubmitButton :disabled="form.isSending" :class="{'disabled': form.isSending}" value="Войти в аккаунт"/>
-            <!-- <a class="forgot-password" href="#">Забыли пароль?</a> -->
-
             <RouterLink class="password-recovery" to="/password-recovery">Забыли пароль?</RouterLink>
         </form>
     </div>

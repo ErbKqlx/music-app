@@ -65,5 +65,3 @@ class UserController{
 }
 
 export default UserController
-
-// module.exports = { handleGetUsers, handleCreateUser, handleGetUser, handleUpdateUser, handleDeleteUser }
