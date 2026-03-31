@@ -14,7 +14,7 @@
     <button @click="test()">Получить пользователей</button>
 </template>
 
-<style>
+<style scoped>
     button{
         width: 100px;
         height: 100px;

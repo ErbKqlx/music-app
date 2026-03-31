@@ -22,4 +22,8 @@
         cursor: pointer;
         background-color: rgb(140, 140, 140);
     }
+
+    .disabled{
+        background-color: rgb(100, 100, 100) !important;
+    }
 </style>

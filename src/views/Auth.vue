@@ -22,7 +22,7 @@
             login_email: '',
             password: '',
         },
-        error: null,
+        errors: null,
         isSending: false,
     })
 
@@ -31,21 +31,22 @@
         router.push('/profile')
     }
 
-    function sendData(){
+    async function sendData(){
         if (form.value.isSending) return
 
         form.value.isSending = true
 
-        form.value.error = null
+        form.value.errors = null
 
         // console.log(form.value.data)
-        http.post('/login', form.value.data)
+        await http.post('/login', form.value.data)
             .then(function (response){
                 router.push('/profile')
+                console.log(response.data)
             })
-            .catch(function (error){
-                form.value.error = error
-                console.log(error)
+            .catch(function (errors){
+                form.value.errors = errors
+                console.log(errors)
             })
 
         form.value.isSending = false
@@ -69,7 +70,7 @@
                     <Input type="password" id="password" name="password"/>
                 </div>
             </Form> -->
-            <div class="errors" v-if="form.error">
+            <div class="errors" v-if="form.errors">
                 <span style="color: red">Неверный email или пароль</span>
             </div>
             <div class="auth-fields">
@@ -93,7 +94,7 @@
             <!-- <input type="submit" value="Войти в аккаунт"> -->
 
             <!-- <SubmitButton @click="toProfile" value="Войти в аккаунт"/> -->
-            <SubmitButton :disabled="form.isSending" value="Войти в аккаунт"/>
+            <SubmitButton :disabled="form.isSending" :class="{'disabled': form.isSending}" value="Войти в аккаунт"/>
             <!-- <a class="forgot-password" href="#">Забыли пароль?</a> -->
 
             <RouterLink class="password-recovery" to="/password-recovery">Забыли пароль?</RouterLink>
