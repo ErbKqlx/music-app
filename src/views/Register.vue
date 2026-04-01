@@ -12,6 +12,7 @@
 
     const form = ref({
         data: {
+            username: '',
             email: '',
             password: '',
         },
@@ -66,6 +67,11 @@
                     <label for="login">Логин</label>
                     <Input type="text" id="login" name="login"/>
                 </div> -->
+                <div>
+                    <label for="username">Имя пользователя</label>
+                    <!-- <Input type="email" id="email" name="email"/> -->
+                    <input type="text" id="username" name="username" v-model="form.data.username">
+                </div>
                 <div>
                     <label for="email">Email</label>
                     <!-- <Input type="email" id="email" name="email"/> -->

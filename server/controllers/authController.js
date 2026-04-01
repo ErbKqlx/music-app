@@ -49,12 +49,14 @@ class AuthController{
     static async register(req, res){
         res.errors = {};
 
+        const username = req.body.username;
         const email = req.body.email;
         const password = req.body.password;
 
         const hashPassword = await bcrypt.hash(password, 10)
         
-        const newUser = User.create({
+        const newUser = await User.create({
+            username: username,
             email: email,
             password: hashPassword,
             id_role: 3, //пока так
