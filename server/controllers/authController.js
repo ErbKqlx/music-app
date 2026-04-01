@@ -48,7 +48,7 @@ class AuthController{
 
     static async register(req, res){
         const message = {
-            from: 'Test <laney80@ethereal.email>',
+            from: 'Test <music_app06@mail.ru>',
             to: req.body.email,
             subject: 'Успех!',
             text: 'Вы успешно зарегистрировались на сайте!'

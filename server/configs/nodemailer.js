@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
+    host: 'smtp.mail.ru',
+    port: 465,
+    secure: true,
     auth: {
-        user: 'laney80@ethereal.email',
-        pass: 'Vzk2jqKNrtB7F4PxuY'
+        user: 'music_app06@mail.ru',
+        pass: 'To0yNUhIZgCETcHxez6W'
     }
 })
 
