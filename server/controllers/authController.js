@@ -2,6 +2,7 @@ import { Op } from "sequelize"
 import Response from "../configs/response.js"
 import User from "../models/User.js"
 import bcrypt from 'bcrypt'
+import mailer from "../configs/nodemailer.js";
 
 class AuthController{
     static async login(req, res){
@@ -10,6 +11,8 @@ class AuthController{
         const email = req.body.login_email;
         const password = req.body.password;
 
+        // const hash = await bcrypt.hash(password, 10)
+        // console.log(hash)
 
         const user = await User.findOne({
             where: {
@@ -44,7 +47,16 @@ class AuthController{
     }
 
     static async register(req, res){
+        const message = {
+            from: 'Test <laney80@ethereal.email>',
+            to: req.body.email,
+            subject: 'Успех!',
+            text: 'Вы успешно зарегистрировались на сайте!'
+        }
 
+        mailer(message)
+
+        return Response.success(res)
     }
 }
 

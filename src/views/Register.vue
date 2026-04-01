@@ -3,15 +3,48 @@
     import SubmitButton from '@/components/Input/SubmitButton.vue';
     import router from '@/router/index.js'
     import Form from '@/components/Form.vue'
+    import { ref } from 'vue';
+    import http from '../http';
 
-    function toProfile(){
-        router.push('/profile')
+    // function toProfile(){
+    //     router.push('/profile')
+    // }
+
+    const form = ref({
+        data: {
+            email: '',
+            password: '',
+        },
+        errors: null,
+        isSending: false,
+    })
+
+    async function sendData(){
+        if (form.value.isSending) return
+
+        form.value.isSending = true
+
+        form.value.errors = null
+
+        // console.log(form.value.data)
+        await http.post('/register', form.value.data)
+            .then(function (response){
+                router.push('/')
+                console.log(response.data)
+            })
+            .catch(function (errors){
+                form.value.errors = errors
+                console.log(errors)
+            })
+
+        form.value.isSending = false
+            
     }
 </script>
 
 <template>
     <div class="wrapper">
-        <form class="registration-form">
+        <form class="registration-form" @submit.prevent="sendData()" novalidate>
             <span>Регистрация</span>
             <!-- <Form>
                 <div>
@@ -29,18 +62,20 @@
                 </div>
             </Form> -->
             <div class="register-fields">
-                <div>
+                <!-- <div>
                     <label for="login">Логин</label>
                     <Input type="text" id="login" name="login"/>
-                </div>
+                </div> -->
                 <div>
                     <label for="email">Email</label>
-                    <Input type="email" id="email" name="email"/>
+                    <!-- <Input type="email" id="email" name="email"/> -->
+                    <input type="email" id="email" name="email" v-model="form.data.email">
                 </div>
                 <div>
                     <label for="password">Пароль</label>
-                    <Input type="password" id="password" name="password"/>
-                    <span class="requirements">Требования к паролю</span>
+                    <!-- <Input type="password" id="password" name="password"/> -->
+                    <input type="password" id="password" name="password" v-model="form.data.password">
+                    <span class="requirements">Требования к паролю...</span>
                 </div>
             </div>
             <div class="have-account">
@@ -49,7 +84,7 @@
                 <!-- <a href="auth.html">Войти</a> -->
             </div>
             <!-- <input type="submit" value="Создать аккаунт"> -->
-            <SubmitButton @click="toProfile" value="Создать аккаунт"/>
+            <SubmitButton :disabled="form.isSending" :class="{'disabled': form.isSending}" value="Создать аккаунт"/>
         </form>
     </div>
 </template>
