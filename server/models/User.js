@@ -16,7 +16,7 @@ const User = sequelize.define(
         },
         login: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             unique: true,
         },
         password: {
@@ -26,6 +26,7 @@ const User = sequelize.define(
         username: {
             type: DataTypes.STRING,
             allowNull: false,
+            defaultValue: 'default'
         },
         email: {
             type: DataTypes.STRING,
@@ -40,6 +41,7 @@ const User = sequelize.define(
         },
         registration_date: {
             type: DataTypes.DATEONLY,
+            defaultValue: DataTypes.NOW
         }
     },
     {
@@ -47,8 +49,6 @@ const User = sequelize.define(
         tableName: 'users',
     }
 )
-
-
 // ;(async () => {
 //     await sequelize.sync({force: true})
 // })()

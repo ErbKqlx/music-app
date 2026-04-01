@@ -1,4 +1,4 @@
-import { Op } from "sequelize"
+import { Op, Sequelize } from "sequelize"
 import Response from "../configs/response.js"
 import User from "../models/User.js"
 import bcrypt from 'bcrypt'
@@ -47,6 +47,20 @@ class AuthController{
     }
 
     static async register(req, res){
+        res.errors = {};
+
+        const email = req.body.email;
+        const password = req.body.password;
+
+        const hashPassword = await bcrypt.hash(password, 10)
+        
+        const newUser = User.create({
+            email: email,
+            password: hashPassword,
+            id_role: 3, //пока так
+        })
+
+
         const message = {
             from: 'Test <music_app06@mail.ru>',
             to: req.body.email,
