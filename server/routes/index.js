@@ -19,5 +19,6 @@ router.get('/users', UserController.handleGetUsers)
 
 router.post('/login', AuthController.login)
 router.post('/register', AuthController.register)
+// router.get('/check-email', AuthController.register)
 
 export default router

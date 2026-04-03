@@ -18,7 +18,7 @@
             email: '',
             password: '',
         },
-        // errors: null,
+        errors: {},
         isSending: false,
     })
 
@@ -42,23 +42,27 @@
 
         form.value.isSending = true
 
-        // form.value.errors = null
+        form.value.errors = {}
 
         // console.log(form.value.data)
 
+        // const emailCheck = helpers.withAsync(async value => {
+        //     const response = await http.get(`/check-email?email=${value}`)
+        // })
 
         $v.value.$touch()
         // console.log($v.value.$invalid)
         if (!$v.value.$invalid){
+            
             await http.post('/register', form.value.data)
-            .then(function (response){
-                router.push('/')
-                console.log(response.data)
-            })
-            .catch(function (errors){
-                form.value.errors = errors
-                console.log(errors)
-            })
+                .then(function (response){
+                    router.push('/')
+                    console.log(response.data)
+                })
+                .catch(function (response){
+                    //form.value.errors = response.errors
+                    console.log(response.response.data.message)
+                })
         }
         
         form.value.isSending = false
