@@ -5,6 +5,8 @@
     import Form from '@/components/Form.vue'
     import http from '../http';
     import { ref } from 'vue';
+    import useVuelidate from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
 
     // const formData = {
     //     login: {
@@ -17,37 +19,56 @@
             
     //     }
     // }
+
+    // function toProfile(){
+    //     router.push('/profile')
+    // }
+
     const form = ref({
         data: {
-            login_email: '',
+            email: '',
             password: '',
         },
-        errors: null,
+        errors: {},
         isSending: false,
     })
 
-
-    function toProfile(){
-        router.push('/profile')
+    const rules = {
+        data: {
+            email: { 
+                required: helpers.withMessage('Поле не может быть пустым', required), 
+                // email: helpers.withMessage('Email введен некорректно', email),
+            },
+            password: { required: helpers.withMessage('Поле не может быть пустым', required), }
+        }
+        
     }
+
+    const $v = useVuelidate(rules, form)
+
+    
 
     async function sendData(){
         if (form.value.isSending) return
 
         form.value.isSending = true
 
-        form.value.errors = null
+        form.value.errors = {}
 
         // console.log(form.value.data)
-        await http.post('/login', form.value.data)
-            .then(function (response){
-                router.push('/profile')
-                console.log(response.data)
-            })
-            .catch(function (errors){
-                form.value.errors = errors
-                console.log(errors)
-            })
+        $v.value.$touch()
+
+        if (!$v.value.$invalid){
+            await http.post('/login', form.value.data)
+                .then(function (response){
+                    router.push('/profile')
+                    console.log(response.data)
+                })
+                .catch(function (errors){
+                    form.value.errors = errors
+                    console.log(errors)
+                })
+        }
 
         form.value.isSending = false
             
@@ -60,17 +81,19 @@
     <div class="wrapper">
         <form class="authorization-form" @submit.prevent="sendData()" novalidate>
             <span>Авторизация</span>
-            <div class="errors" v-if="form.errors">
+            <!-- <div class="errors" v-if="form.errors">
                 <span style="color: red">Неверный email или пароль</span>
-            </div>
+            </div> -->
             <div class="auth-fields">
                 <div>
-                    <label for="login-email">Email</label>
-                    <input type="text" id="login-email" name="login-email" v-model="form.data.login_email">
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" v-model="form.data.email">
+                    <span class="error" v-for="error of $v.data.email.$errors" :key="error.$uid">{{ error.$message }}</span>
                 </div>
                 <div>
                     <label for="password">Пароль</label>
                     <input type="password" id="password" name="password" v-model="form.data.password">
+                    <span class="error" v-for="error of $v.data.password.$errors" :key="error.$uid">{{ error.$message }}</span>
                 </div>
             </div>
             <div class="no-account">
@@ -160,6 +183,10 @@
             input[type='submit']:hover{
                 cursor: pointer;
                 background-color: rgb(140, 140, 140);
+            }
+
+            .error{
+                color: red;
             }
         }
     }

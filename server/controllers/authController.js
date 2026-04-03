@@ -8,7 +8,7 @@ class AuthController{
     static async login(req, res){
         res.errors = {};
 
-        const email = req.body.login_email;
+        const email = req.body.email;
         const password = req.body.password;
 
         // const hash = await bcrypt.hash(password, 10)
@@ -47,11 +47,31 @@ class AuthController{
     }
 
     static async register(req, res){
-        res.errors = {};
+        const errors = {
+            username: {
+                errors: []
+            },
+            email: {
+                errors: []
+            },
+            password: {
+                errors: []
+            },
+        }
 
         const username = req.body.username;
         const email = req.body.email;
         const password = req.body.password;
+
+        const user = await User.findOne({
+            where: {
+                email: email
+            }
+        })
+
+        if (user){
+            return Response.unauthorized(res, 'Email занят другим пользователем')
+        }
 
         const hashPassword = await bcrypt.hash(password, 10)
         
