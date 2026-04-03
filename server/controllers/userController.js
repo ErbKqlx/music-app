@@ -3,7 +3,6 @@ import Response from "../configs/response.js"
 import { StatusCode } from "../constants.js"
 import User from "../models/User.js"
 import { Sequelize } from "sequelize"
-
 class UserController{
     static async handleGetUsers(req, res){
         try{

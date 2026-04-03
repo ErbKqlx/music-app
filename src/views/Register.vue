@@ -5,6 +5,8 @@
     import Form from '@/components/Form.vue'
     import { ref } from 'vue';
     import http from '../http';
+    import useVuelidate from '@vuelidate/core';
+    import { email, helpers, required } from '@vuelidate/validators';
 
     // function toProfile(){
     //     router.push('/profile')
@@ -16,19 +18,39 @@
             email: '',
             password: '',
         },
-        errors: null,
+        // errors: null,
         isSending: false,
     })
+
+    const rules = {
+        data: {
+            username: { required: helpers.withMessage('Поле не может быть пустым', required) },
+            email: { 
+                required: helpers.withMessage('Поле не может быть пустым', required), 
+                email: helpers.withMessage('Email введен некорректно', email),
+            },
+            password: { required: helpers.withMessage('Поле не может быть пустым', required), }
+        }
+        
+    }
+
+    const $v = useVuelidate(rules, form)
+    // console.log($v)
 
     async function sendData(){
         if (form.value.isSending) return
 
         form.value.isSending = true
 
-        form.value.errors = null
+        // form.value.errors = null
 
         // console.log(form.value.data)
-        await http.post('/register', form.value.data)
+
+
+        $v.value.$touch()
+        // console.log($v.value.$invalid)
+        if (!$v.value.$invalid){
+            await http.post('/register', form.value.data)
             .then(function (response){
                 router.push('/')
                 console.log(response.data)
@@ -37,7 +59,8 @@
                 form.value.errors = errors
                 console.log(errors)
             })
-
+        }
+        
         form.value.isSending = false
             
     }
@@ -71,17 +94,20 @@
                     <label for="username">Имя пользователя</label>
                     <!-- <Input type="email" id="email" name="email"/> -->
                     <input type="text" id="username" name="username" v-model="form.data.username">
+                    <span class="error" v-for="error of $v.data.username.$errors" :key="error.$uid">{{ error.$message }}</span>
                 </div>
                 <div>
                     <label for="email">Email</label>
                     <!-- <Input type="email" id="email" name="email"/> -->
                     <input type="email" id="email" name="email" v-model="form.data.email">
+                    <span class="error" v-for="error of $v.data.email.$errors" :key="error.$uid">{{ error.$message }}</span>
                 </div>
                 <div>
                     <label for="password">Пароль</label>
                     <!-- <Input type="password" id="password" name="password"/> -->
                     <input type="password" id="password" name="password" v-model="form.data.password">
                     <span class="requirements">Требования к паролю...</span>
+                    <span class="error" v-for="error of $v.data.password.$errors" :key="error.$uid">{{ error.$message }}</span>
                 </div>
             </div>
             <div class="have-account">
@@ -177,6 +203,10 @@
             .requirements{
                 font-size: 12px;
                 color: rgb(135, 135, 135);
+            }
+
+            .error{
+                color: red;
             }
         }
     }
