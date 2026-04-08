@@ -60,9 +60,9 @@ import { helpers, required } from '@vuelidate/validators';
 
         if (!$v.value.$invalid){
             await http.post('/login', form.value.data)
-                .then(function (response){
+                .then(function (axiosResponse){
                     router.push('/profile')
-                    console.log(response.data)
+                    console.log(axiosResponse)
                 })
                 .catch(function (errors){
                     form.value.errors = errors

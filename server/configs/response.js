@@ -28,7 +28,7 @@ class Response{
 
     static serverError(res, message = "Internal Server Error", error = null){
         const response = new Response(false, message)
-        return res.status(error.status || 500).json(response)
+        return res.status(error?.status || 500).json(response)
     }
 }
 

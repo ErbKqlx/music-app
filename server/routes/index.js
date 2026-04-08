@@ -1,12 +1,16 @@
 import UserController from "../controllers/userController.js"
 import AuthController from "../controllers/authController.js"
 import express from 'express'
+import verifySignUp from "../middlewares/verifySignUp.js"
+import authJwt from "../middlewares/authJwt.js"
 
 const router = express.Router()
 
 
 
-router.get('/users', UserController.handleGetUsers)
+// router.get('/users', UserController.handleGetUsers)
+
+router.get('/profile', [authJwt.verifyToken], UserController.getProfile)
 
 // router.route('/users').post(handleCreateUser)
 
@@ -18,7 +22,7 @@ router.get('/users', UserController.handleGetUsers)
 
 
 router.post('/login', AuthController.login)
-router.post('/register', AuthController.register)
+router.post('/register', [verifySignUp.checkDuplicateEmail], AuthController.register)
 // router.get('/check-email', AuthController.register)
 
 export default router

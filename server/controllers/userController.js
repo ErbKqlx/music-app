@@ -15,6 +15,10 @@ class UserController{
         }
     }
 
+    static async getProfile(req, res){
+        return Response.success(res, 'Профиль')
+    }
+
     // static async handleCreateUser(req, res){
     //     // console.log(req.body)
     //     try{

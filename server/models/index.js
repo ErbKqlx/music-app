@@ -1,4 +1,6 @@
-// import { Sequelize } from "sequelize";
+import { Sequelize } from "sequelize";
+import User from "./User.js";
+import Role from "./Role.js";
 // import config from "../configs/db.config";
 
 // const sequelize = new Sequelize(
@@ -22,6 +24,19 @@
 // // db.Sequelize = Sequelize
 // // db.sequelize = sequelize
 
+const sequelize = new Sequelize('postgres://postgres:1111@localhost:5432/music_db')
+const db = {}
 
+db.Sequelize = Sequelize
+db.sequelize = sequelize
+
+db.user = User(sequelize, Sequelize)
+db.role = Role(sequelize, Sequelize)
+
+// db.role.belongsToMany(db.user, { through: })
+
+db.ROLES = ["Пользователь", "Администратор", "Модератор"]
+
+export default db
 
 // export default sequelize
