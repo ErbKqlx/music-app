@@ -32,6 +32,7 @@ db.sequelize = sequelize
 
 db.user = User(sequelize, Sequelize)
 db.role = Role(sequelize, Sequelize)
+db.playlist = Playlist(sequelize, Sequelize)
 
 // db.role.belongsToMany(db.user, { through: })
 

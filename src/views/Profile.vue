@@ -11,7 +11,7 @@
     import Image from '@/components/Image.vue';
     import Card from '@/components/Card.vue';
     import Wrapper from '@/components/Wrapper.vue';
-    import { onBeforeMount, onMounted } from 'vue';
+    import { onBeforeMount, onMounted, ref } from 'vue';
     import http from '../http';
     import { useRoute } from 'vue-router';
 
@@ -23,6 +23,9 @@
         router.push('/artist')
     }
 
+
+    const savedPlaylists = ref([])
+
     onBeforeMount(async () => {
         const route = useRoute()
         await http.get(`/profile/${route.params.id}`, {
@@ -31,6 +34,10 @@
         .catch(function (error) {
             router.push('/error')
         })
+    })
+
+    onMounted(() => {
+        
     })
     
 </script>
@@ -47,7 +54,7 @@
             <div class="info">
                 <CardsList title="Плейлисты">
                     <!-- <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1" description="Плейлист"/> -->
-                    <Card @click="toPlaylist" v-for="i in 5" title="Плейлист №1" description="Плейлист">
+                    <Card @click="toPlaylist" v-for="i in savedPlaylists" title="Плейлист №1" description="Плейлист">
                         <template #image>
                             <Image/>
                         </template>
