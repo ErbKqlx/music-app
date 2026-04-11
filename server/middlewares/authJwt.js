@@ -16,7 +16,7 @@ const verifyToken = (req, res, next) => {
 
     jwt.verify(actualToken, authConfig.secret, (err, decoded) => {
         if (err){
-            return Response.unauthorized(res)
+            return Response.unauthorized(res, err.message)
         }
 
         req.userId = decoded.id

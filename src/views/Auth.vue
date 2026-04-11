@@ -61,7 +61,8 @@ import { helpers, required } from '@vuelidate/validators';
         if (!$v.value.$invalid){
             await http.post('/login', form.value.data)
                 .then(function (axiosResponse){
-                    router.push('/profile')
+                    localStorage.setItem('token', axiosResponse.data.accessToken)
+                    router.push(`/profile/${axiosResponse.data.id}`)
                     console.log(axiosResponse)
                 })
                 .catch(function (errors){

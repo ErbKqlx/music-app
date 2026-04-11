@@ -40,10 +40,6 @@ class AuthController{
                 expiresIn: 86400,
             })
 
-            // const roles = await user.getRoles()
-            // const authorities = roles.map((role) => )
-
-            // return Response.success(res, "Успех!")
             res.status(200).json({
                 id: user.id,
                 email: user.email,

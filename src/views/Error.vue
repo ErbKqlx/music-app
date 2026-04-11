@@ -5,8 +5,8 @@
 <template>
     <div class="wrapper">
         <div class="error-info">
-            <span class="error-code">404</span>
-            <span class="error-message">Страница не найдена</span>
+            <span class="error-code">Код</span>
+            <span class="error-message">Ошибка</span>
         </div>
     </div>
 </template>

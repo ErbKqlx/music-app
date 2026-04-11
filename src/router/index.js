@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Playlist from '@/views/Playlist.vue'
-import PageNotFound from '@/views/PageNotFound.vue'
+import Error from '@/views/Error.vue'
 import Auth from '@/views/Auth.vue'
 import Register from '@/views/Register.vue'
 import Profile from '@/views/Profile.vue'
@@ -17,8 +17,8 @@ const routes = [
         component: Auth,
     },
     {
-        path: "/404",
-        component: PageNotFound,
+        path: "/error",
+        component: Error,
     },
     {
         path: "/playlist",
@@ -29,7 +29,7 @@ const routes = [
         component: Register,
     },
     {
-        path: "/profile",
+        path: "/profile/:id",
         component: Profile,
     },
     {

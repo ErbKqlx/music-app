@@ -1,4 +1,3 @@
-import { getUsers } from "../services/userService.js"
 import Response from "../configs/response.js"
 import { StatusCode } from "../constants.js"
 import User from "../models/User.js"

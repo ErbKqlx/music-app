@@ -11,6 +11,9 @@
     import Image from '@/components/Image.vue';
     import Card from '@/components/Card.vue';
     import Wrapper from '@/components/Wrapper.vue';
+    import { onBeforeMount, onMounted } from 'vue';
+    import http from '../http';
+    import { useRoute } from 'vue-router';
 
     function toPlaylist(){
         router.push('/playlist')
@@ -19,6 +22,17 @@
     function toArtist(){
         router.push('/artist')
     }
+
+    onBeforeMount(async () => {
+        const route = useRoute()
+        await http.get(`/profile/${route.params.id}`, {
+            headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+        })
+        .catch(function (error) {
+            router.push('/error')
+        })
+    })
+    
 </script>
 
 <template>
