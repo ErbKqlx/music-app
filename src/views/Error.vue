@@ -1,12 +1,15 @@
 <script setup>
-
+    defineProps({
+        code: String,
+        message: String
+    })
 </script>
 
 <template>
     <div class="wrapper">
         <div class="error-info">
-            <span class="error-code">Код</span>
-            <span class="error-message">Ошибка</span>
+            <span class="error-code">{{code}}</span>
+            <span class="error-message">{{message}}</span>
         </div>
     </div>
 </template>

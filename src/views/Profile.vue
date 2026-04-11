@@ -27,18 +27,12 @@
     const savedPlaylists = ref([])
 
     onBeforeMount(async () => {
-        const route = useRoute()
-        await http.get(`/profile/${route.params.id}`, {
-            headers: { Authorization: "Bearer " + localStorage.getItem('token')}
-        })
-        .catch(function (error) {
-            router.push('/error')
-        })
-    })
-
-    onMounted(() => {
         
     })
+
+    // onMounted(async () => {
+    //     await http.get('/playlists')
+    // })
     
 </script>
 

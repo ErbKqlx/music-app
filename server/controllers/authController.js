@@ -6,7 +6,7 @@ import mailer from "../configs/nodemailer.js";
 import jwt from 'jsonwebtoken'
 import authConfig from "../configs/auth.config.js";
 
-const Role = db.role
+// const Role = db.role
 const User = db.user
 
 class AuthController{
@@ -76,7 +76,12 @@ class AuthController{
     }
 
     static async logout(req, res){
-        
+        try{
+            
+        }
+        catch(error){
+            return Response.serverError(res, error.message)
+        }
     }
 
     static async register(req, res){

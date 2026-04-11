@@ -23,6 +23,7 @@ router.get('/profile/:id', [authJwt.verifyToken], UserController.getProfile)
 
 router.post('/login', AuthController.login)
 router.post('/register', [verifySignUp.checkDuplicateEmail], AuthController.register)
+router.post('/logout', [authJwt.verifyToken], AuthController.logout)
 // router.get('/check-email', AuthController.register)
 
 export default router

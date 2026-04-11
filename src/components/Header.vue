@@ -1,12 +1,25 @@
 <script setup>
+    import http from '../http';
     import SearchInput from './SearchInput.vue'
+
+    async function logout(){
+        await http.post('/logout')
+            .then(function (axiosResponse){
+                localStorage.setItem('token', null)
+                router.push(`/`)
+                console.log(axiosResponse)
+            })
+    }
 </script>
 
 <template>
     <div class="page-header">
         <RouterLink to="/home" class="clickable">Название</RouterLink>
         <SearchInput/>
-        <RouterLink to="/profile">Профиль</RouterLink>
+        <div>
+            <RouterLink to="/profile">Профиль</RouterLink>
+            <RouterLink @click="logout()">Выйти</RouterLink>
+        </div>
     </div>
 </template>
 
@@ -20,6 +33,11 @@
         align-items: center;
         justify-content: space-between;
         padding: 5px 20px;
+
+        div{
+            display: flex;
+            gap: 20px;
+        }
     }
 
     a{

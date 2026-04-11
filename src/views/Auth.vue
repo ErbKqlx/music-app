@@ -7,6 +7,7 @@
     import { ref } from 'vue';
     import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
+import { useRoute } from 'vue-router';
 
     // const formData = {
     //     login: {
@@ -60,10 +61,27 @@ import { helpers, required } from '@vuelidate/validators';
 
         if (!$v.value.$invalid){
             await http.post('/login', form.value.data)
-                .then(function (axiosResponse){
+                .then(async function (axiosResponse){
                     localStorage.setItem('token', axiosResponse.data.accessToken)
-                    router.push(`/profile/${axiosResponse.data.id}`)
                     console.log(axiosResponse)
+
+
+                    const route = useRoute()
+                    await http.get(`/profile/${axiosResponse.data.id}`, {
+                        headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+                    })
+                    .then(function (axiosResponse){
+                        // if ()
+                        console.log(axiosResponse)
+                        router.push(`/profile/${axiosResponse.data.id}`)
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                        if (error.response.status == 401){
+                            router.push('/')
+                        }
+                        // router.push('/error', error)
+                    })
                 })
                 .catch(function (errors){
                     form.value.errors = errors
