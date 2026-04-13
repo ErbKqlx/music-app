@@ -42,7 +42,11 @@ class AuthController{
 
             res.status(200).json({
                 id: user.id,
+                username: user.username,
                 email: user.email,
+                avatar: user.avatar,
+                registration_date: user.registration_date,
+                id_role: user.id_role,
                 accessToken: token,
             })
 

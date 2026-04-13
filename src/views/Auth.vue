@@ -6,24 +6,10 @@
     import http from '../http';
     import { ref } from 'vue';
     import useVuelidate from '@vuelidate/core';
-import { helpers, required } from '@vuelidate/validators';
-import { useRoute } from 'vue-router';
+    import { helpers, required } from '@vuelidate/validators';
+    import { useRoute } from 'vue-router';
+    import { useUserStore } from '../stores/user';
 
-    // const formData = {
-    //     login: {
-
-    //     },
-    //     email: {
-
-    //     },
-    //     password: {
-            
-    //     }
-    // }
-
-    // function toProfile(){
-    //     router.push('/profile')
-    // }
 
     const form = ref({
         data: {
@@ -48,6 +34,7 @@ import { useRoute } from 'vue-router';
     const $v = useVuelidate(rules, form)
 
     
+    const userStore = useUserStore()
 
     async function sendData(){
         if (form.value.isSending) return
@@ -60,33 +47,50 @@ import { useRoute } from 'vue-router';
         $v.value.$touch()
 
         if (!$v.value.$invalid){
-            await http.post('/login', form.value.data)
-                .then(async function (axiosResponse){
-                    localStorage.setItem('token', axiosResponse.data.accessToken)
-                    console.log(axiosResponse)
+            try{
+                const response = await http.post('/login', form.value.data)
+                const user = {
+                    id: response.data.id,
+                    username: response.data.username,
+                    email: response.data.email,
+                    avatar: response.data.avatar,
+                    registration_date: response.data.registration_date,
+                    id_role: response.data.id_role,
+                }
 
+                localStorage.setItem('token', response.data.accessToken)
 
-                    const route = useRoute()
-                    await http.get(`/profile/${axiosResponse.data.id}`, {
-                        headers: { Authorization: "Bearer " + localStorage.getItem('token')}
-                    })
-                    .then(function (axiosResponse){
-                        // if ()
-                        console.log(axiosResponse)
-                        router.push(`/profile/${axiosResponse.data.id}`)
-                    })
-                    .catch(function (error) {
-                        console.log(error)
-                        if (error.response.status == 401){
-                            router.push('/')
-                        }
-                        // router.push('/error', error)
-                    })
-                })
-                .catch(function (errors){
-                    form.value.errors = errors
-                    console.log(errors)
-                })
+                userStore.setUser(user)
+
+                router.push('/profile/' + user.id)
+            }
+            catch(error){
+                console.log(error)
+            }
+            
+
+                // .then(async function (axiosResponse){
+                //     localStorage.setItem('token', axiosResponse.data.accessToken)
+                //     console.log(axiosResponse)
+
+                //     await http.get(`/profile/${axiosResponse.data.id}`, {
+                //         headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+                //     })
+                //     .then(function (axiosResponse){
+                //         console.log(axiosResponse)
+                //         router.push(`/profile/${axiosResponse.data.id}`)
+                //     })
+                //     .catch(function (error) {
+                //         console.log(error)
+                //         if (error.response.status == 401){
+                //             router.push('/')
+                //         }
+                //     })
+                // })
+                // .catch(function (errors){
+                //     form.value.errors = errors
+                //     console.log(errors)
+                // })
         }
 
         form.value.isSending = false

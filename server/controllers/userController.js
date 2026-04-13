@@ -1,21 +1,36 @@
 import Response from "../configs/response.js"
 import { StatusCode } from "../constants.js"
-import User from "../models/Users.js"
+import db from "../models/index.js"
+// import User from "../models/Users.js"
 import { Sequelize } from "sequelize"
+
+const User = db.user
 class UserController{
-    static async handleGetUsers(req, res){
-        try{
-            const users = await User.findAll()
-            return Response.success(res, 'Пользователи получены')
+    // static async handleGetUsers(req, res){
+    //     try{
+    //         const users = await User.findAll()
+    //         return Response.success(res, 'Пользователи получены')
 
-        }
-        catch(e){
-            return Response.serverError(res, e.message, e)
-        }
-    }
+    //     }
+    //     catch(e){
+    //         return Response.serverError(res, e.message, e)
+    //     }
+    // }
 
-    static async getProfile(req, res){
-        return Response.success(res, 'Профиль')
+    static async getUserData(req, res){
+        // return Response.success(res, 'Профиль')
+        const userId = req.params.id
+
+        const user = await User.findByPk(userId)
+
+        return res.status(200).json({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            avatar: user.avatar,
+            id_role: user.id_role,
+            registration_date: user.registration_date,
+        })
     }
 
     // static async handleCreateUser(req, res){

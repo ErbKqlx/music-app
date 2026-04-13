@@ -10,7 +10,7 @@ const router = express.Router()
 
 // router.get('/users', UserController.handleGetUsers)
 
-router.get('/profile/:id', [authJwt.verifyToken], UserController.getProfile)
+router.get('/users/:id', [authJwt.verifyToken], UserController.getUserData)
 
 // router.route('/users').post(handleCreateUser)
 

@@ -15,6 +15,8 @@
     import http from '../http';
     import { useRoute } from 'vue-router';
 
+    const route = useRoute()
+
     function toPlaylist(){
         router.push('/playlist')
     }
@@ -23,16 +25,32 @@
         router.push('/artist')
     }
 
-
+    const userData = ref(null)
     const savedPlaylists = ref([])
 
-    onBeforeMount(async () => {
+    // onBeforeMount(async () => {
         
-    })
-
-    // onMounted(async () => {
-    //     await http.get('/playlists')
     // })
+
+    async function fetchUserData(id){
+        try{
+            const response = await http.get('/users/' + id, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            })
+            userData.value = response.data
+            // console.log(userData.value)
+        }
+        catch (error){
+            if (error.response.status == 401){
+                router.push('/')
+            }
+            console.log('Ошибка при загрузке профиля ' + error.response.status)
+        }
+    }
+
+    onMounted(async () => {
+        fetchUserData(route.params.id)
+    })
     
 </script>
 
@@ -40,7 +58,7 @@
     <Header></Header>
     <Wrapper>
         <div class="profile-info">
-            <TitleCard title="username">
+            <TitleCard :title = userData?.username>
                 <template #image>
                     <Image class="round-image"/>
                 </template>
