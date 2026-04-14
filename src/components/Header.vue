@@ -8,7 +8,7 @@
     const userStore = useUserStore()
 
     console.log(userStore.currentUser)
-    async function toProfile(){
+    function toProfile(){
         if (userStore.currentUser){
             const userId = userStore.currentUser.id
             router.push('/profile/' + userId)

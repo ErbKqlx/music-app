@@ -11,7 +11,7 @@
     import Image from '@/components/Image.vue';
     import Card from '@/components/Card.vue';
     import Wrapper from '@/components/Wrapper.vue';
-    import { onBeforeMount, onMounted, ref } from 'vue';
+    import { onBeforeMount, onMounted, ref, watch } from 'vue';
     import http from '../http';
     import { useRoute } from 'vue-router';
 
@@ -34,23 +34,35 @@
 
     async function fetchUserData(id){
         try{
-            const response = await http.get('/users/' + id, {
+            const user = await http.get('/users/' + id, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
-            userData.value = response.data
+            userData.value = user.data
+
+            const playlists = await http.get(`/users/${id}/playlists`, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            })
+            savedPlaylists.value = playlists.data
+            
+            console.log(savedPlaylists.value.playlists[0])
+            
             // console.log(userData.value)
         }
         catch (error){
             if (error.response.status == 401){
                 router.push('/')
             }
-            console.log('Ошибка при загрузке профиля ' + error.response.status)
+            console.log('Ошибка при загрузке профиля ' + error)
         }
     }
 
     onMounted(async () => {
         fetchUserData(route.params.id)
     })
+
+    watch(() => route.params.id, (newId) => {
+        fetchUserData(newId);
+    });
     
 </script>
 
@@ -65,10 +77,9 @@
             </TitleCard>
             <div class="info">
                 <CardsList title="Плейлисты">
-                    <!-- <PlaylistCard @click="toPlaylist" v-for="i in 5" name="Плейлист №1" description="Плейлист"/> -->
-                    <Card @click="toPlaylist" v-for="i in savedPlaylists" title="Плейлист №1" description="Плейлист">
+                    <Card @click="toPlaylist" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
                         <template #image>
-                            <Image/>
+                            <Image :url="playlist.image"/>
                         </template>
                     </Card>
                 </CardsList>
@@ -76,14 +87,13 @@
                     
                 </div> -->
 
-                <CardsList title="Исполнители">
-                    <!-- <ArtistCard @click="toArtist" v-for="i in 5" name="Исполнитель №1"/> -->
+                <!-- <CardsList title="Исполнители">
                     <Card @click="toArtist" v-for="i in 5" title="Исполнитель №1" description="Исполнитель">
                         <template #image>
                             <Image class="round-image"/>
                         </template>
                     </Card>
-                </CardsList>
+                </CardsList> -->
                 
                 <!-- <div class="user-artists">
                     

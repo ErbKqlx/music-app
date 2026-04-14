@@ -2,7 +2,7 @@
     defineProps({
         url: {
             type: String,
-            default: "src/assets/images/placeholder.webp",
+            // default: "/src/assets/images/placeholder.webp",
         },
     })
 </script>
