@@ -23,6 +23,8 @@ class UserController{
 
         const user = await User.findByPk(userId)
 
+        console.log(user.avatar)
+
         return res.status(200).json({
             id: user.id,
             username: user.username,

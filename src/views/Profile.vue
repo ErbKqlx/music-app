@@ -38,6 +38,7 @@
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
             userData.value = user.data
+            console.log(userData.value)
 
             const playlists = await http.get(`/users/${id}/playlists`, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
@@ -72,7 +73,7 @@
         <div class="profile-info">
             <TitleCard :title = userData?.username>
                 <template #image>
-                    <Image class="round-image"/>
+                    <Image :url="'http://localhost:8080/' + userData?.avatar" class="round-image"/>
                 </template>
             </TitleCard>
             <div class="info">

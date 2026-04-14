@@ -27,7 +27,7 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: false
     },
-    created_at: {
+    updated_at: {
       type: DataTypes.DATE,
       allowNull: false
     },
