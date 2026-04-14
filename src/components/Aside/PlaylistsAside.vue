@@ -8,6 +8,8 @@
     }
 
     const isMinimized = ref(false)
+
+
 </script>
 
 <template>

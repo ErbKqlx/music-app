@@ -24,18 +24,20 @@
 
     let colorThief = new ColorThief();
     function getDominantImageColor(){
-        let image = document.querySelector("img");
-        let backgroundd = document.querySelector(".top-card");
+        let topCard = document.querySelector(".top-card");
+        let image = topCard.querySelector("img");
+        image.crossOrigin = 'anonymous'
+        console.log(image)
         // console.log(image);
         // console.log(background);
         image.addEventListener('load', function() {
             const color = colorThief.getColor(image);
             const primaryColor = window.getComputedStyle(document.body).getPropertyValue('--primary-color');
-            backgroundd.style.background = "linear-gradient(rgb(" + color + "), " + primaryColor + ")";
+            topCard.style.background = "linear-gradient(rgb(" + color + "), " + primaryColor + ")";
             
             console.log(color);
             console.log(primaryColor);
-            console.log(backgroundd.style.background);
+            console.log(topCard.style.background);
         });
     }
 

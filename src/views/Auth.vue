@@ -9,6 +9,7 @@
     import { helpers, required } from '@vuelidate/validators';
     import { useRoute } from 'vue-router';
     import { useUserStore } from '../stores/user';
+    import { usePlaylistStore } from '../stores/playlist';
 
 
     const form = ref({
@@ -35,6 +36,7 @@
 
     
     const userStore = useUserStore()
+    const playlistStore = usePlaylistStore()
 
     async function sendData(){
         if (form.value.isSending) return
