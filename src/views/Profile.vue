@@ -17,8 +17,8 @@
 
     const route = useRoute()
 
-    function toPlaylist(){
-        router.push('/playlist')
+    function toPlaylist(id){
+        router.push('/playlist/' + id)
     }
 
     function toArtist(){
@@ -78,7 +78,7 @@
             </TitleCard>
             <div class="info">
                 <CardsList title="Плейлисты">
-                    <Card @click="toPlaylist" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
+                    <Card @click="toPlaylist(playlist.id)" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
                         <template #image>
                             <Image :url="playlist.image"/>
                         </template>

@@ -6,15 +6,54 @@
     import TitleCard from '@/components/TitleCard.vue'
     import Image from '@/components/Image.vue'
     import SongCard from '@/components/SongCard.vue';
+    import { onMounted, ref } from 'vue';
+    import { useRoute } from 'vue-router';
+    import router from '@/router/index.js';
+    import http from '../http';
+
+
+    const route = useRoute()
+
+    const playlistData = ref(null)
+    const playlistSongs = ref([])
+
+    async function fetchPlaylistData(id){
+        try{
+            const playlist = await http.get('/playlist/' + id, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            })
+            // console.log(playlist.data)
+
+            playlistData.value = playlist.data
+
+            const songs = await http.get(`/playlist/${id}/songs`, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            })
+            playlistSongs.value = songs.data
+            console.log(songs.data)
+            // console.log(playlistData.value)
+            // console.log(userData.value)
+        }
+        catch (error){
+            if (error.response.status == 401){
+                router.push('/')
+            }
+            console.log('Ошибка при загрузке плейлиста ' + error)
+        }
+    }
+
+    onMounted(async () => {
+        fetchPlaylistData(route.params.id)
+    })
 </script>
 
 <template>
     <Header></Header>
     <Wrapper>
         <div class="playlist-info">
-            <TitleCard title="Плейлист №1" created_by="username" created_at="28.11.2025" hasActions>
+            <TitleCard :title="playlistData?.name" :created_by="''" :created_at="playlistData?.created_at" hasActions>
                 <template #image>
-                    <Image/>
+                    <Image :url="playlistData?.image"/>
                 </template>
             </TitleCard>
                 <!-- <div class="actions">
@@ -27,13 +66,12 @@
                     </div>
                 </div> -->
             <div class="info">
-                <SongsList>
-                    <SongCard 
-                        title="Трек №1"
+                <SongsList v-if="playlistSongs.length > 0">
+                    <SongCard v-for="song in playlistSongs"
+                        :title="song.name"
                         :artists="['Исполнитель №1', 'Исполнитель №2']"
-                        :length="220"
-
-                        v-for="i in 10"
+                        :length="song.length"
+                        :image_url="song.image"
                     />
                 </SongsList>
             </div>

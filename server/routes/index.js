@@ -16,6 +16,8 @@ router.get('/users/:id', [authJwt.verifyToken], UserController.getUserData)
 
 
 router.get('/users/:id/playlists', [authJwt.verifyToken], PlaylistController.getPlaylists)
+router.get('/playlist/:id', [authJwt.verifyToken], PlaylistController.getOnePlaylist)
+router.get('/playlist/:id/songs', [authJwt.verifyToken], PlaylistController.getPlaylistSongs)
 
 // router.route('/users').post(handleCreateUser)
 

@@ -3,6 +3,9 @@ import pg from 'pg';
 import User from "./Users.js";
 import Role from "./Roles.js";
 import Playlist from "./Playlists.js"
+import PlaylistsSongs from "./PlaylistsSongs.js";
+import Song from "./Songs.js"
+import initModels from "./init-models.js";
 // import config from "../configs/db.config";
 
 // const sequelize = new Sequelize(
@@ -35,9 +38,13 @@ const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
 
-db.user = User(sequelize, Sequelize)
-db.role = Role(sequelize, Sequelize)
-db.playlist = Playlist(sequelize, Sequelize)
+const models = initModels(sequelize)
+
+db.user = models.Users
+db.role = models.Roles
+db.playlist = models.Playlists
+db.playlists_songs = models.PlaylistsSongs
+db.song = models.Songs
 
 // db.role.belongsToMany(db.user, { through: })
 

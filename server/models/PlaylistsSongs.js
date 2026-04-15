@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+
+export default function(sequelize, DataTypes) {
   return sequelize.define('PlaylistsSongs', {
     id: {
       autoIncrement: true,
@@ -26,7 +26,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     tableName: 'playlists_songs',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "pk_playlists_users_id",

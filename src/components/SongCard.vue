@@ -17,6 +17,9 @@
             type: String,
             default: '',
         },
+        image_url: {
+            type: String,
+        }
     })
 </script>
 
@@ -24,7 +27,7 @@
     <div class="song-card">
         <div class="image">
             <!-- <img src="" alt="Изображение плейлиста"> -->
-            <Image/>
+            <Image :src="image_url"/>
         </div>
         <div class="song-info">
             <!-- <span class="clickable">{{title}}</span> -->

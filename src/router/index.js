@@ -21,7 +21,7 @@ const routes = [
         component: Error,
     },
     {
-        path: "/playlist",
+        path: "/playlist/:id",
         component: Playlist,
     },
     {
