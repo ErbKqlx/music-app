@@ -33,7 +33,7 @@ const routes = [
         component: Profile,
     },
     {
-        path: "/artist",
+        path: "/artist/:id",
         component: Artist,
     },
     {
@@ -45,7 +45,7 @@ const routes = [
         component: PasswordRecovery,
     },
     {
-        path: "/song",
+        path: "/song/:id",
         component: Song,
     },
     {

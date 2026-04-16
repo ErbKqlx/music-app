@@ -9,6 +9,9 @@
             type: String,
             default: '',
         },
+        id_song: {
+            type: Number,
+        },
         artists: {
             type: Array,
             default: null,
@@ -31,8 +34,10 @@
         </div>
         <div class="song-info">
             <!-- <span class="clickable">{{title}}</span> -->
-            <RouterLink to="/song" class="clickable">{{ title }}</RouterLink>
-            <span class="additional-info clickable">{{ artists.join(', ') }}</span>
+            <RouterLink :to="'/song/' + id_song" class="clickable">{{ title }}</RouterLink>
+            <div class="artists">
+                <RouterLink :to="'/artist/' + artist.id" v-for="artist in artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
+            </div>
         </div>
         <div class="album-name">
             <!-- <span class="additional-info clickable">Альбом №1</span> -->
@@ -78,7 +83,12 @@
             flex-direction: column;
             align-items: flex-start;
             gap: 3px;
-            flex-grow: 1;
+            flex-grow: 0.5;
+            flex-basis: 25%;
+
+            .artist-link:not(:last-child)::after {
+                content: ", ";
+            }
         }
 
         .album-name{

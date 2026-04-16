@@ -36,26 +36,34 @@ function initModels(sequelize) {
   Albums.hasMany(SongsAlbums, { as: "songsAlbums", foreignKey: "id_album"});
   Albums.belongsTo(Artists, { as: "artist", foreignKey: "id_artist"});
   Artists.hasMany(Albums, { as: "albums", foreignKey: "id_artist"});
-  SongsArtists.belongsTo(Artists, { as: "artist", foreignKey: "id_artist"});
-  Artists.hasMany(SongsArtists, { as: "songsArtists", foreignKey: "id_artist"});
+  // SongsArtists.belongsTo(Artists, { as: "artist", foreignKey: "id_artist"});
+  // Artists.hasMany(SongsArtists, { as: "songsArtists", foreignKey: "id_artist"});
+
+  Songs.belongsToMany(Artists, { through: SongsArtists, foreignKey: 'id_song', otherKey: 'id_artist' });
+  Artists.belongsToMany(Songs, { through: SongsArtists, foreignKey: 'id_artist', otherKey: 'id_song' });
+
   Reports.belongsTo(Comments, { as: "comment", foreignKey: "id_comment"});
   Comments.hasMany(Reports, { as: "reports", foreignKey: "id_comment"});
   Subgenres.belongsTo(Genres, { as: "genre", foreignKey: "id_genre"});
   Genres.hasMany(Subgenres, { as: "subgenres", foreignKey: "id_genre"});
-  PlaylistsSongs.belongsTo(Playlists, { as: "playlist", foreignKey: "id_playlist"});
-  Playlists.hasMany(PlaylistsSongs, { as: "playlistsSongs", foreignKey: "id_playlist"});
+  // PlaylistsSongs.belongsTo(Playlists, { as: "playlist", foreignKey: "id_playlist"});
+  // Playlists.hasMany(PlaylistsSongs, { as: "playlistsSongs", foreignKey: "id_playlist"});
+
+  Playlists.belongsToMany(Songs, { through: PlaylistsSongs, foreignKey: 'id_playlist', otherKey: 'id_song' });
+  Songs.belongsToMany(Playlists, { through: PlaylistsSongs, foreignKey: 'id_song', otherKey: 'id_playlist' });
+
   Reports.belongsTo(ReportTypes, { as: "reportType", foreignKey: "id_report_type"});
   ReportTypes.hasMany(Reports, { as: "reports", foreignKey: "id_report_type"});
   Users.belongsTo(Roles, { as: "role", foreignKey: "id_role"});
   Roles.hasMany(Users, { as: "users", foreignKey: "id_role"});
   Comments.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
   Songs.hasMany(Comments, { as: "comments", foreignKey: "id_song"});
-  PlaylistsSongs.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
-  Songs.hasMany(PlaylistsSongs, { as: "playlistsSongs", foreignKey: "id_song"});
+  // PlaylistsSongs.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
+  // Songs.hasMany(PlaylistsSongs, { as: "playlistsSongs", foreignKey: "id_song"});
   SongsAlbums.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
   Songs.hasMany(SongsAlbums, { as: "songsAlbums", foreignKey: "id_song"});
-  SongsArtists.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
-  Songs.hasMany(SongsArtists, { as: "songsArtists", foreignKey: "id_song"});
+  // SongsArtists.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
+  // Songs.hasMany(SongsArtists, { as: "songsArtists", foreignKey: "id_song"});
   SongsSubgenres.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
   Songs.hasMany(SongsSubgenres, { as: "songsSubgenres", foreignKey: "id_song"});
   SongsSubgenres.belongsTo(Subgenres, { as: "subgenre", foreignKey: "id_subgenre"});

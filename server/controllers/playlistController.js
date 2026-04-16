@@ -6,6 +6,7 @@ import db from "../models/index.js"
 const Playlist = db.playlist
 const PlaylistsSongs = db.playlists_songs
 const Song = db.song
+const Artist = db.artist
 
 class PlaylistController{
     static async getPlaylists(req, res){
@@ -36,8 +37,51 @@ class PlaylistController{
         })
 
         playlist.image = `http://localhost:8080/${playlist.image}`
+        
+        const user = await playlist.getUser()
+        // const song = playlist.get
+        const songs = await playlist.getSongs()
+        // console.log(await songs[0].hasArtists())
+        const songsData = await Promise.all(
+            songs.map(async song => {
+            // console.log(await song.getArtists())
+                song.image = `http://localhost:8080/${song.image}`
+                const artists = await song.getArtists()
+            
+                const artistsData = artists.map(artist => {
+                    return {
+                        id: artist.id,
+                        name: artist.name,
+                    }
+                })
+                // console.log(artistsData)
+                return {
+                    id: song.id,
+                    name: song.name,
+                    length: song.length,
+                    artists: artistsData,
+                    image: song.image,
+                }
+            })
+        )
 
-        return res.status(200).json(playlist)
+        console.log(songsData)
+        // console.log(songs[0])
+
+        // return res.status(200).json(playlist)
+        return res.status(200).json({
+            data: {
+                id: playlist.id,
+                name: playlist.name,
+                user: {
+                    id: user.id,
+                    username: user.username,
+                },
+                songs: songsData,
+                created_at: playlist.created_at,
+                image: playlist.image
+            }
+        })
     }
 
     static async getPlaylistSongs(req, res){

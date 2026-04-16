@@ -3,12 +3,15 @@
     import { onMounted, onUpdated } from 'vue';
     import "../../node_modules/colorthief/dist/color-thief.umd.js"
     
-    defineProps({
+    const props = defineProps({
         title: {
             type: String,
             default: '',
         },
-        created_by: {
+        id_user: {
+            type: Number
+        },
+        username: {
             type: String,
             default: '',
         },
@@ -21,6 +24,8 @@
             default: false,
         },
     })
+
+    console.log(props)
 
     let colorThief = new ColorThief();
     function getDominantImageColor(){
@@ -66,7 +71,7 @@
                     <span>{{ title }}</span>
                 </div>
                 <div class="created">
-                    <RouterLink to="/artist" class="additional-info clickable">{{ created_by }}</RouterLink>
+                    <RouterLink :to="'/profile/' + id_user" class="additional-info clickable">{{ username }}</RouterLink>
                     <span class="additional-info">{{ created_at }}</span>
                 </div>
             </div>

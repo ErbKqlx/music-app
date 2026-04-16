@@ -26,7 +26,7 @@ export default function(sequelize, DataTypes) {
   }, {
     tableName: 'songs_artists',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "pk_songs_artists_id",

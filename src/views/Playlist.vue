@@ -26,11 +26,11 @@
 
             playlistData.value = playlist.data
 
-            const songs = await http.get(`/playlist/${id}/songs`, {
-                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
-            })
-            playlistSongs.value = songs.data
-            console.log(songs.data)
+            // const songs = await http.get(`/playlist/${id}/songs`, {
+            //     headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            // })
+            // playlistSongs.value = songs.data
+            console.log(playlistData.value)
             // console.log(playlistData.value)
             // console.log(userData.value)
         }
@@ -51,9 +51,14 @@
     <Header></Header>
     <Wrapper>
         <div class="playlist-info">
-            <TitleCard :title="playlistData?.name" :created_by="''" :created_at="playlistData?.created_at" hasActions>
+            <TitleCard 
+                :title="playlistData?.data.name" 
+                :id_user="playlistData?.data.user.id"
+                :username="playlistData?.data.user.username" 
+                :created_at="playlistData?.data.created_at" 
+                hasActions>
                 <template #image>
-                    <Image :url="playlistData?.image"/>
+                    <Image :url="playlistData?.data.image"/>
                 </template>
             </TitleCard>
                 <!-- <div class="actions">
@@ -66,14 +71,18 @@
                     </div>
                 </div> -->
             <div class="info">
-                <SongsList v-if="playlistSongs.length > 0">
-                    <SongCard v-for="song in playlistSongs"
+                <SongsList v-if="playlistData?.data.songs.length > 0">
+                    <SongCard v-for="song in playlistData?.data.songs"
                         :title="song.name"
-                        :artists="['Исполнитель №1', 'Исполнитель №2']"
+                        :artists="song.artists"
                         :length="song.length"
                         :image_url="song.image"
+                        :id_song="song.id"
                     />
                 </SongsList>
+                <div class="empty" v-else>
+                    В этом плейлисте нет треков
+                </div>
             </div>
             <!-- <Footer></Footer> -->
         </div>
@@ -91,5 +100,10 @@
         overflow-y: scroll;
         padding-bottom: 10px;
         
+        .empty{
+            font-size: 24px;
+            text-align: center;
+            margin-top: 50px;
+        }
     }
 </style>
