@@ -75,8 +75,10 @@
                     <span class="additional-info">{{ created_at }}</span>
                 </div>
             </div>
-            <div v-if="hasActions" class="actions">
-                <ActionBar></ActionBar>
+            <div class="actions">
+                <ActionBar>
+                    <slot name="actions"></slot>
+                </ActionBar>
             </div>
         </div>
         <!-- <span class="additional-info clickable">{{ created_by }}</span> -->

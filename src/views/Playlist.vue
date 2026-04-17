@@ -10,6 +10,9 @@
     import { useRoute } from 'vue-router';
     import router from '@/router/index.js';
     import http from '../http';
+    import Button from '@/components/Input/Button.vue'
+    import Play from '@/assets/svg/play.svg?component'
+    import ThreeDotsHorizontal from '@/assets/svg/ThreeDotsHorizontal.svg?component'
 
 
     const route = useRoute()
@@ -55,10 +58,13 @@
                 :title="playlistData?.data.name" 
                 :id_user="playlistData?.data.user.id"
                 :username="playlistData?.data.user.username" 
-                :created_at="playlistData?.data.created_at" 
-                hasActions>
+                :created_at="playlistData?.data.created_at" >
                 <template #image>
                     <Image :url="playlistData?.data.image"/>
+                </template>
+                <template #actions>
+                    <Button class="play-button round-button"><Play/></Button>
+                    <Button @click="openContextMenu" class="no-background round-button"><ThreeDotsHorizontal/></Button>
                 </template>
             </TitleCard>
                 <!-- <div class="actions">
@@ -72,12 +78,15 @@
                 </div> -->
             <div class="info">
                 <SongsList v-if="playlistData?.data.songs.length > 0">
-                    <SongCard v-for="song in playlistData?.data.songs"
+                    <SongCard v-for="(song, index) in playlistData?.data.songs"
                         :title="song.name"
                         :artists="song.artists"
                         :length="song.length"
                         :image_url="song.image"
                         :id_song="song.id"
+                        :index="index+1"
+
+                        :key="song.id"
                     />
                 </SongsList>
                 <div class="empty" v-else>

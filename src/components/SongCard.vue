@@ -3,6 +3,7 @@
     import MiscSvg from '@/assets/svg/ThreeDotsVertical.svg?component'
     import Image from '@/components/Image.vue';
     import SvgButton from '@/components/Image.vue';
+    import { ref } from 'vue';
 
     defineProps({
         title: {
@@ -22,12 +23,23 @@
         },
         image_url: {
             type: String,
+        },
+        index: {
+            type: Number
         }
     })
+
+    const highlighted = ref(false)
 </script>
 
 <template>
-    <div class="song-card">
+    <div class="song-card" @mouseenter="highlighted = true" @mouseleave="highlighted = false">
+        <div v-if="highlighted == false" class="index additional-info">
+            {{ index }}
+        </div>
+        <div v-else class="play-button clickable">
+            <PlaySvg width="100%" height="100%" viewBox="0 0 15 15"/>
+        </div>
         <div class="image">
             <!-- <img src="" alt="Изображение плейлиста"> -->
             <Image :src="image_url"/>
@@ -51,13 +63,11 @@
             <SvgButton>
                 <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
             </SvgButton> -->
-            
-            <!-- <div class="play-button">
-                <PlaySvg width="100%" height="100%" viewBox="0 0 15 15"/>
-            </div> -->
-            <!-- <div class="misc-button">
+            <div class="misc-button">
                 <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
-            </div> -->
+            </div>
+            
+            
         </div>
     </div>
 </template>
@@ -72,6 +82,13 @@
         align-items: center;
         justify-content: space-between;
         border-radius: 5px;
+
+        .index{
+            width: 20px;
+            display: flex;
+            justify-content: center;
+            align-self: center;
+        }
 
         .image{
             aspect-ratio: 1 / 1;
@@ -95,6 +112,13 @@
             flex-grow: 1;
         }
 
+        .play-button{
+            /* background: url(); */
+            height: 20px;
+            width: 20px;
+            
+        }
+
         .song-actions{
             display: flex;
             align-items: center;
@@ -104,12 +128,7 @@
                 font-size: 12px;
             }
 
-            .play-button{
-                /* background: url(); */
-                height: 20px;
-                width: 20px;
-                
-            }
+            
 
             .misc-button{
                 height: 20px;

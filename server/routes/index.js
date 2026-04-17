@@ -4,6 +4,7 @@ import express from 'express'
 import verifySignUp from "../middlewares/verifySignUp.js"
 import authJwt from "../middlewares/authJwt.js"
 import PlaylistController from "../controllers/playlistController.js"
+import SongController from "../controllers/songController.js"
 
 const router = express.Router()
 
@@ -18,6 +19,8 @@ router.get('/users/:id', [authJwt.verifyToken], UserController.getUserData)
 router.get('/users/:id/playlists', [authJwt.verifyToken], PlaylistController.getPlaylists)
 router.get('/playlist/:id', [authJwt.verifyToken], PlaylistController.getOnePlaylist)
 router.get('/playlist/:id/songs', [authJwt.verifyToken], PlaylistController.getPlaylistSongs)
+
+router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
 
 // router.route('/users').post(handleCreateUser)
 

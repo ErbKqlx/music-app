@@ -1,7 +1,5 @@
 <script setup>
-    import Button from '@/components/Input/Button.vue'
-    import Play from '@/assets/svg/play.svg?component'
-    import ThreeDotsHorizontal from '@/assets/svg/ThreeDotsHorizontal.svg?component'
+    
 
     defineProps({
         display: {
@@ -17,8 +15,7 @@
 
 <template>
     <div class="action-bar">
-        <Button class="play-button round-button"><Play/></Button>
-        <Button @click="openContextMenu" class="no-background round-button"><ThreeDotsHorizontal/></Button>
+        <slot></slot>
     </div>
 </template>
 

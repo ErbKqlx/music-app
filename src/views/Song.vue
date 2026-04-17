@@ -8,23 +8,60 @@
     import Card from '@/components/Card.vue'
     import Wrapper from '@/components/Wrapper.vue'
     import Lyrics from '@/components/Lyrics.vue'
+    import { onMounted, ref } from 'vue'
+    import { useRoute } from 'vue-router'
+    import http from '../http'
+    import Button from '@/components/Input/Button.vue'
+    import Play from '@/assets/svg/play.svg?component'
+    import ThreeDotsHorizontal from '@/assets/svg/ThreeDotsHorizontal.svg?component'
 
-    function toArtist(){
-        router.push('/artist')
+    const route = useRoute()
+
+    // function toArtist(){
+    //     router.push('/artist')
+    // }
+
+    // function toAlbum(){
+    //     router.push('/album')
+    // }
+
+    const songData = ref(null)
+
+    async function fetchSongData(id_song) {
+        try{
+            const song = await http.get('/song/' + id_song, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            })
+
+            songData.value = song.data
+        }
+        catch (error){
+            if (error.response.status == 401){
+                router.push('/')
+            }
+            console.log('Ошибка при загрузке трека ' + error)
+        }
     }
 
-    function toAlbum(){
-        router.push('/album')
-    }
+    onMounted(async () => {
+        fetchSongData(route.params.id)
+    })
 </script>
 
 <template>
     <Header></Header>
     <Wrapper>
         <div class="song-info">
-            <TitleCard title="Трек №1" created_by="artist" created_at="28.11.2025" hasActions>
+            <TitleCard 
+                :title="songData?.data.name" 
+                :created_by="''" 
+                :created_at="songData?.data.release_date" >
                 <template #image>
-                    <Image/>
+                    <Image :url="songData?.data.image"/>
+                </template>
+                <template #actions>
+                    <Button class="play-button round-button"><Play/></Button>
+                    <Button @click="openContextMenu" class="no-background round-button"><ThreeDotsHorizontal/></Button>
                 </template>
             </TitleCard>
             <!-- <ActionBar></ActionBar> -->

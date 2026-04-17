@@ -14,6 +14,8 @@
     import { onBeforeMount, onMounted, ref, watch } from 'vue';
     import http from '../http';
     import { useRoute } from 'vue-router';
+    import Button from '@/components/Input/Button.vue'
+    import Settings from '@/assets/svg/settings.svg?component'
 
     const route = useRoute()
 
@@ -74,6 +76,9 @@
             <TitleCard :title = userData?.username>
                 <template #image>
                     <Image :url="'http://localhost:8080/' + userData?.avatar" class="round-image"/>
+                </template>
+                <template #actions>
+                    <Button @click="openContextMenu" class="round-button"><Settings/></Button>
                 </template>
             </TitleCard>
             <div class="info">
