@@ -17,6 +17,8 @@
 
     const route = useRoute()
 
+    
+
     const playlistData = ref(null)
     const playlistSongs = ref([])
 
@@ -79,11 +81,7 @@
             <div class="info">
                 <SongsList v-if="playlistData?.data.songs.length > 0">
                     <SongCard v-for="(song, index) in playlistData?.data.songs"
-                        :title="song.name"
-                        :artists="song.artists"
-                        :length="song.length"
-                        :image_url="song.image"
-                        :id_song="song.id"
+                        :song="song"
                         :index="index+1"
 
                         :key="song.id"

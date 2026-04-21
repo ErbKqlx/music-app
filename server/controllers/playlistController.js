@@ -8,6 +8,8 @@ const PlaylistsSongs = db.playlists_songs
 const Song = db.song
 const Artist = db.artist
 
+const host = 'http://localhost:8080/'
+
 class PlaylistController{
     static async getPlaylists(req, res){
         const playlists = await Playlist.findAll({ where: {
@@ -19,7 +21,7 @@ class PlaylistController{
         // console.log(playlists)
 
         playlists.forEach(function(playlist){
-            playlist.image = `http://localhost:8080/${playlist.image}`
+            playlist.image = `${host}${playlist.image}`
             console.log(playlist.image)
         })
 
@@ -36,7 +38,7 @@ class PlaylistController{
             console.log(err)
         })
 
-        playlist.image = `http://localhost:8080/${playlist.image}`
+        playlist.image = `${host}${playlist.image}`
         
         const user = await playlist.getUser()
         // const song = playlist.get
@@ -45,7 +47,8 @@ class PlaylistController{
         const songsData = await Promise.all(
             songs.map(async song => {
             // console.log(await song.getArtists())
-                song.image = `http://localhost:8080/${song.image}`
+                song.image = `${host}${song.image}`
+                song.song_url = `${host}${song.song_url}`
                 const artists = await song.getArtists()
             
                 const artistsData = artists.map(artist => {
@@ -61,6 +64,7 @@ class PlaylistController{
                     length: song.length,
                     artists: artistsData,
                     image: song.image,
+                    song_url: song.song_url,
                 }
             })
         )

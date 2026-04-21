@@ -57,7 +57,11 @@
 <template>
     <div class="page-header">
         <RouterLink to="/home" class="clickable">Название</RouterLink>
-        <SearchInput/>
+        <div class="search">
+            <form role="search">
+                <input id="search" type="search" placeholder="поиск">
+            </form>
+        </div>
         <div>
             <RouterLink :to="'/profile/' + userStore.currentUser?.id" @click="toProfile()">Профиль</RouterLink>
             <RouterLink to="/" @click="logout()">Выйти</RouterLink>
@@ -79,6 +83,26 @@
         div{
             display: flex;
             gap: 20px;
+        }
+
+        .search{
+            width: 30vw;
+            height: 100%;
+
+            form{
+                height: 100%;
+                display: flex;
+            }
+
+            input{
+                width: 100%;
+                height: 80%;
+                border-radius: 20px;
+                font-size: 18px;
+                padding: 0 12px;
+                align-self: center;
+                flex-grow: 1;
+            }
         }
     }
 

@@ -1,35 +1,71 @@
 <script setup>
     import PlaySvg from '@/assets/svg/play.svg?component'
+    import PauseSvg from '@/assets/svg/pause.svg?component'
     import MiscSvg from '@/assets/svg/ThreeDotsVertical.svg?component'
     import Image from '@/components/Image.vue';
     import SvgButton from '@/components/Image.vue';
     import { ref } from 'vue';
+    import { Howl } from 'howler';
+    import { useSongStore } from '../stores/song';
 
-    defineProps({
-        title: {
-            type: String,
-            default: '',
-        },
-        id_song: {
-            type: Number,
-        },
-        artists: {
-            type: Array,
-            default: null,
-        },
-        length: {
-            type: String,
-            default: '',
-        },
-        image_url: {
-            type: String,
+    const props = defineProps({
+        song: {
+
         },
         index: {
             type: Number
-        }
+        },
     })
 
+
+    const songStore = useSongStore()
+
     const highlighted = ref(false)
+
+    function playSong(song){
+        // console.log(song == songStore.currentSong)
+        if (song == songStore.currentSong){
+            // console.log(songStore.currentSound._sounds[0]._paused)
+            if (songStore.currentSound._sounds[0]._paused == false){
+                songStore.currentSound.pause()
+            }
+            else{
+                songStore.currentSound.play()
+            }
+
+            // songStore.currentSound.pause()
+        }
+        else{
+            if (songStore.currentSound){
+                songStore.currentSound.stop()
+            }
+            
+            songStore.setSong(song)
+
+            const sound = new Howl({
+                src: [songStore.currentSong.song_url], // Provide multiple formats for browser compatibility
+                onload: function() {
+                    console.log('Sound loaded successfully!');
+                },
+                onpause: function(id) {
+                    console.log('Sound paused! id: ' + id);
+                },
+                onloaderror: function(id, err) {
+                    console.error('Error loading sound:', err + ' ' + id);
+                },
+                // loop: true
+            });
+
+            songStore.setSound(sound)
+            songStore.currentSound.play()
+        }
+
+
+        // console.log(sound)
+        // console.log(songStore)
+    }
+
+    // console.log(props.song)
 </script>
 
 <template>
@@ -37,18 +73,21 @@
         <div v-if="highlighted == false" class="index additional-info">
             {{ index }}
         </div>
+        <div v-else-if="songStore.currentSound?._sounds[0]._paused" class="play-button clickable">
+            <PlaySvg @click="playSong(song)" width="100%" height="100%" viewBox="0 0 15 15"/>
+        </div>
         <div v-else class="play-button clickable">
-            <PlaySvg width="100%" height="100%" viewBox="0 0 15 15"/>
+            <PauseSvg @click="playSong(song)" width="100%" height="100%" viewBox="0 0 15 15"/>
         </div>
         <div class="image">
             <!-- <img src="" alt="Изображение плейлиста"> -->
-            <Image :src="image_url"/>
+            <Image :src="song.image"/>
         </div>
         <div class="song-info">
             <!-- <span class="clickable">{{title}}</span> -->
-            <RouterLink :to="'/song/' + id_song" class="clickable">{{ title }}</RouterLink>
+            <RouterLink :to="'/song/' + song.id" class="clickable">{{ song.name }}</RouterLink>
             <div class="artists">
-                <RouterLink :to="'/artist/' + artist.id" v-for="artist in artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
+                <RouterLink :to="'/artist/' + artist.id" v-for="artist in song.artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
             </div>
         </div>
         <div class="album-name">
@@ -56,7 +95,7 @@
             <RouterLink class="additional-info clickable" to="/album">Альбом №1</RouterLink>
         </div>
         <div class="song-actions">
-            <span>{{ Math.trunc(length/60) }}:{{ length%60 }}</span>
+            <span>{{ Math.trunc(song.length/60) }}:{{ song.length%60 }}</span>
             <!-- <SvgButton>
                 <PlaySvg width="100%" height="100%" viewBox="0 0 15 15"/>
             </SvgButton>

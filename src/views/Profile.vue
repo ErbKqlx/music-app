@@ -16,6 +16,7 @@
     import { useRoute } from 'vue-router';
     import Button from '@/components/Input/Button.vue'
     import Settings from '@/assets/svg/settings.svg?component'
+    // import soundFile from './Korol_i_SHut_-_Lesnik_62571704.mp3'
 
     const route = useRoute()
 
@@ -61,6 +62,16 @@
 
     onMounted(async () => {
         fetchUserData(route.params.id)
+
+        // var sound = new Howl({
+        //     src: ['Korol_i_SHut_-_Lesnik_62571704.mp3']
+        // });
+
+        
+        
+       
+        // sound.seek(180)
+        // sound.loop
     })
 
     watch(() => route.params.id, (newId) => {

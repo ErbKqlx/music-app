@@ -30,6 +30,9 @@ export default function(sequelize, DataTypes) {
     image: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    song_url: {
+      type: DataTypes.STRING(255),
     }
   }, {
     tableName: 'songs',

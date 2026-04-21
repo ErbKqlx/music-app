@@ -2,6 +2,9 @@
     import Image from '@/components/Image.vue';
     import ProgressBar from './ProgressBar.vue';
     import Button from '@/components/Input/Button.vue'
+    import { useSongStore } from '@/stores/song';
+    import { ref } from 'vue';
+    import { watch } from 'vue';
 
     // SVG
     import RepeatSvg from '@/assets/svg/repeat.svg?component'
@@ -12,28 +15,51 @@
     import ShuffleSvg from '@/assets/svg/shuffle.svg?component'
     import LyricsSvg from '@/assets/svg/lyrics.svg?component'
     import VolumeSvg from '@/assets/svg/volume.svg?component'
+    
 
-    defineProps({
-        songName: {
-            type: String,
-            default: 'Трек №1',
-        },
-        artistName: {
-            type: String,
-            default: 'Исполнитель №1',
-        }
-    })
+    const songStore = useSongStore()
+
+    // defineProps({
+    //     song_name: {
+    //         type: String,
+    //         default: 'Трек №1',
+    //     },
+    //     artists: {
+    //         type: String,
+    //         default: 'Исполнитель №1',
+    //     }
+    // })
+
+    const song = ref(null)
+
+    function setSongData(songData){
+        song.value = songData
+    }
+
+    
+
+
+    watch(() => songStore.currentSong, (newCurrent) => {
+        setSongData(newCurrent);
+        // console.log(song)
+    },
+    {
+        deep: true
+    }
+    );
 </script>
 
 <template>
     <div class="player-bar">
         <div class="song-info">
             <div class="song-preview">
-                <Image/>
+                <Image :src="song?.image"/>
             </div>
-            <div>
-                <RouterLink to="/song" class="clickable">{{ songName }}</RouterLink>
-                <RouterLink to="/artist" class="additional-info clickable">{{ artistName }}</RouterLink>
+            <div class="song">
+                <!-- <RouterLink to="/song" class="clickable">{{ songStore.currentSong.name }}</RouterLink> -->
+                <RouterLink :to="'/song/' + song?.id" class="clickable">{{ song?.name }}</RouterLink>
+                <!-- <RouterLink to="/artist" class="additional-info clickable">{{ songStore.currentSong.artistName }}</RouterLink> -->
+                <RouterLink :to="'/artist/' + artist.id" v-for="artist in song?.artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
             </div>
         </div>
         <div class="main-actions">
@@ -80,6 +106,8 @@
 
         .song-info{
             display: flex;
+            max-width: 25%;
+            flex-grow: 1;
             gap: 10px;
 
             .song-preview{
@@ -87,7 +115,7 @@
                 width: 50px;
             }
 
-            :last-child{
+            .song{
                 display: flex;
                 flex-direction: column;
                 /*justify-content: space-around;*/
@@ -135,6 +163,9 @@
         .misc-buttons{
             display: flex;
             align-items: center;
+            justify-content: end;
+            flex-grow: 1;
+            /* min-width: 25%; */
             gap: 20px;
         }
     }
