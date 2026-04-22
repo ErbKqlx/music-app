@@ -4,7 +4,7 @@
     import router from '@/router/index.js'
     import Form from '@/components/Form.vue'
     import http from '../http';
-    import { ref } from 'vue';
+    import { onMounted, ref } from 'vue';
     import useVuelidate from '@vuelidate/core';
     import { helpers, required } from '@vuelidate/validators';
     import { useRoute } from 'vue-router';
@@ -99,7 +99,11 @@
             
     }
 
-    
+    onMounted(() => {
+        if (userStore.currentUser != null){
+            router.push('/profile/' + userStore.currentUser.id)
+        }
+    })
 </script>
 
 <template>

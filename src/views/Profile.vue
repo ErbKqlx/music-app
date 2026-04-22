@@ -89,7 +89,8 @@
                     <Image :url="'http://localhost:8080/' + userData?.avatar" class="round-image"/>
                 </template>
                 <template #actions>
-                    <Button @click="openContextMenu" class="round-button"><Settings/></Button>
+                    <!-- <Button @click="openContextMenu" class="round-button">Настройки</Button> -->
+                    <span class="clickable">Настройки</span>
                 </template>
             </TitleCard>
             <div class="info">

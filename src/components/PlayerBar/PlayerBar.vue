@@ -2,8 +2,8 @@
     import Image from '@/components/Image.vue';
     import ProgressBar from './ProgressBar.vue';
     import Button from '@/components/Input/Button.vue'
-    import { useSongStore } from '@/stores/song';
-    import { ref } from 'vue';
+    import { usePlayerStore } from '@/stores/player';
+    import { onMounted, ref } from 'vue';
     import { watch } from 'vue';
 
     // SVG
@@ -17,7 +17,7 @@
     import VolumeSvg from '@/assets/svg/volume.svg?component'
     
 
-    const songStore = useSongStore()
+    const playerStore = usePlayerStore()
 
     // defineProps({
     //     song_name: {
@@ -36,22 +36,25 @@
         song.value = songData
     }
 
-    
+    // const songStore = useSongStore()
 
 
-    watch(() => songStore.currentSong, (newCurrent) => {
+    watch(() => playerStore.currentSong, (newCurrent) => {
         setSongData(newCurrent);
         // console.log(song)
     },
     {
         deep: true
-    }
-    );
+    });
+
+    onMounted(() => {
+        setSongData(playerStore.currentSong)
+    })
 </script>
 
 <template>
     <div class="player-bar">
-        <div class="song-info">
+        <div class="song-info" v-if="song">
             <div class="song-preview">
                 <Image :src="song?.image"/>
             </div>
@@ -62,6 +65,9 @@
                 <RouterLink :to="'/artist/' + artist.id" v-for="artist in song?.artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
             </div>
         </div>
+        <div class="song-info" v-else>
+            Выберите трек
+        </div>
         <div class="main-actions">
             <div class="player-buttons">
                 <Button class="no-background round-button">
@@ -70,8 +76,9 @@
                 <Button class="no-background round-button">
                     <PreviousSvg/>
                 </Button>
-                <Button class="round-button">
-                    <PlaySvg/>
+                <Button @click="playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)" class="round-button">
+                    <PlaySvg v-if="!playerStore.isPlaying"/>
+                    <PauseSvg v-else/>
                 </Button>
                 <Button class="no-background round-button">
                     <NextSvg/>

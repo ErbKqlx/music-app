@@ -6,7 +6,7 @@
     import SvgButton from '@/components/Image.vue';
     import { ref } from 'vue';
     import { Howl } from 'howler';
-    import { useSongStore } from '../stores/song';
+    import { usePlayerStore } from '../stores/player';
 
     const props = defineProps({
         song: {
@@ -18,66 +18,32 @@
     })
 
 
-    const songStore = useSongStore()
+    const playerStore = usePlayerStore()
 
-    const highlighted = ref(false)
-
-    function playSong(song){
-        // console.log(song == songStore.currentSong)
-        if (song == songStore.currentSong){
-            // console.log(songStore.currentSound._sounds[0]._paused)
-            if (songStore.currentSound._sounds[0]._paused == false){
-                songStore.currentSound.pause()
-            }
-            else{
-                songStore.currentSound.play()
-            }
-
-            // songStore.currentSound.pause()
+    function playSong(){
+        if (playerStore.currentSong){
+            playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
         }
         else{
-            if (songStore.currentSound){
-                songStore.currentSound.stop()
-            }
-            
-            songStore.setSong(song)
-
-            const sound = new Howl({
-                src: [songStore.currentSong.song_url], // Provide multiple formats for browser compatibility
-                onload: function() {
-                    console.log('Sound loaded successfully!');
-                },
-                onpause: function(id) {
-                    console.log('Sound paused! id: ' + id);
-                },
-                onloaderror: function(id, err) {
-                    console.error('Error loading sound:', err + ' ' + id);
-                },
-                // loop: true
-            });
-
-            songStore.setSound(sound)
-            songStore.currentSound.play()
+            playerStore.currentSong = props.song
         }
-
-
-        // console.log(sound)
-        // console.log(songStore)
     }
+
+    // const highlighted = ref(false)
+
+    
 
     // console.log(props.song)
 </script>
 
 <template>
     <div class="song-card" @mouseenter="highlighted = true" @mouseleave="highlighted = false">
-        <div v-if="highlighted == false" class="index additional-info">
+        <div class="index additional-info">
             {{ index }}
         </div>
-        <div v-else-if="songStore.currentSound?._sounds[0]._paused" class="play-button clickable">
-            <PlaySvg @click="playSong(song)" width="100%" height="100%" viewBox="0 0 15 15"/>
-        </div>
-        <div v-else class="play-button clickable">
-            <PauseSvg @click="playSong(song)" width="100%" height="100%" viewBox="0 0 15 15"/>
+        <div @click="playSong()" class="play-button clickable">
+            <PlaySvg v-if="!playerStore.isPlaying" width="100%" height="100%"/>
+            <PauseSvg v-else width="100%" height="100%"/>
         </div>
         <div class="image">
             <!-- <img src="" alt="Изображение плейлиста"> -->
@@ -102,7 +68,7 @@
             <SvgButton>
                 <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
             </SvgButton> -->
-            <div class="misc-button">
+            <div class="misc-button clickable">
                 <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
             </div>
             
@@ -155,6 +121,11 @@
             /* background: url(); */
             height: 20px;
             width: 20px;
+            /* display: flex;
+            justify-content: center;
+            align-items: center; */
+            /* visibility: hidden; */
+            display: none;
             
         }
 
@@ -174,16 +145,19 @@
                 width: 20px;
             }
 
-            .play-button, .misc-button{
-                :hover{
-                    cursor: pointer;
-                }
-            }
         }
     }
 
     .song-card:hover{
         /* background-color: rgb(70, 70, 70); */
         background-color: var(--secondary-color);
+        
+        .play-button{
+            display: block;
+        }
+
+        .index{
+            display: none;
+        }
     }
 </style>

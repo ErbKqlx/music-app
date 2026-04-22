@@ -1,7 +1,6 @@
 <script setup>
     import { useRoute } from 'vue-router';
     import http from '../http';
-    import SearchInput from './SearchInput.vue'
     import { useUserStore } from '../stores/user';
     import router from '../router';
 
