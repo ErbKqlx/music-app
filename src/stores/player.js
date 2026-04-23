@@ -25,6 +25,8 @@ export const usePlayerStore = defineStore('player', () => {
     const isPlaying = ref(false)
     const volume = ref(0.2)
     const seek = ref(0)
+
+    let timer = null
     // persist: {
     //     storage: localStorage,
     //     pick: ['currentSong', 'currentTime', 'currentSound', 'isPaused']
@@ -41,25 +43,31 @@ export const usePlayerStore = defineStore('player', () => {
     const playSong = (song) => {
         // console.log(song == songStore.currentSong)
         if (song == currentSong.value && sound){
+            // console.log(currentSong.value)
             sound.play()
             return
         }
 
+        console.log(sound)
         if (sound){
             sound.stop()
-            sound.unload()
+            // sound.unload()
+
+            currentSong.value = song
+            seek.value = 0
         }
 
-        currentSong.value = song
+        
 
         sound = new Howl({
             src: [currentSong.value.song_url], // Provide multiple formats for browser compatibility
             onload: function() {
                 console.log('Sound loaded successfully!');
             },
-            onplay: function(){
+            onplay: function(id){
                 isPlaying.value = true
-                updateProgress()
+                console.log('Sound is playing! id: ' + id);
+                startTimer()
             },
             onpause: function(id) {
                 console.log('Sound paused! id: ' + id);
@@ -68,6 +76,9 @@ export const usePlayerStore = defineStore('player', () => {
             onend: function (id) {
                 console.log('Sound ended! id: ' + id);
                 isPlaying.value = false
+            },
+            onload: function() {
+                console.log('Sound unloaded successfully!');
             },
             onloaderror: function(id, err) {
                 console.error('Error loading sound:', err + ' ' + id);
@@ -81,24 +92,7 @@ export const usePlayerStore = defineStore('player', () => {
             sound.seek(seek.value)
         }
 
-        // else{
-        //     // if (currentSound.value){
-        //     //     currentSound.value.stop()
-        //     //     isPaused.value = false
-        //     // }
-            
-        //     setSong(song)
-
-            
-
-        //     sound.volume(volume.value)
-        //     sound.play()
-        //     // setSound(sound)
-        //     // currentSound.value.play()
-        // }
-
-        // console.log(sound)
-        // console.log(songStore)
+        sound.play()
     }
 
     const pauseSong = () => {
@@ -114,6 +108,24 @@ export const usePlayerStore = defineStore('player', () => {
         }
     }
 
+    const startTimer = () => {
+        stopTimer()
+        timer = setInterval(() => {
+            updateProgress()
+            // console.log(seek.value)
+        }, 100)
+    }
+
+    const stopTimer = () => {
+        if (timer){
+            clearInterval(timer)
+        }
+    }
+
+    const seekTime = (value) => {
+        seek.value = value
+        sound.seek(value)
+    }
 
     return {
         currentSong,
@@ -126,6 +138,7 @@ export const usePlayerStore = defineStore('player', () => {
         updateProgress,
         playSong,
         pauseSong,
+        seekTime,
     }
 },
 {

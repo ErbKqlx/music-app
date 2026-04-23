@@ -1,10 +1,22 @@
 <script setup>
+    import { usePlayerStore } from '../../stores/player';
 
+    const playerStore = usePlayerStore()
+
+    const handleInput = (event) => {
+        const targetTime = parseFloat(event.target.value)
+        playerStore.seekTime(targetTime)
+    }
+
+    const handleChange = (event) => {
+        // const targetTime = parseFloat(event.target.value)
+        // playerStore.seekTime(targetTime)
+    }
 </script>
 
 <template>
     <div class='slider'>
-        <input class='range-input' type='range' min='0' max='1000' value='0' step='1'>
+        <input class='range-input' type='range' min='0' :max="playerStore.currentSong.length" :value="playerStore.seek" step='0.1' @input="handleInput" @change="handleChange">
     </div>
 </template>
 

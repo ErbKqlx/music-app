@@ -21,11 +21,13 @@
     const playerStore = usePlayerStore()
 
     function playSong(){
-        if (playerStore.currentSong){
+        if (playerStore.currentSong == props.song){
             playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
+            console.log(playerStore.currentSong)
         }
         else{
-            playerStore.currentSong = props.song
+            console.log(props.song)
+            playerStore.playSong(props.song)
         }
     }
 
@@ -42,8 +44,9 @@
             {{ index }}
         </div>
         <div @click="playSong()" class="play-button clickable">
-            <PlaySvg v-if="!playerStore.isPlaying" width="100%" height="100%"/>
-            <PauseSvg v-else width="100%" height="100%"/>
+            <!-- <PlaySvg v-if="!playerStore.isPlaying" width="100%" height="100%"/>
+            <PauseSvg v-else width="100%" height="100%"/> -->
+            <PlaySvg width="100%" height="100%"/>
         </div>
         <div class="image">
             <!-- <img src="" alt="Изображение плейлиста"> -->
