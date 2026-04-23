@@ -27,6 +27,7 @@
             console.log(playerStore.currentSong)
         }
         else{
+            // console.log(11111)
             console.log(props.song)
             playerStore.playSong(props.song)
         }

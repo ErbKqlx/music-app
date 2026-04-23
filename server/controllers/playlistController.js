@@ -38,6 +38,13 @@ class PlaylistController{
             console.log(err)
         })
 
+        if (!playlist){
+            
+            return res.status(404).json({
+                errorMessage: 'Плейлист не найден'
+            })
+        }
+
         playlist.image = `${host}${playlist.image}`
         
         const user = await playlist.getUser()

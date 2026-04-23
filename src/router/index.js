@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Playlist from '@/views/Playlist.vue'
-import Error from '@/views/Error.vue'
 import Auth from '@/views/Auth.vue'
 import Register from '@/views/Register.vue'
 import Profile from '@/views/Profile.vue'
@@ -10,15 +9,12 @@ import PasswordRecovery from '@/views/PasswordRecovery.vue'
 import Song from '@/views/Song.vue'
 import Home from '@/views/Home.vue'
 import Test from '@/views/Test.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const routes = [
     {
         path: "/",
         component: Auth,
-    },
-    {
-        path: "/error",
-        component: Error,
     },
     {
         path: "/playlist/:id",
@@ -55,7 +51,12 @@ const routes = [
     {
         path: '/users',
         component: Test
-    }
+    },
+    {
+        path: "/:pathMatch(.*)*",
+        name: 'NotFound',
+        component: NotFound,
+    },
 ]
 
 const router = createRouter({

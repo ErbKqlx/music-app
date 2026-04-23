@@ -49,11 +49,12 @@ export const usePlayerStore = defineStore('player', () => {
         }
         
         currentSong.value = song
-        seek.value = 0
 
         console.log(sound)
         if (sound){
+            seekTime(0)
             sound.stop()
+            // seek.value = 0
             // sound.unload()
         }
 
@@ -61,7 +62,7 @@ export const usePlayerStore = defineStore('player', () => {
         
 
         sound = new Howl({
-            src: [song.song_url], // Provide multiple formats for browser compatibility
+            src: [currentSong.value.song_url], // Provide multiple formats for browser compatibility
             onload: function() {
                 console.log('Sound loaded successfully!');
             },
@@ -89,9 +90,18 @@ export const usePlayerStore = defineStore('player', () => {
             // loop: true
         });
 
-        if (seek.value > 0) {
-            sound.seek(seek.value)
+        // if (seek.value > 0) {
+        //     sound.seek(seek.value)
+        // }
+        seekTime(seek.value)
+        
+
+        console.log(song == currentSong.value)
+        if (song != currentSong.value){
+            console.log(11111)
+            seekTime(0)
         }
+
 
         sound.play()
     }
