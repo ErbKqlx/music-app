@@ -47,20 +47,21 @@ export const usePlayerStore = defineStore('player', () => {
             sound.play()
             return
         }
+        
+        currentSong.value = song
+        seek.value = 0
 
         console.log(sound)
         if (sound){
             sound.stop()
             // sound.unload()
-
-            currentSong.value = song
-            seek.value = 0
         }
 
+        console.log(song)
         
 
         sound = new Howl({
-            src: [currentSong.value.song_url], // Provide multiple formats for browser compatibility
+            src: [song.song_url], // Provide multiple formats for browser compatibility
             onload: function() {
                 console.log('Sound loaded successfully!');
             },

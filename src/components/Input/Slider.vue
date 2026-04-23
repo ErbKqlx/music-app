@@ -1,4 +1,5 @@
 <script setup>
+    import { computed } from 'vue';
     import { usePlayerStore } from '../../stores/player';
 
     const playerStore = usePlayerStore()
@@ -12,11 +13,28 @@
         // const targetTime = parseFloat(event.target.value)
         // playerStore.seekTime(targetTime)
     }
+
+    const sliderStyle = computed(() => {
+        // Вычисляем процент заполнения
+        const percentage = (playerStore.seek / playerStore.currentSong.length) * 100 || 0;
+        
+        return {
+            background: `linear-gradient(to right, #5577ee ${percentage}%, #4f4f4f ${percentage}%)`
+        }
+    })
 </script>
 
 <template>
     <div class='slider'>
-        <input class='range-input' type='range' min='0' :max="playerStore.currentSong.length" :value="playerStore.seek" step='0.1' @input="handleInput" @change="handleChange">
+        <input class='range-input' 
+            type='range' 
+            min='0' 
+            :max="playerStore.currentSong.length" 
+            :value="playerStore.seek" 
+            step='0.1' 
+            @input="handleInput" 
+            @change="handleChange" 
+            :style="sliderStyle">
     </div>
 </template>
 
@@ -40,14 +58,14 @@
     }
 
     .slider .range-input::-webkit-slider-runnable-track{
-        background-color: white;
+        /* background-color: white; */
         border-radius: 10px;
         height: 6px;
     }
 
     .slider .range-input::-webkit-slider-thumb{
         -webkit-appearance: none;
-        background-color: gray;
+        background-color: white;
         width: 12px;
         height: 12px;
         border-radius: 50%;

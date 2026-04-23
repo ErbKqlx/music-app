@@ -17,6 +17,7 @@
         },
     })
 
+    // const highlighted = ref(false)
 
     const playerStore = usePlayerStore()
 
@@ -29,17 +30,16 @@
             console.log(props.song)
             playerStore.playSong(props.song)
         }
+
+        // highlighted.value = true
     }
-
-    // const highlighted = ref(false)
-
     
 
     // console.log(props.song)
 </script>
 
 <template>
-    <div class="song-card" @mouseenter="highlighted = true" @mouseleave="highlighted = false">
+    <div class="song-card" :class="{ active: song.id == playerStore.currentSong.id }">
         <div class="index additional-info">
             {{ index }}
         </div>
@@ -85,11 +85,12 @@
         display: flex;
         gap: 10px;
         /* width: 100%; */
-        padding: 10px;
+        padding: 7px;
         font-size: 14px;
         align-items: center;
         justify-content: space-between;
-        border-radius: 5px;
+        border: 2px solid transparent;
+        border-radius: 5px;        
 
         .index{
             width: 20px;
@@ -162,5 +163,10 @@
         .index{
             display: none;
         }
+    }
+
+    .active{
+        background-color: var(--secondary-color);
+        border: 2px solid #5577ee;
     }
 </style>
