@@ -96,12 +96,10 @@ export const usePlayerStore = defineStore('player', () => {
         //     sound.seek(seek.value)
         // }
         seekTime(seek.value)
-        
 
-        console.log(song == currentSong.value)
-        if (song != currentSong.value){
-            console.log(11111)
+        if (seek.value > currentSong.value.length){
             seekTime(0)
+            // console.log(currentSong.length)
         }
 
         sound.play()
@@ -140,10 +138,8 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
     const setRepeat = (value) => {
-        if (sound){
-            onRepeat.value = !value
-            console.log(sound.loop(onRepeat.value))
-        }
+        onRepeat.value = !value
+        console.log(sound.loop(onRepeat.value))
     }
 
     return {

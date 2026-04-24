@@ -33,5 +33,9 @@
         gap: 5px;
         font-size: 12px;
         width: 100%;
+
+        span{
+            min-width: 25px;
+        }
     }
 </style>

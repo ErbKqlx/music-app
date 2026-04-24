@@ -65,7 +65,7 @@
             <RouterLink class="additional-info clickable" to="/album">Альбом №1</RouterLink>
         </div>
         <div class="song-actions">
-            <span>{{ Math.trunc(song.length/60) }}:{{ song.length%60 }}</span>
+            <span>{{ Math.trunc(song.length/60) }}:{{ (song.length%60).toString().padStart(2, '0') }}</span>
             <!-- <SvgButton>
                 <PlaySvg width="100%" height="100%" viewBox="0 0 15 15"/>
             </SvgButton>

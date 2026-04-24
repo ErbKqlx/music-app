@@ -62,7 +62,9 @@
                 <!-- <RouterLink to="/song" class="clickable">{{ songStore.currentSong.name }}</RouterLink> -->
                 <RouterLink :to="'/song/' + song?.id" class="clickable">{{ song?.name }}</RouterLink>
                 <!-- <RouterLink to="/artist" class="additional-info clickable">{{ songStore.currentSong.artistName }}</RouterLink> -->
-                <RouterLink :to="'/artist/' + artist.id" v-for="artist in song?.artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
+                <div class="artists">
+                    <RouterLink :to="'/artist/' + artist.id" v-for="artist in song?.artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
+                </div>
             </div>
         </div>
         <div class="song-info" v-else>
@@ -84,7 +86,7 @@
                     <NextSvg/>
                 </Button>
                 <Button @click="playerStore.setRepeat(playerStore.onRepeat)" class="no-background round-button">
-                    <RepeatSvg/>
+                    <RepeatSvg :color="playerStore.onRepeat? '#5577ee' : 'var(--secondary-text-color)'"/>
                 </Button>
             </div>
             <ProgressBar/>
@@ -116,6 +118,10 @@
             max-width: 25%;
             flex-grow: 1;
             gap: 10px;
+
+            .artist-link:not(:last-child)::after {
+                content: ", ";
+            }
 
             .song-preview{
                 aspect-ratio: 1 / 1;
