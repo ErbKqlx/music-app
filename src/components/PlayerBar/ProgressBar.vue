@@ -4,7 +4,13 @@
 
     const playerStore = usePlayerStore()
 
+    console.log(playerStore.currentSong?.length)
+
     function formatTime(length){
+        if (!length){
+            return "0:00"
+        }
+
         const min = Math.floor(length / 60)
         const sec = Math.floor(length % 60)
 
@@ -16,7 +22,7 @@
     <div class="progress-bar">
         <span>{{ formatTime(playerStore.seek) }}</span>
         <Slider/>
-        <span>{{ formatTime(playerStore.currentSong.length) }}</span>
+        <span>{{ formatTime(playerStore.currentSong?.length) }}</span>
     </div>
 </template>
 

@@ -83,7 +83,7 @@
                 <Button class="no-background round-button">
                     <NextSvg/>
                 </Button>
-                <Button class="no-background round-button">
+                <Button @click="playerStore.setRepeat(playerStore.onRepeat)" class="no-background round-button">
                     <RepeatSvg/>
                 </Button>
             </div>

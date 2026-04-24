@@ -16,7 +16,7 @@
 
     const sliderStyle = computed(() => {
         // Вычисляем процент заполнения
-        const percentage = (playerStore.seek / playerStore.currentSong.length) * 100 || 0;
+        const percentage = (playerStore.seek / playerStore.currentSong?.length) * 100 || 0;
         
         return {
             background: `linear-gradient(to right, #5577ee ${percentage}%, #4f4f4f ${percentage}%)`
@@ -29,7 +29,7 @@
         <input class='range-input' 
             type='range' 
             min='0' 
-            :max="playerStore.currentSong.length" 
+            :max="playerStore.currentSong?.length" 
             :value="playerStore.seek" 
             step='0.1' 
             @input="handleInput" 

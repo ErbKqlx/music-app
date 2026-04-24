@@ -25,6 +25,7 @@ export const usePlayerStore = defineStore('player', () => {
     const isPlaying = ref(false)
     const volume = ref(0.2)
     const seek = ref(0)
+    const onRepeat = ref(false)
 
     let timer = null
     // persist: {
@@ -42,8 +43,10 @@ export const usePlayerStore = defineStore('player', () => {
 
     const playSong = (song) => {
         // console.log(song == songStore.currentSong)
+        // console.log(song == currentSong.value)
         if (song == currentSong.value && sound){
             // console.log(currentSong.value)
+            // console.log(sound)
             sound.play()
             return
         }
@@ -78,16 +81,15 @@ export const usePlayerStore = defineStore('player', () => {
             onend: function (id) {
                 console.log('Sound ended! id: ' + id);
                 isPlaying.value = false
-            },
-            onload: function() {
-                console.log('Sound unloaded successfully!');
+                
+                // seekTime(0)
             },
             onloaderror: function(id, err) {
                 console.error('Error loading sound:', err + ' ' + id);
                 isPlaying.value = false
             },
-            volume: volume.value
-            // loop: true
+            volume: volume.value,
+            loop: onRepeat.value,
         });
 
         // if (seek.value > 0) {
@@ -101,7 +103,6 @@ export const usePlayerStore = defineStore('player', () => {
             console.log(11111)
             seekTime(0)
         }
-
 
         sound.play()
     }
@@ -138,23 +139,32 @@ export const usePlayerStore = defineStore('player', () => {
         sound.seek(value)
     }
 
+    const setRepeat = (value) => {
+        if (sound){
+            onRepeat.value = !value
+            console.log(sound.loop(onRepeat.value))
+        }
+    }
+
     return {
         currentSong,
         // currentSound,
         isPlaying,
         seek,
         volume,
+        onRepeat,
         // setSong,
         // setSound,
         updateProgress,
         playSong,
         pauseSong,
         seekTime,
+        setRepeat,
     }
 },
 {
     persist: {
         storage: localStorage,
-        pick: ['currentSong', 'seek', 'volume']
+        pick: ['currentSong', 'seek', 'volume', 'onRepeat']
     }
 })

@@ -91,9 +91,13 @@
             form{
                 height: 100%;
                 display: flex;
+                width: 100%;
             }
 
             input{
+                border: none;
+                color: var(--secondary-text-color);
+                background-color: rgb(51, 51, 51);
                 width: 100%;
                 height: 80%;
                 border-radius: 20px;
@@ -101,6 +105,15 @@
                 padding: 0 12px;
                 align-self: center;
                 flex-grow: 1;
+                border: 2px solid transparent;
+            }
+
+            input::placeholder{
+                color: var(--secondary-text-color);
+            }
+
+            input:hover{
+                border: 2px solid white;
             }
         }
     }

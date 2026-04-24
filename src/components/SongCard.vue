@@ -40,7 +40,7 @@
 </script>
 
 <template>
-    <div class="song-card" :class="{ active: song.id == playerStore.currentSong.id }">
+    <div class="song-card" :class="{ active: song.id == playerStore.currentSong?.id }">
         <div class="index additional-info">
             {{ index }}
         </div>
