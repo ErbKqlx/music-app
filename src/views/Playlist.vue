@@ -13,11 +13,12 @@
     import Button from '@/components/Input/Button.vue'
     import Play from '@/assets/svg/play.svg?component'
     import ThreeDotsHorizontal from '@/assets/svg/ThreeDotsHorizontal.svg?component'
+    import { usePlayerStore } from '../stores/player';
 
 
     const route = useRoute()
 
-    
+    const playerStore = usePlayerStore()
 
     const playlistData = ref(null)
     const playlistSongs = ref([])
@@ -52,6 +53,12 @@
         }
     }
 
+    function startPlaylist(){
+        // console.log(playlistData.value.data.songs)
+        playerStore.setQueue(playlistData.value.data.songs)
+        playerStore.playSong(playlistData.value.data.songs[0])
+    }
+
     onMounted(async () => {
         fetchPlaylistData(route.params.id)
     })
@@ -70,7 +77,7 @@
                     <Image :url="playlistData?.data.image"/>
                 </template>
                 <template #actions>
-                    <Button class="play-button round-button"><Play/></Button>
+                    <Button @click="startPlaylist()" class="play-button round-button"><Play/></Button>
                     <Button @click="openContextMenu" class="no-background round-button"><ThreeDotsHorizontal/></Button>
                 </template>
             </TitleCard>

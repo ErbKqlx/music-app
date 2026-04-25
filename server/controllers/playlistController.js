@@ -72,6 +72,7 @@ class PlaylistController{
                     artists: artistsData,
                     image: song.image,
                     song_url: song.song_url,
+                    release_date: song.release_date,
                 }
             })
         )

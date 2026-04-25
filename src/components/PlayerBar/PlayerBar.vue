@@ -38,6 +38,13 @@
 
     // const songStore = useSongStore()
 
+    function playPrevSong(){
+        playerStore.playPrev()
+    }
+
+    function playNextSong(){
+        playerStore.playNext()
+    }
 
     watch(() => playerStore.currentSong, (newCurrent) => {
         setSongData(newCurrent);
@@ -75,14 +82,14 @@
                 <Button class="no-background round-button">
                     <ShuffleSvg/>
                 </Button>
-                <Button class="no-background round-button">
+                <Button @click="playPrevSong()" class="no-background round-button">
                     <PreviousSvg/>
                 </Button>
                 <Button @click="playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)" class="round-button">
                     <PlaySvg v-if="!playerStore.isPlaying"/>
                     <PauseSvg v-else/>
                 </Button>
-                <Button class="no-background round-button">
+                <Button @click="playNextSong()" class="no-background round-button">
                     <NextSvg/>
                 </Button>
                 <Button @click="playerStore.setRepeat(playerStore.onRepeat)" class="no-background round-button">

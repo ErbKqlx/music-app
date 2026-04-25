@@ -64,6 +64,9 @@
             <!-- <span class="additional-info clickable">Альбом №1</span> -->
             <RouterLink class="additional-info clickable" to="/album">Альбом №1</RouterLink>
         </div>
+        <div class="release-date">
+            <span class="additional-info">{{ song.release_date }}</span>
+        </div>
         <div class="song-actions">
             <span>{{ Math.trunc(song.length/60) }}:{{ (song.length%60).toString().padStart(2, '0') }}</span>
             <!-- <SvgButton>
@@ -119,6 +122,10 @@
         }
 
         .album-name{
+            flex-grow: 1;
+        }
+        
+        .release-date{
             flex-grow: 1;
         }
 

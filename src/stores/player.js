@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 let sound = null
 
@@ -26,8 +26,10 @@ export const usePlayerStore = defineStore('player', () => {
     const volume = ref(0.2)
     const seek = ref(0)
     const onRepeat = ref(false)
+    const queue = ref([])
 
     let timer = null
+    let debounceTimer = null;
     // persist: {
     //     storage: localStorage,
     //     pick: ['currentSong', 'currentTime', 'currentSound', 'isPaused']
@@ -40,6 +42,10 @@ export const usePlayerStore = defineStore('player', () => {
     // const setSound = (sound) => {
     //     currentSound.value = sound
     // }
+
+    const currentIndex = computed(() => {
+        return queue.value.findIndex(song => song.id == currentSong.value.id)
+    })
 
     const playSong = (song) => {
         // console.log(song == songStore.currentSong)
@@ -54,9 +60,13 @@ export const usePlayerStore = defineStore('player', () => {
         currentSong.value = song
 
         console.log(sound)
+
         if (sound){
             seekTime(0)
             sound.stop()
+            sound.off()
+            sound.unload()
+            sound = null
             // seek.value = 0
             // sound.unload()
         }
@@ -81,12 +91,16 @@ export const usePlayerStore = defineStore('player', () => {
             onend: function (id) {
                 console.log('Sound ended! id: ' + id);
                 isPlaying.value = false
+                if (!onRepeat.value){
+                    playNext()
+                }
                 
                 // seekTime(0)
             },
             onloaderror: function(id, err) {
                 console.error('Error loading sound:', err + ' ' + id);
-                isPlaying.value = false
+                // isPlaying.value = false
+                playNext()
             },
             volume: volume.value,
             loop: onRepeat.value,
@@ -109,6 +123,45 @@ export const usePlayerStore = defineStore('player', () => {
         if (sound){
             sound.pause()
         }
+    }
+
+    const playNext = () => {
+        if (queue.value.length == 0) return
+
+        let nextIndex = currentIndex.value + 1
+        // if (nextIndex > queue.value.length){
+        //     nextIndex = 0
+        // }
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            playSong(queue.value[nextIndex]);
+        }, 150);
+        // playSong(queue.value[nextIndex])
+    }
+
+    const playPrev = () => {
+        if (queue.value.length === 0) return;
+
+        // if (seek.value > 3) {
+        //     seekTime(0);
+        //     return;
+        // }
+
+        let prevIndex = currentIndex.value - 1;
+        if (prevIndex < 0) {
+            prevIndex = queue.value.length - 1;
+        }
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            playSong(queue.value[prevIndex]);
+        }, 150);
+        // playSong(queue.value[prevIndex]);
+    }
+
+    const setQueue = (songs) => {
+        queue.value = songs
     }
 
     const updateProgress = () => {
@@ -149,6 +202,8 @@ export const usePlayerStore = defineStore('player', () => {
         seek,
         volume,
         onRepeat,
+        queue,
+        currentIndex,
         // setSong,
         // setSound,
         updateProgress,
@@ -156,11 +211,14 @@ export const usePlayerStore = defineStore('player', () => {
         pauseSong,
         seekTime,
         setRepeat,
+        setQueue,
+        playNext,
+        playPrev,
     }
 },
 {
     persist: {
         storage: localStorage,
-        pick: ['currentSong', 'seek', 'volume', 'onRepeat']
+        pick: ['currentSong', 'seek', 'volume', 'onRepeat', 'queue']
     }
 })
