@@ -27,6 +27,8 @@ export const usePlayerStore = defineStore('player', () => {
     const seek = ref(0)
     const onRepeat = ref(false)
     const queue = ref([])
+    const originalQueue = ref([])
+    const isShuffled = ref(false)
 
     let timer = null
     let debounceTimer = null;
@@ -46,6 +48,34 @@ export const usePlayerStore = defineStore('player', () => {
     const currentIndex = computed(() => {
         return queue.value.findIndex(song => song.id == currentSong.value.id)
     })
+
+    const toggleShuffle = () => {
+        isShuffled.value = !isShuffled.value
+
+        if (isShuffled.value){
+            console.log('shuffling...')
+            originalQueue.value = [...queue.value]
+
+            const current = currentSong.value
+            const others = queue.value.filter(s => s.id != current.id)
+
+            shuffleArray(others)
+
+            queue.value = current ? [current, ...others] : others
+        }
+        else{
+            if (originalQueue.value.length > 0){
+                queue.value = [...originalQueue.value]
+            }
+        }
+    }
+
+    const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
 
     const playSong = (song) => {
         // console.log(song == songStore.currentSong)
@@ -143,10 +173,10 @@ export const usePlayerStore = defineStore('player', () => {
     const playPrev = () => {
         if (queue.value.length === 0) return;
 
-        // if (seek.value > 3) {
-        //     seekTime(0);
-        //     return;
-        // }
+        if (seek.value > 3) {
+            seekTime(0);
+            return;
+        }
 
         let prevIndex = currentIndex.value - 1;
         if (prevIndex < 0) {
@@ -203,7 +233,9 @@ export const usePlayerStore = defineStore('player', () => {
         volume,
         onRepeat,
         queue,
+        originalQueue,
         currentIndex,
+        isShuffled,
         // setSong,
         // setSound,
         updateProgress,
@@ -214,11 +246,12 @@ export const usePlayerStore = defineStore('player', () => {
         setQueue,
         playNext,
         playPrev,
+        toggleShuffle,
     }
 },
 {
     persist: {
         storage: localStorage,
-        pick: ['currentSong', 'seek', 'volume', 'onRepeat', 'queue']
+        pick: ['currentSong', 'seek', 'volume', 'onRepeat', 'queue', 'isShuffled', 'originalQueue']
     }
 })

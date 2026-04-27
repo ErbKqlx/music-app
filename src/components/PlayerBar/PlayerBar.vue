@@ -79,8 +79,8 @@
         </div>
         <div class="main-actions">
             <div class="player-buttons">
-                <Button class="no-background round-button">
-                    <ShuffleSvg/>
+                <Button @click="playerStore.toggleShuffle()" class="no-background round-button">
+                    <ShuffleSvg :color="playerStore.isShuffled? '#5577ee' : 'var(--secondary-text-color)'"/>
                 </Button>
                 <Button @click="playPrevSong()" class="no-background round-button">
                     <PreviousSvg/>
