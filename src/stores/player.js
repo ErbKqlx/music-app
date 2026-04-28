@@ -29,6 +29,7 @@ export const usePlayerStore = defineStore('player', () => {
     const queue = ref([])
     const originalQueue = ref([])
     const isShuffled = ref(false)
+    // const isMuted = ref(false)
 
     let timer = null
     let debounceTimer = null;
@@ -192,6 +193,15 @@ export const usePlayerStore = defineStore('player', () => {
 
     const setQueue = (songs) => {
         queue.value = songs
+
+        if (isShuffled.value){
+            const current = currentSong.value
+            const others = queue.value.filter(s => s.id != current.id)
+
+            shuffleArray(others)
+
+            queue.value = current ? [current, ...others] : others
+        }
     }
 
     const updateProgress = () => {
@@ -225,6 +235,14 @@ export const usePlayerStore = defineStore('player', () => {
         console.log(sound.loop(onRepeat.value))
     }
 
+    const setVolume = (value) => {
+        volume.value = value
+
+        if (sound){
+            sound.volume(value)
+        }
+    }
+
     return {
         currentSong,
         // currentSound,
@@ -247,6 +265,7 @@ export const usePlayerStore = defineStore('player', () => {
         playNext,
         playPrev,
         toggleShuffle,
+        setVolume,
     }
 },
 {

@@ -14,14 +14,6 @@
         // playerStore.seekTime(targetTime)
     }
 
-    const handleMouseMove = () => {
-
-    }
-
-    const handleMouseLeave = () => {
-        
-    }
-
     const sliderStyle = computed(() => {
         // Вычисляем процент заполнения
         const percentage = (playerStore.seek / playerStore.currentSong?.length) * 100 || 0;
@@ -42,8 +34,6 @@
             step='0.1' 
             @input="handleInput" 
             @change="handleChange"
-            @mousemove="handleMouseMove"
-            @mouseleave="handleMouseLeave"
             :style="sliderStyle">
     </div>
 </template>

@@ -15,6 +15,7 @@
     import ShuffleSvg from '@/assets/svg/shuffle.svg?component'
     import LyricsSvg from '@/assets/svg/lyrics.svg?component'
     import VolumeSvg from '@/assets/svg/volume.svg?component'
+    import VolumeMutedSvg from '@/assets/svg/volume_muted.svg?component'
     
 
     const playerStore = usePlayerStore()
@@ -31,6 +32,7 @@
     // })
 
     const song = ref(null)
+    const isVolumeHovered = ref(false);
 
     function setSongData(songData){
         song.value = songData
@@ -102,9 +104,26 @@
             <Button class="no-background round-button">
                 <LyricsSvg/>
             </Button>
-            <Button class="no-background round-button">
-                <VolumeSvg/>
-            </Button>
+            <div class="volume-container" @mouseenter="isVolumeHovered = true" @mouseleave="isVolumeHovered = false">
+                <transition name="fade">
+                    <div v-show="isVolumeHovered" class="volume-popover">
+                        <input 
+                            type="range" 
+                            min="0" 
+                            max="1" 
+                            step="0.01" 
+                            :value="playerStore.volume"
+                            @input="playerStore.setVolume($event.target.value)"
+                            class="volume-slider"
+                        />
+                    </div>
+                </transition>
+
+                <Button @click="playerStore.volume != 0 ? playerStore.setVolume(0) : playerStore.setVolume(0.5)" class="no-background round-button">
+                    <VolumeSvg v-if="playerStore.volume > 0"/>
+                    <VolumeMutedSvg color="lightgray" v-else/>
+                </Button>
+            </div>
         </div>
     </div>
 </template>
@@ -187,6 +206,60 @@
             flex-grow: 1;
             /* min-width: 25%; */
             gap: 20px;
+
+            .volume-container {
+                position: relative;
+                display: flex;
+                align-items: center;
+                height: 100%;
+            }
+
+            .volume-popover {
+                position: absolute;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #282828;
+                padding: 12px 15px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid black;
+            }
+
+            .volume-slider {
+                appearance: none;
+                -webkit-appearance: none;
+                width: 6px;
+                height: 100px;
+                background: #4d4d4d;
+                border-radius: 2px;
+                outline: none;
+                appearance: slider-vertical;
+                cursor: pointer;
+            }
+
+            .volume-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 12px;
+                height: 12px;
+                background: white;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+
+            .fade-enter-active, .fade-leave-active {
+                transition: opacity 0.2s, transform 0.2s;
+            }
+            .fade-enter-from, .fade-leave-to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(10px);
+            }
         }
     }
+
+
+    
 </style>

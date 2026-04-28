@@ -53,10 +53,12 @@
         }
     }
 
-    function startPlaylist(){
+    function startPlaylist(song){
         // console.log(playlistData.value.data.songs)
+        playerStore.isShuffled = false
         playerStore.setQueue(playlistData.value.data.songs)
-        playerStore.playSong(playlistData.value.data.songs[0])
+        // playerStore.playSong(playlistData.value.data.songs[0])
+        playerStore.playSong(song)
     }
 
     onMounted(async () => {
@@ -77,7 +79,7 @@
                     <Image :url="playlistData?.data.image"/>
                 </template>
                 <template #actions>
-                    <Button @click="startPlaylist()" class="play-button round-button"><Play/></Button>
+                    <Button @click="startPlaylist(playlistData.data.songs[0])" class="play-button round-button"><Play/></Button>
                     <Button @click="openContextMenu" class="no-background round-button"><ThreeDotsHorizontal/></Button>
                 </template>
             </TitleCard>
@@ -97,6 +99,7 @@
                         :index="index+1"
 
                         :key="song.id"
+                        :onPlay="() => startPlaylist(song)"
                     />
                 </SongsList>
                 <div class="empty" v-else>

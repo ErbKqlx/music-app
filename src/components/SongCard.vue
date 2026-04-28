@@ -10,11 +10,14 @@
 
     const props = defineProps({
         song: {
-
+            
         },
         index: {
             type: Number
         },
+        // onPlay: {
+        //     type: Function
+        // }
     })
 
     // const highlighted = ref(false)

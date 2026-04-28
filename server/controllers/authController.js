@@ -26,14 +26,14 @@ class AuthController{
             })
             
             if (!user){
-                return Response.notFound(res, 'Пользователь не найден')
+                return Response.unauthorized(res, 'Неверный логин или пароль')
             }
 
             const password = req.body.password;
             const match = await bcrypt.compare(password, user.password)
 
             if (!match){
-                return Response.unauthorized(res, 'Неверный пароль')
+                return Response.unauthorized(res, 'Неверный логин или пароль')
             }
 
             const token = jwt.sign({ id: user.id }, authConfig.secret, {
