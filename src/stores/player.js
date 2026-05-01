@@ -94,12 +94,13 @@ export const usePlayerStore = defineStore('player', () => {
 
         if (sound){
             seekTime(0)
-            sound.stop()
-            sound.off()
-            sound.unload()
-            sound = null
-            // seek.value = 0
+            // sound.stop()
+            // sound.off()
             // sound.unload()
+            // sound = null
+            // // seek.value = 0
+            // // sound.unload()
+            stopSong()
         }
 
         console.log(song)
@@ -127,6 +128,10 @@ export const usePlayerStore = defineStore('player', () => {
                 }
                 
                 // seekTime(0)
+            },
+            onstop: function (id){
+                console.log('Sound stopped! id: ' + id);
+                isPlaying.value = false
             },
             onloaderror: function(id, err) {
                 console.error('Error loading sound:', err + ' ' + id);
@@ -156,6 +161,15 @@ export const usePlayerStore = defineStore('player', () => {
         }
     }
 
+    const stopSong = () => {
+        if (sound){
+            sound.stop()
+            sound.off()
+            sound.unload()
+            sound = null
+        }
+    }
+
     const playNext = () => {
         if (queue.value.length == 0) return
 
@@ -172,22 +186,22 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
     const playPrev = () => {
-        if (queue.value.length === 0) return;
+        if (queue.value.length === 0) return
 
         if (seek.value > 3) {
-            seekTime(0);
-            return;
+            seekTime(0)
+            return
         }
 
-        let prevIndex = currentIndex.value - 1;
+        let prevIndex = currentIndex.value - 1
         if (prevIndex < 0) {
-            prevIndex = queue.value.length - 1;
+            prevIndex = queue.value.length - 1
         }
 
-        clearTimeout(debounceTimer);
+        clearTimeout(debounceTimer)
         debounceTimer = setTimeout(() => {
-            playSong(queue.value[prevIndex]);
-        }, 150);
+            playSong(queue.value[prevIndex])
+        }, 150)
         // playSong(queue.value[prevIndex]);
     }
 
@@ -266,6 +280,7 @@ export const usePlayerStore = defineStore('player', () => {
         playPrev,
         toggleShuffle,
         setVolume,
+        stopSong,
     }
 },
 {

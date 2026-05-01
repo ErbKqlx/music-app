@@ -32,8 +32,9 @@ router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
 
 
 router.post('/login', AuthController.login)
-router.post('/register', [verifySignUp.checkDuplicateEmail], AuthController.register)
-router.post('/logout', [authJwt.verifyToken], AuthController.logout)
+router.post('/register', AuthController.register)
+// router.post('/logout', [authJwt.verifyToken], AuthController.logout)
+router.post('/verify-code', AuthController.verifyCode);
 // router.get('/check-email', AuthController.register)
 
 export default router

@@ -2,9 +2,11 @@
     import { useRoute } from 'vue-router';
     import http from '../http';
     import { useUserStore } from '../stores/user';
+    import { usePlayerStore } from '../stores/player';
     import router from '../router';
 
     const userStore = useUserStore()
+    const playerStore = usePlayerStore()
 
     console.log(userStore.currentUser)
     function toProfile(){
@@ -35,20 +37,21 @@
         // })
     }
 
-    async function logout(){
-        if (userStore.currentUser){
-            userStore.setUser(null)
-            localStorage.setItem('token', null)
-            // await http.post('/logout')
-            //     .then(function (axiosResponse){
-            //         localStorage.setItem('token', null)
-            //         router.push(`/`)
-            //         console.log(axiosResponse)
-            //     })
-        }
-        else{
-            router.push(`/`)
-        }
+    function logout(){
+        // if (userStore.currentUser){
+        //     userStore.setUser(null)
+        //     localStorage.setItem('token', null)
+        //     // await http.post('/logout')
+        //     //     .then(function (axiosResponse){
+        //     //         localStorage.setItem('token', null)
+        //     //         router.push(`/`)
+        //     //         console.log(axiosResponse)
+        //     //     })
+        // }
+
+        userStore.logout()
+        playerStore.stopSong()
+        router.push(`/`)
         
     }
 </script>

@@ -18,7 +18,7 @@ const verifyToken = (req, res, next) => {
         if (err){
             return Response.unauthorized(res, err.message)
         }
-
+        
         req.userId = decoded.id
         next()
     })

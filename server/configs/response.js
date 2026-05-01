@@ -1,34 +1,52 @@
 class Response{
-    constructor(success, message){
-        this.success = success
-        this.message = message
+    // constructor(success, message){
+    //     this.success = success
+    //     this.message = message
+    // }
+
+    static success(res, message = "Успех", data = null){
+        // const response = new Response(true, message)
+        return res.status(200).json({
+            status: 'success',
+            message: message,
+            data: data,
+        })
     }
 
-    static success(res, message = "Success", status = 200){
-        const response = new Response(true, message)
-        return res.status(status).json(new Response(true, message))
+    static badRequest(res, message = "Ошибка", errors = null){
+        return res.status(400).json({
+            status: 'error',
+            message: message,
+            errors: errors,
+        })
     }
 
-    static error(res, message = "Error", status = 400){
-        const response = new Response(false, message)
-        return res.status(status).json(response)
+    static unauthorized(res, message = "Не авторизован"){
+        return res.status(401).json({
+            status: 'error',
+            message: message,
+        })
     }
 
-    static unauthorized(res, message = "Unauthorized"){
-        return this.error(res, message, 401)
+    static forbidden(res, message = "Доступ запрещен"){
+        return res.status(403).json({
+            status: 'error',
+            message: message,
+        })
     }
 
-    static forbidden(res, message = "Forbidden"){
-        return this.error(res, message, 403)
+    static notFound(res, message = "Ресурс не найден"){
+        return res.status(404).json({
+            status: 'error',
+            message: message,
+        })
     }
 
-    static notFound(res, message = "Not Found"){
-        return this.error(res, message, 404)
-    }
-
-    static serverError(res, message = "Internal Server Error", error = null){
-        const response = new Response(false, message)
-        return res.status(error?.status || 500).json(response)
+    static serverError(res, message = "Внутренняя ошибка сервера"){
+        return res.status(500).json({
+            status: 'error',
+            message: message,
+        })
     }
 }
 

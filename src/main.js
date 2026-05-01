@@ -10,10 +10,11 @@ const pinia = createPinia()
 
 pinia.use(piniaPluginPersistedstate)
 
-watch(pinia.state, (state) => {
-  localStorage.setItem("user", JSON.stringify(state.user));
-},
-{ deep: true });
+// watch(pinia.state, (state) => {
+//   localStorage.setItem("user", JSON.stringify(state.user));
+//   // localStorage.setItem('user', JSON.stringify(state.user || null));
+// },
+// { deep: true });
 
 app.use(pinia)
 app.use(router)

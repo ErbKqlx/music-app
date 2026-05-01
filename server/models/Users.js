@@ -35,7 +35,9 @@ export default function(sequelize, DataTypes) {
     registration_date: {
       type: DataTypes.DATEONLY,
       allowNull: true
-    }
+    },
+    activationCode: { type: DataTypes.STRING },
+    isActivated: { type: DataTypes.BOOLEAN, defaultValue: false }
   }, {
     tableName: 'users',
     schema: 'public',

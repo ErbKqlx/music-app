@@ -14,11 +14,13 @@
     import Play from '@/assets/svg/play.svg?component'
     import ThreeDotsHorizontal from '@/assets/svg/ThreeDotsHorizontal.svg?component'
     import { usePlayerStore } from '../stores/player';
+    import { useContextMenuStore } from '../stores/contextMenu';
 
 
     const route = useRoute()
 
     const playerStore = usePlayerStore()
+    const contextMenuStore = useContextMenuStore();
 
     const playlistData = ref(null)
     const playlistSongs = ref([])
@@ -58,7 +60,48 @@
         playerStore.isShuffled = false
         playerStore.setQueue(playlistData.value.data.songs)
         // playerStore.playSong(playlistData.value.data.songs[0])
-        playerStore.playSong(song)
+        // playerStore.playSong(song)
+        if (playerStore.currentSong == song){
+            playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
+            console.log(playerStore.currentSong)
+        }
+        else{
+            playerStore.playSong(song)
+        }
+
+        // if (playerStore.currentSong == props.song){
+        //     playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
+        //     console.log(playerStore.currentSong)
+        // }
+        // else{
+        //     // console.log(11111)
+        //     console.log(props.song)
+        //     playerStore.playSong(props.song)
+        // }
+    }
+
+    function handleMiscClick(event){
+        // console.log(event)
+        const options = [
+            { 
+                label: 'Редактировать информацию о плейлисте', 
+                action: () => {
+                    console.log("Редактировать информацию о плейлисте") 
+                }
+            },
+            { 
+                label: 'Сделать открытым', 
+                action: () => {
+                    console.log("Сделать открытым") 
+                }
+            },
+            { 
+                label: 'Удалить плейлист', 
+                action: () => console.log("Удалить плейлист"), 
+                danger: true 
+            }
+        ];
+        contextMenuStore.open(event, options);
     }
 
     onMounted(async () => {
@@ -80,7 +123,7 @@
                 </template>
                 <template #actions>
                     <Button @click="startPlaylist(playlistData.data.songs[0])" class="play-button round-button"><Play/></Button>
-                    <Button @click="openContextMenu" class="no-background round-button"><ThreeDotsHorizontal/></Button>
+                    <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal/></Button>
                 </template>
             </TitleCard>
                 <!-- <div class="actions">
@@ -99,7 +142,6 @@
                         :index="index+1"
 
                         :key="song.id"
-                        :onPlay="() => startPlaylist(song)"
                     />
                 </SongsList>
                 <div class="empty" v-else>

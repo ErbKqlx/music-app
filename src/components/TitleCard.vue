@@ -39,6 +39,7 @@
             const color = colorThief.getColor(image);
             const primaryColor = window.getComputedStyle(document.body).getPropertyValue('--primary-color');
             topCard.style.background = "linear-gradient(rgb(" + color + "), " + primaryColor + ")";
+            // topCard.style.background = `rgb(${color})`
             
             console.log(color);
             console.log(primaryColor);
@@ -98,6 +99,7 @@
         .image{
             aspect-ratio: 1 / 1;
             width: 10vw;
+            /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); */
         }
 
         .info{

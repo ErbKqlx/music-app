@@ -101,9 +101,9 @@
             <ProgressBar/>
         </div>
         <div class="misc-buttons">
-            <Button class="no-background round-button">
+            <!-- <Button class="no-background round-button">
                 <LyricsSvg/>
-            </Button>
+            </Button> -->
             <div class="volume-container" @mouseenter="isVolumeHovered = true" @mouseleave="isVolumeHovered = false">
                 <transition name="fade">
                     <div v-show="isVolumeHovered" class="volume-popover">

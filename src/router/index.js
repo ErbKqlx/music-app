@@ -10,6 +10,7 @@ import Song from '@/views/Song.vue'
 import Home from '@/views/Home.vue'
 import Test from '@/views/Test.vue'
 import NotFound from '@/views/NotFound.vue'
+import VerifyEmail from '@/views/VerifyEmail.vue'
 
 const routes = [
     {
@@ -51,6 +52,10 @@ const routes = [
     {
         path: '/users',
         component: Test
+    },
+    {
+        path: '/verify-email',
+        component: VerifyEmail
     },
     {
         path: "/:pathMatch(.*)*",

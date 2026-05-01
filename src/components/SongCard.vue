@@ -4,9 +4,10 @@
     import MiscSvg from '@/assets/svg/ThreeDotsVertical.svg?component'
     import Image from '@/components/Image.vue';
     import SvgButton from '@/components/Image.vue';
-    import { ref } from 'vue';
+    import { ref, reactive } from 'vue';
     import { Howl } from 'howler';
     import { usePlayerStore } from '../stores/player';
+    import { useContextMenuStore } from '../stores/contextMenu';
 
     const props = defineProps({
         song: {
@@ -37,6 +38,26 @@
 
         // highlighted.value = true
     }
+
+    const contextMenuStore = useContextMenuStore();
+
+    const handleMiscClick = (event) => {
+        // console.log(event)
+        const options = [
+            { 
+                label: 'Играть далее', 
+                action: () => {
+                    console.log("Играть далее") 
+                }
+            },
+            { 
+                label: 'Удалить из плейлиста', 
+                action: () => console.log("Удалить из плейлиста"), 
+                danger: true 
+            }
+        ];
+        contextMenuStore.open(event, options);
+    };
     
 
     // console.log(props.song)
@@ -78,7 +99,7 @@
             <SvgButton>
                 <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
             </SvgButton> -->
-            <div class="misc-button clickable">
+            <div class="misc-button clickable" @click.stop="handleMiscClick">
                 <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
             </div>
             

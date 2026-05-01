@@ -8,9 +8,13 @@
     import useVuelidate from '@vuelidate/core';
     import { helpers, required } from '@vuelidate/validators';
     import { useRoute } from 'vue-router';
-    import { useUserStore } from '../stores/user';
-    import { usePlaylistStore } from '../stores/playlist';
+    import { useUserStore } from '@/stores/user';
+    import { usePlaylistStore } from '@/stores/playlist';
+    import { useFormErrors } from '@/composables/useFormErrors';
 
+    const { errors, setErrors, clearErrors, getErrors, hasErrors } = useFormErrors()
+
+    const error = ref('');
 
     const form = ref({
         data: {
@@ -33,7 +37,6 @@
     }
 
     const $v = useVuelidate(rules, form)
-
     
     const userStore = useUserStore()
     const playlistStore = usePlaylistStore()
@@ -43,56 +46,41 @@
 
         form.value.isSending = true
 
-        form.value.errors = {}
+        // setErrors({})
+        error.value = '';
 
-        // console.log(form.value.data)
         $v.value.$touch()
 
         if (!$v.value.$invalid){
             try{
                 const response = await http.post('/login', form.value.data)
-                const user = {
-                    id: response.data.id,
-                    username: response.data.username,
-                    email: response.data.email,
-                    avatar: response.data.avatar,
-                    registration_date: response.data.registration_date,
-                    id_role: response.data.id_role,
+                console.log(response.data.data)
+                if (response.data.data.isActivated == false){
+                    router.push(`/verify-email?email=${encodeURIComponent(form.value.data.email)}`)
                 }
+                else{
+                    const user = {
+                        id: response.data.data.id,
+                        username: response.data.data.username,
+                        email: response.data.data.email,
+                        avatar: response.data.data.avatar,
+                        registration_date: response.data.data.registration_date,
+                        id_role: response.data.data.id_role,
+                    }
 
-                localStorage.setItem('token', response.data.accessToken)
+                    console.log(user)
 
-                userStore.setUser(user)
+                    localStorage.setItem('token', response.data.data.accessToken)
+                    userStore.setUser(user)
 
-                router.push('/profile/' + user.id)
+                    router.push('/profile/' + user.id)
+                }
+                
             }
-            catch(error){
-                console.log(error)
+            catch(err){
+                // console.log(error)
+                error.value = err.response?.data?.message || 'Неверный логин или пароль';
             }
-            
-
-                // .then(async function (axiosResponse){
-                //     localStorage.setItem('token', axiosResponse.data.accessToken)
-                //     console.log(axiosResponse)
-
-                //     await http.get(`/profile/${axiosResponse.data.id}`, {
-                //         headers: { Authorization: "Bearer " + localStorage.getItem('token')}
-                //     })
-                //     .then(function (axiosResponse){
-                //         console.log(axiosResponse)
-                //         router.push(`/profile/${axiosResponse.data.id}`)
-                //     })
-                //     .catch(function (error) {
-                //         console.log(error)
-                //         if (error.response.status == 401){
-                //             router.push('/')
-                //         }
-                //     })
-                // })
-                // .catch(function (errors){
-                //     form.value.errors = errors
-                //     console.log(errors)
-                // })
         }
 
         form.value.isSending = false
@@ -110,14 +98,12 @@
     <div class="wrapper">
         <form class="authorization-form" @submit.prevent="sendData()" novalidate>
             <span>Авторизация</span>
-            <!-- <div class="errors" v-if="form.errors">
-                <span style="color: red">Неверный email или пароль</span>
-            </div> -->
             <div class="auth-fields">
                 <div>
                     <label for="email">Email</label>
                     <input type="text" id="email" name="email" v-model="form.data.email">
                     <span class="error" v-for="error of $v.data.email.$errors" :key="error.$uid">{{ error.$message }}</span>
+                    <span class="error" v-if="error">{{ error }}</span>
                 </div>
                 <div>
                     <label for="password">Пароль</label>
