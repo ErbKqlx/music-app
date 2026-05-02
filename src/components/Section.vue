@@ -5,32 +5,29 @@
 </script>
 
 <template>
-    <div class="cards-list">
-        <div class="list-header">
-            <span class="list-title">{{ title }}</span>
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title">
+                <slot name="title"></slot>
+            </span>
         </div>
-        <div class="list">
-            <slot></slot>
+        <div class="content">
+            <slot name="content"></slot>
         </div>
     </div>
 </template>
 
 <style scoped>
-    .cards-list{
+    .section{
         padding: 0 10px;
     }
 
-    .list-header{
+    .section-header{
         margin: 10px;
 
-        .list-title{
+        .section-title{
             font-size: 32px;
             font-weight: bold;
         }
-    }
-
-    .list{
-        display: flex;
-        /* gap: 50px; */
     }
 </style>

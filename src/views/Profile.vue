@@ -6,7 +6,7 @@
     import PlaylistCard from '@/components/PlaylistCard.vue';
     import ArtistCard from '@/components/ArtistCard.vue';
     import CardsList from '@/components/CardsList.vue';
-    import Footer from '@/components/Footer.vue';
+    // import Footer from '@/components/Footer.vue';
     import router from '@/router/index.js';
     import Image from '@/components/Image.vue';
     import Card from '@/components/Card.vue';
@@ -16,6 +16,7 @@
     import { useRoute } from 'vue-router';
     import Button from '@/components/Input/Button.vue'
     import Settings from '@/assets/svg/settings.svg?component'
+    import Section from '@/components/Section.vue';
     // import soundFile from './Korol_i_SHut_-_Lesnik_62571704.mp3'
 
     const route = useRoute()
@@ -47,8 +48,9 @@
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
             savedPlaylists.value = playlists.data
+            // console.log(savedPlaylists.value.playlists.length == 0)
             
-            console.log(savedPlaylists.value.playlists[0])
+            // console.log(savedPlaylists.value.playlists[0])
             
             // console.log(userData.value)
         }
@@ -94,13 +96,27 @@
                 </template>
             </TitleCard>
             <div class="info">
-                <CardsList title="Плейлисты">
-                    <Card @click="toPlaylist(playlist.id)" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
-                        <template #image>
-                            <Image :url="playlist.image"/>
-                        </template>
-                    </Card>
-                </CardsList>
+                <Section v-if="true">
+                    <template #title>
+                        Плейлисты
+                    </template>
+                    <template #content>
+                        <div class="playlists-list">
+                            <Card @click="toPlaylist(playlist.id)" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
+                                <template #image>
+                                    <Image :url="playlist.image"/>
+                                </template>
+                            </Card>
+                        </div>
+                    </template>
+                </Section>
+                <!-- <CardsList title="Плейлисты" v-if="true">
+                    
+                </CardsList> -->
+                <div class="empty" v-else>
+                    Вы не добавляли плейлисты
+                    <Button @click.stop="">Добавить плейлист</Button>
+                </div>
                 <!-- <div class="user-playlists">
                     
                 </div> -->
@@ -139,6 +155,22 @@
             flex-direction: column;
             /* gap: 50px; */
             /* padding: 20px; */
+        }
+
+        .empty{
+            font-size: 24px;
+            text-align: center;
+            margin-top: 50px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .playlists-list{
+            display: flex;
+            /* gap: 50px; */
         }
     }
 </style>

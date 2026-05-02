@@ -56,11 +56,9 @@
     }
 
     function startPlaylist(song){
-        // console.log(playlistData.value.data.songs)
         playerStore.isShuffled = false
         playerStore.setQueue(playlistData.value.data.songs)
-        // playerStore.playSong(playlistData.value.data.songs[0])
-        // playerStore.playSong(song)
+        
         if (playerStore.currentSong == song){
             playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
             console.log(playerStore.currentSong)
@@ -68,16 +66,6 @@
         else{
             playerStore.playSong(song)
         }
-
-        // if (playerStore.currentSong == props.song){
-        //     playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
-        //     console.log(playerStore.currentSong)
-        // }
-        // else{
-        //     // console.log(11111)
-        //     console.log(props.song)
-        //     playerStore.playSong(props.song)
-        // }
     }
 
     function handleMiscClick(event){

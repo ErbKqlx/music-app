@@ -14,8 +14,19 @@ class SongController{
         })
 
         song.image = `http://localhost:8080/${song.image}`
+        song.song_url = `http://localhost:8080/${song.song_url}`
         
-        const artist = await song.getArtists()
+        const artists = await song.getArtists()
+        const artistsData = artists.map(artist => {
+            artist.image = `http://localhost:8080/${artist.image}`
+
+            return {
+                id: artist.id,
+                name: artist.name,
+                image: artist.image,
+                bio: artist.bio,
+            }
+        })
 
         // const songData = await Promise.all(
         //     songs.map(async song => {
@@ -42,12 +53,12 @@ class SongController{
             data: {
                 id: song.id,
                 name: song.name,
-                artists: {
-                    // id: user.id,
-                    // username: user.username,
-                },
+                length: song.length,
+                artists: artistsData,
+                image: song.image,
+                song_url: song.song_url,
                 release_date: song.release_date,
-                image: song.image
+                lyrics: song.lyrics,
             }
         })
     }

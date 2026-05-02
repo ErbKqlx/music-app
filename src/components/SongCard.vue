@@ -45,9 +45,9 @@
         // console.log(event)
         const options = [
             { 
-                label: 'Играть далее', 
+                label: 'Добавить в очередь', 
                 action: () => {
-                    console.log("Играть далее") 
+                    console.log("Добавить в очередь") 
                 }
             },
             { 

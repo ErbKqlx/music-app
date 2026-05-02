@@ -81,6 +81,7 @@ export const usePlayerStore = defineStore('player', () => {
     const playSong = (song) => {
         // console.log(song == songStore.currentSong)
         // console.log(song == currentSong.value)
+        console.log(song)
         if (song == currentSong.value && sound){
             // console.log(currentSong.value)
             // console.log(sound)
@@ -103,7 +104,7 @@ export const usePlayerStore = defineStore('player', () => {
             stopSong()
         }
 
-        console.log(song)
+        
         
 
         sound = new Howl({

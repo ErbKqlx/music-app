@@ -7,18 +7,23 @@
     import Image from '@/components/Image.vue'
     import Card from '@/components/Card.vue'
     import Wrapper from '@/components/Wrapper.vue'
-    import Lyrics from '@/components/Lyrics.vue'
+    // import Lyrics from '@/components/Lyrics.vue'
     import { onMounted, ref } from 'vue'
     import { useRoute } from 'vue-router'
     import http from '../http'
     import Button from '@/components/Input/Button.vue'
     import Play from '@/assets/svg/play.svg?component'
     import ThreeDotsHorizontal from '@/assets/svg/ThreeDotsHorizontal.svg?component'
-    import { usePlayerStore } from '../stores/player'
+    import { usePlayerStore } from '@/stores/player'
+    import { useContextMenuStore } from '@/stores/contextMenu'
+    import Section from '@/components/Section.vue'
 
     const route = useRoute()
 
     const playerStore = usePlayerStore()
+    const contextMenuStore = useContextMenuStore()
+
+    
 
     // function toArtist(){
     //     router.push('/artist')
@@ -37,6 +42,8 @@
             })
 
             songData.value = song.data
+            console.log(songData.value)
+
         }
         catch (error){
             if (error.response.status == 401){
@@ -45,6 +52,39 @@
             console.log('Ошибка при загрузке трека ' + error)
         }
     }
+
+    function startSong(song){
+        playerStore.isShuffled = false
+        playerStore.setQueue([song])
+        
+        if (playerStore.currentSong == song){
+            playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
+            // console.log(playerStore.currentSong)
+        }
+        else{
+            playerStore.playSong(song)
+        }
+    }
+
+    function handleMiscClick(event){
+        // console.log(event)
+        const options = [
+            { 
+                label: 'Добавить в плейлист', 
+                action: () => {
+                    console.log("Добавить в плейлист") 
+                }
+            },
+            { 
+                label: 'Добавить в очередь', 
+                action: () => {
+                    console.log("Добавить в очередь") 
+                }
+            },
+        ];
+        contextMenuStore.open(event, options);
+    }
+
 
     onMounted(async () => {
         fetchSongData(route.params.id)
@@ -63,32 +103,66 @@
                     <Image :url="songData?.data.image"/>
                 </template>
                 <template #actions>
-                    <Button @click="playerStore.playSong(songData?.data)" class="play-button round-button"><Play/></Button>
-                    <Button @click="openContextMenu" class="no-background round-button"><ThreeDotsHorizontal/></Button>
+                    <Button @click="startSong(songData?.data)" class="play-button round-button"><Play/></Button>
+                    <!-- <Button @click="showLyrics()">Посмотреть текст</Button> -->
+                    <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal/></Button>
                 </template>
             </TitleCard>
-            <!-- <ActionBar></ActionBar> -->
-            <!-- <div class="song-actions">
-                <Button class="button play-btn"><Play/></Button>
-                <Button class="button misc"><ThreeDotsVertical color="white"/></Button>
-                <div>
-                    <Button class="button add">Добавить в плейлист</Button>
-                </div>
-            </div> -->
             <div class="info">
-                <div>
-                    <CardsList title="Альбомы">
-                        <Card @click="toAlbum" v-for="i in 5" title="Альбом №1" description="Альбом">
-                            <template #image>
-                                <Image/>
-                            </template>
-                        </Card>
-                    </CardsList>
-                </div>
-                <Lyrics/>
+                <Section>
+                    <template #title>
+                        Альбомы
+                    </template>
+                    <template #content>
+                        <div class="albums-list">
+                            <Card @click="toAlbum" v-for="i in 5" title="Альбом №1" description="Альбом">
+                                <template #image>
+                                    <Image/>
+                                </template>
+                            </Card>
+                        </div>
+                    </template>
+                </Section>
+                <Section>
+                    <template #title>
+                        Исполнители
+                    </template>
+                    <template #content>
+                        <div class="artists-list">
+                            <div class="artist-card" v-for="artist in songData?.data.artists" :key="artist.id">
+                                <div class="image">
+                                    <Image class="round-image" :url="artist.image"/>
+                                </div>
+                                <div class="info">
+                                    <div class="artist-name">{{ artist.name }}</div>
+                                    <div class="artist-bio additional-info">{{ artist.bio || 'Нет описания'}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </Section>
+                <Section>
+                    <template #title>
+                        Текст
+                    </template>
+                    <template #content>
+                        <div class="lyrics-content">
+                            <pre>{{songData?.data.lyrics || 'Текст для этой песни пока не добавлен'}}</pre>
+                        </div>
+                    </template>
+                </Section>
+                <Section>
+                    <template #title>
+                        Комментарии
+                    </template>
+                    <template #content>
+                        <div class="comments-content">
+                            
+                        </div>
+                    </template>
+                </Section>
             </div>
         </div>
-        <!-- <SongsList/> -->
     </Wrapper>
     <PlayerBar/>
 </template>
@@ -127,6 +201,66 @@
             display: flex;
             flex-direction: column;
             gap: 50px;
+
+            .albums-list{
+                display: flex;
+                /* gap: 50px; */
+                flex-wrap: wrap;
+            }
+
+            .artists-list{
+                display: flex;
+                /* gap: 10px; */
+                justify-content: space-between;
+
+                .image{
+                    width: 10vw;
+                    align-self: center;
+                }
+
+                .artist-card{
+                    display: flex;
+                    gap: 10px;
+                    padding: 10px;
+
+                    .info{
+                        gap: 10px;
+                        flex-grow: 1;
+
+                        .artist-name{
+                            font-size: 32px;
+                            margin-bottom: 10px;
+                        }
+
+                        .artist-bio{
+                            /* flex-grow: 1; */
+                            width: 100%;
+                            overflow-wrap: break-word;
+                            flex-grow: 1;
+                            line-height: 1.6;
+                        }
+                    }
+                }
+            }
+
+            .artists-list div{
+                width: 49%;
+                /* background-color: rgb(41, 41, 41); */
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .artists-list div:hover{
+                background-color: var(--secondary-color);
+            }
+
+            .lyrics-content {
+                font-size: 1.2rem;
+                line-height: 1.6;
+                white-space: pre-wrap;
+                color: var(--secondary-text-color);
+            }
         }
+        
     }
 </style>

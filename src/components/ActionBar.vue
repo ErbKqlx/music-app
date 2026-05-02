@@ -22,7 +22,7 @@
 <style scoped>
     .action-bar{
         display: flex;
-        gap: 5px;
+        gap: 10px;
 
         /* .misc-button svg{
             transform: rotate(90deg);

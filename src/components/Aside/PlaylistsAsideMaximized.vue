@@ -3,7 +3,7 @@
     import AddPlus from '@/assets/svg/AddPlus.svg?component'
     import Button from '@/components/Input/Button.vue?component'
     import router from '@/router/index.js'
-    import Modal from '@/components/Modal.vue'
+    // import Modal from '@/components/Modal.vue'
     import Image from '@/components/Image.vue'
     import Form from '@/components/Form.vue'
     import Input from '@/components/Input/Input.vue'
@@ -41,26 +41,6 @@
             <Button @click="isModalOpen = true">
                 <AddPlus/>Добавить
             </Button>
-            <Modal title="Создание плейлиста" :show="isModalOpen" @close="isModalOpen = false">
-                <template #image>
-                    <Image/>
-                </template>
-                <template #content>
-                    <Form>
-                        <div>
-                            <label for="name">Название</label>
-                            <Input type="text" id="name" name="name"/>
-                        </div>
-                        <div>
-                            <label for="public">Открытый</label>
-                            <input type="checkbox" name="public" id="public">
-                        </div>
-                    </Form>
-                </template>
-                <template #button>
-                    <Button>Создать</Button>
-                </template>
-            </Modal>
         </div>
     </div>
 </template>

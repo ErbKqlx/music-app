@@ -3,6 +3,7 @@
     import ProgressBar from './ProgressBar.vue';
     import Button from '@/components/Input/Button.vue'
     import { usePlayerStore } from '@/stores/player';
+    import { useLyricsStore } from '@/stores/lyrics';
     import { onMounted, ref } from 'vue';
     import { watch } from 'vue';
 
@@ -16,9 +17,11 @@
     import LyricsSvg from '@/assets/svg/lyrics.svg?component'
     import VolumeSvg from '@/assets/svg/volume.svg?component'
     import VolumeMutedSvg from '@/assets/svg/volume_muted.svg?component'
+
     
 
     const playerStore = usePlayerStore()
+    const lyricsStore = useLyricsStore()
 
     // defineProps({
     //     song_name: {
@@ -46,6 +49,17 @@
 
     function playNextSong(){
         playerStore.playNext()
+    }
+
+    function handleLyricsClick() {
+        // lyricsStore.toggleLyrics()
+        if (!lyricsStore.isOpen){
+            lyricsStore.openLyrics(playerStore.currentSong.lyrics, playerStore.currentSong.name)
+        }
+        else{
+            lyricsStore.closeLyrics()
+        }
+        
     }
 
     watch(() => playerStore.currentSong, (newCurrent) => {
@@ -101,9 +115,9 @@
             <ProgressBar/>
         </div>
         <div class="misc-buttons">
-            <!-- <Button class="no-background round-button">
-                <LyricsSvg/>
-            </Button> -->
+            <Button @click="handleLyricsClick" class="no-background round-button">
+                <LyricsSvg :color="lyricsStore.isOpen? '#5577ee' : 'var(--secondary-text-color)'"/>
+            </Button>
             <div class="volume-container" @mouseenter="isVolumeHovered = true" @mouseleave="isVolumeHovered = false">
                 <transition name="fade">
                     <div v-show="isVolumeHovered" class="volume-popover">
