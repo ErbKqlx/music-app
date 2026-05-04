@@ -16,7 +16,10 @@ const verifyToken = (req, res, next) => {
 
     jwt.verify(actualToken, authConfig.secret, (err, decoded) => {
         if (err){
-            return Response.unauthorized(res, err.message)
+            if (err.name === 'TokenExpiredError') {
+                return res.status(401).send({ message: "Срок токена истек", code: "TOKEN_EXPIRED" });
+            }
+            return Response.unauthorized(res, "Неверный токен");
         }
         
         req.userId = decoded.id

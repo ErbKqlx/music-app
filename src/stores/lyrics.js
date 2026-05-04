@@ -11,7 +11,7 @@ export const useLyricsStore = defineStore('lyrics', () => {
         songTitle.value = title
         isOpen.value = true
 
-        console.log(text, title)
+        // console.log(text, title)
     }
 
     function closeLyrics() {

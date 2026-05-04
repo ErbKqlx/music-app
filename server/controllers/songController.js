@@ -5,6 +5,8 @@ import db from "../models/index.js"
 const Song = db.song
 // const Artist = db.artist
 
+const host = 'http://localhost:8080/'
+
 class SongController{
     static async getOneSong(req, res){
         const song = await Song.findOne({ where: {
@@ -13,12 +15,12 @@ class SongController{
             console.log(err)
         })
 
-        song.image = `http://localhost:8080/${song.image}`
-        song.song_url = `http://localhost:8080/${song.song_url}`
+        song.image = `${host}${song.image}`
+        song.song_url = `${host}${song.song_url}`
         
         const artists = await song.getArtists()
         const artistsData = artists.map(artist => {
-            artist.image = `http://localhost:8080/${artist.image}`
+            artist.image = `${host}${artist.image}`
 
             return {
                 id: artist.id,

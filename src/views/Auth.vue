@@ -88,7 +88,11 @@
     }
 
     onMounted(() => {
-        if (userStore.currentUser != null){
+        // if (userStore.currentUser != null){
+        //     router.push('/profile/' + userStore.currentUser.id)
+        // }
+        
+        if (localStorage.getItem('token') != null){
             router.push('/profile/' + userStore.currentUser.id)
         }
     })

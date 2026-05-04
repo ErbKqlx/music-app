@@ -17,6 +17,7 @@
     import { usePlayerStore } from '@/stores/player'
     import { useContextMenuStore } from '@/stores/contextMenu'
     import Section from '@/components/Section.vue'
+    import { formatDate } from '../composables/formatDate'
 
     const route = useRoute()
 
@@ -46,9 +47,9 @@
 
         }
         catch (error){
-            if (error.response.status == 401){
-                router.push('/')
-            }
+            // if (error.response.status == 401){
+            //     router.push('/')
+            // }
             console.log('Ошибка при загрузке трека ' + error)
         }
     }
@@ -98,7 +99,7 @@
             <TitleCard 
                 :title="songData?.data.name" 
                 :created_by="''" 
-                :created_at="songData?.data.release_date" >
+                :created_at="formatDate(songData?.data.release_date)" >
                 <template #image>
                     <Image :url="songData?.data.image"/>
                 </template>
@@ -228,6 +229,7 @@
                         flex-grow: 1;
 
                         .artist-name{
+                            width: 100%;
                             font-size: 32px;
                             margin-bottom: 10px;
                         }

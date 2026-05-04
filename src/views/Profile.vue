@@ -55,9 +55,9 @@
             // console.log(userData.value)
         }
         catch (error){
-            if (error.response.status == 401){
-                router.push('/')
-            }
+            // if (error.response.status == 401){
+            //     router.push('/')
+            // }
             console.log('Ошибка при загрузке профиля ' + error)
         }
     }

@@ -8,6 +8,7 @@
     import { Howl } from 'howler';
     import { usePlayerStore } from '../stores/player';
     import { useContextMenuStore } from '../stores/contextMenu';
+import { formatDate } from '../composables/formatDate';
 
     const props = defineProps({
         song: {
@@ -89,7 +90,7 @@
             <RouterLink class="additional-info clickable" to="/album">Альбом №1</RouterLink>
         </div>
         <div class="release-date">
-            <span class="additional-info">{{ song.release_date }}</span>
+            <span class="additional-info">{{ formatDate(song.release_date) }}</span>
         </div>
         <div class="song-actions">
             <span>{{ Math.trunc(song.length/60) }}:{{ (song.length%60).toString().padStart(2, '0') }}</span>
@@ -110,8 +111,12 @@
 
 <style scoped>
     .song-card{
-        display: flex;
-        gap: 10px;
+        display: grid;
+        grid-template-columns: 20px 45px 2fr 2fr 1fr 100px; 
+        gap: 15px;
+
+        /* display: flex;
+        gap: 10px; */
         /* width: 100%; */
         padding: 7px;
         font-size: 14px;
@@ -151,6 +156,7 @@
         
         .release-date{
             flex-grow: 1;
+            text-align: left;
         }
 
         .play-button{

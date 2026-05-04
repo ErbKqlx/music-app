@@ -28,7 +28,12 @@
     console.log(props)
 
     let colorThief = new ColorThief();
+    
     function getDominantImageColor(){
+        function isTooDark(rgb) {
+            const luma = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+            return luma < 50;
+        }
         let topCard = document.querySelector(".top-card");
         let image = topCard.querySelector("img");
         image.crossOrigin = 'anonymous'
@@ -38,7 +43,10 @@
         image.addEventListener('load', function() {
             const color = colorThief.getColor(image);
             const primaryColor = window.getComputedStyle(document.body).getPropertyValue('--primary-color');
-            topCard.style.background = "linear-gradient(rgb(" + color + "), " + primaryColor + ")";
+
+            const finalColor = isTooDark(color) ? [100, 100, 100] : color;
+
+            topCard.style.background = "linear-gradient(rgb(" + finalColor + "), " + primaryColor + ")";
             // topCard.style.background = `rgb(${color})`
             
             console.log(color);

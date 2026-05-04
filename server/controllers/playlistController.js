@@ -119,7 +119,7 @@ class PlaylistController{
 
         for await (const playlistsSong of playlistsSongs){
             const song = await playlistsSong.getSong()
-            song.image = `http://localhost:8080/${song.image}`
+            song.image = `${host}${song.image}`
             songs.push(song)
         }
 
