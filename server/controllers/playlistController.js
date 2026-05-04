@@ -1,5 +1,6 @@
 // import Response from "../configs/response.js"
 // import User from "../models/User.js"
+import { Op } from "sequelize"
 import db from "../models/index.js"
 
 // const User = db.user
@@ -13,12 +14,19 @@ const host = 'http://localhost:8080/'
 class PlaylistController{
     static async getPlaylists(req, res){
         const playlists = await Playlist.findAll({ where: {
-            id_user: req.params.id
+            id_user: req.params.id,
+            [Op.or]: [
+                { public: true },
+                { id_user: req.userId }
+            ]
         }}).catch((err) => {
             console.log(err)
         })
 
         // console.log(playlists)
+
+        
+
 
         playlists.forEach(function(playlist){
             playlist.image = `${host}${playlist.image}`
@@ -39,11 +47,17 @@ class PlaylistController{
         })
 
         if (!playlist){
-            
             return res.status(404).json({
                 errorMessage: 'Плейлист не найден'
             })
         }
+
+        if (!playlist.public && playlist.id_user != req.userId){
+            return res.status(403).json({
+                errorMessage: 'Это приватный плейлист'
+            })
+        }
+
 
         playlist.image = `${host}${playlist.image}`
         

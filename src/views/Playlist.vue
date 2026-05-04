@@ -80,6 +80,10 @@
             // if (error.response.status == 401){
             //     router.push('/')
             // }
+            if (error.response.status == 403){
+                router.push({name: 'NotFound'})
+            }
+
 
             if (error.response.status == 404){
                 router.push({name: 'NotFound'})
