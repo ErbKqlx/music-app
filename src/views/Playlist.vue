@@ -16,12 +16,14 @@
     import { usePlayerStore } from '../stores/player';
     import { useContextMenuStore } from '../stores/contextMenu';
     import { formatDate } from '../composables/formatDate';
+    import { useUserStore } from '../stores/user';
 
 
     const route = useRoute()
 
     const playerStore = usePlayerStore()
     const contextMenuStore = useContextMenuStore();
+    const userStore = useUserStore()
 
     const playlistData = ref(null)
     const playlistSongs = ref([])
@@ -109,26 +111,44 @@
     }
 
     function handleMiscClick(event){
+        const isOwner = userStore.currentUser?.id === playlistData.value?.data.user.id;
+
+        const options = []
+
+        options.push(
+            { 
+                label: 'Добавить в очередь', 
+                action: () => {
+                    playerStore.addToQueue(sortedSongs.value)
+                    // console.log(playerStore.queue)
+                }
+            },
+        )
+
+        if (isOwner){
+            options.push(
+                { 
+                    label: 'Редактировать информацию о плейлисте', 
+                    action: () => {
+                        console.log("Редактировать информацию о плейлисте") 
+                    }
+                },
+                { 
+                    label: 'Сделать открытым', 
+                    action: () => {
+                        console.log("Сделать открытым") 
+                    }
+                },
+                { 
+                    label: 'Удалить плейлист', 
+                    action: () => console.log("Удалить плейлист"), 
+                    danger: true 
+                }
+            );
+        }
+
         // console.log(event)
-        const options = [
-            { 
-                label: 'Редактировать информацию о плейлисте', 
-                action: () => {
-                    console.log("Редактировать информацию о плейлисте") 
-                }
-            },
-            { 
-                label: 'Сделать открытым', 
-                action: () => {
-                    console.log("Сделать открытым") 
-                }
-            },
-            { 
-                label: 'Удалить плейлист', 
-                action: () => console.log("Удалить плейлист"), 
-                danger: true 
-            }
-        ];
+        
         contextMenuStore.open(event, options);
     }
 

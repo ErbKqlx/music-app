@@ -58,7 +58,7 @@
 
 <template>
     <div class="page-header">
-        <RouterLink to="/home" class="clickable">Название</RouterLink>
+        <RouterLink to="/home" class="clickable">Главная</RouterLink>
         <div class="search">
             <form role="search">
                 <input id="search" type="search" placeholder="поиск">

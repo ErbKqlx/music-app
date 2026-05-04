@@ -88,7 +88,7 @@ export const usePlayerStore = defineStore('player', () => {
             sound.play()
             return
         }
-        
+
         currentSong.value = song
 
         console.log(sound)
@@ -104,8 +104,9 @@ export const usePlayerStore = defineStore('player', () => {
             stopSong()
         }
 
-        
-        
+        if (!currentSong.value){
+            currentSong.value = queue.value[0]
+        }
 
         sound = new Howl({
             src: [currentSong.value.song_url], // Provide multiple formats for browser compatibility
@@ -211,12 +212,31 @@ export const usePlayerStore = defineStore('player', () => {
 
         if (isShuffled.value){
             const current = currentSong.value
-            const others = queue.value.filter(s => s.id != current.id)
+            const others = queue.value.filter(s => s.id != current?.id)
 
             shuffleArray(others)
 
             queue.value = current ? [current, ...others] : others
         }
+    }
+
+    const addToQueue = (songs) => {
+        // console.log(queue.value.length)
+        if (queue.value.length > 0){
+            // console.log('a')
+            setQueue(queue.value.concat(songs))
+            console.log('a')
+        }
+        else{
+            setQueue(songs)
+        }
+
+        // console.log(currentQueue ? [currentQueue, ...songs] : songs)
+        // queue.value = currentQueue ? [currentQueue, ...songs] : songs
+    }
+
+    const removeFromQueue = (song) => {
+        
     }
 
     const updateProgress = () => {
@@ -282,6 +302,7 @@ export const usePlayerStore = defineStore('player', () => {
         toggleShuffle,
         setVolume,
         stopSong,
+        addToQueue,
     }
 },
 {

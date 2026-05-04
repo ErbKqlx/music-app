@@ -133,8 +133,9 @@
                 width: fit-content;
                 display: flex;
                 flex-direction: column;
+                flex-grow: 1;
                 gap: 5px;
-                justify-content: space-between;
+                
             }
         }
 

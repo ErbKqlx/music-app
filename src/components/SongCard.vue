@@ -8,7 +8,8 @@
     import { Howl } from 'howler';
     import { usePlayerStore } from '../stores/player';
     import { useContextMenuStore } from '../stores/contextMenu';
-import { formatDate } from '../composables/formatDate';
+    import { formatDate } from '../composables/formatDate';
+    import { useUserStore } from '../stores/user';
 
     const props = defineProps({
         song: {
@@ -25,6 +26,7 @@ import { formatDate } from '../composables/formatDate';
     // const highlighted = ref(false)
 
     const playerStore = usePlayerStore()
+    const userStore = useUserStore()
 
     function playSong(){
         if (playerStore.currentSong == props.song){
@@ -43,20 +45,32 @@ import { formatDate } from '../composables/formatDate';
     const contextMenuStore = useContextMenuStore();
 
     const handleMiscClick = (event) => {
+        // const isOwner = userStore.currentUser?.id === playlistData.value?.data.user.id;
+
+        const options = []
         // console.log(event)
-        const options = [
+
+        options.push(
             { 
                 label: 'Добавить в очередь', 
                 action: () => {
-                    console.log("Добавить в очередь") 
+                    playerStore.addToQueue([props.song])
+                    // console.log("Добавить в очередь") 
                 }
             },
-            { 
-                label: 'Удалить из плейлиста', 
-                action: () => console.log("Удалить из плейлиста"), 
-                danger: true 
-            }
-        ];
+        )
+
+        if (true){
+            options.push(
+                {
+                    label: 'Удалить из плейлиста', 
+                    action: () => console.log("Удалить из плейлиста"), 
+                    danger: true 
+                },
+            )
+        }
+
+        
         contextMenuStore.open(event, options);
     };
     
