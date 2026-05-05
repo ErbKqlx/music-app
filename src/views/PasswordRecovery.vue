@@ -28,7 +28,8 @@
                     <Input type="email" id="email" name="email"/>
                 </div>
             </div>
-            <SubmitButton @click="toProfile"/>
+            <SubmitButton @click=""/>
+            <RouterLink to="/">Вспомнили пароль?</RouterLink>
         </form>
     </div>
 </template>
@@ -60,6 +61,19 @@
                     font-size: 12px;
                     color: rgb(135, 135, 135);
                 }
+            }
+
+            a{
+                color: rgb(125, 132, 255);
+                text-decoration: none;
+                font-size: 14px;
+                display: flex;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            a:hover{
+                text-decoration: underline;
             }
 
             .password-recovery-fields{

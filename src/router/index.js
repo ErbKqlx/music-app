@@ -16,6 +16,7 @@ const routes = [
     {
         path: "/",
         component: Auth,
+        name: 'Login',
     },
     {
         path: "/playlist/:id",
@@ -24,6 +25,7 @@ const routes = [
     {
         path: "/register",
         component: Register,
+        name: 'Register',
     },
     {
         path: "/profile/:id",
@@ -40,6 +42,7 @@ const routes = [
     {
         path: "/password-recovery",
         component: PasswordRecovery,
+        name: 'PasswordRecovery',
     },
     {
         path: "/song/:id",
@@ -55,7 +58,8 @@ const routes = [
     },
     {
         path: '/verify-email',
-        component: VerifyEmail
+        component: VerifyEmail,
+        name: 'VerifyEmail',
     },
     {
         path: "/:pathMatch(.*)*",

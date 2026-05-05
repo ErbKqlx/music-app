@@ -6,8 +6,8 @@
 </script>
 
 <template>
-    <Header></Header>
-    <Wrapper>
+    <!-- <Header></Header> -->
+    <!-- <Wrapper> -->
         <div class="home-info">
             <Carousel>
                 
@@ -16,13 +16,13 @@
                 
             </div>
         </div>
-    </Wrapper>
-    <PlayerBar></PlayerBar>
+    <!-- </Wrapper> -->
+    <!-- <PlayerBar></PlayerBar> -->
 </template>
 
 <style scoped>
     .home-info{
-        height: 1vh;
+        /* height: 1vh; */
         flex-grow: 1;
         /* background-color: rgb(20, 20, 20); */
         background-color: var(--primary-color);

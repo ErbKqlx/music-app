@@ -23,7 +23,8 @@ import { RouterLink } from 'vue-router';
     .wrapper{
         display: flex;
         flex-direction: column;
-        min-height: 100vh;
+        /* min-height: 1vh; */
+        background-color: var(--primary-color);
         width: 100%;
         align-items: center;
         justify-content: center;

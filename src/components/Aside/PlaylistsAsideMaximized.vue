@@ -28,7 +28,7 @@
     <div class="playlists-aside">
         <div class="aside-header">
             <div>
-                <span>Моя музыка</span>
+                <span>Мои плейлисты</span>
             </div>
             <div>
                 <span @click="resize" class="additional-info clickable">Свернуть</span>

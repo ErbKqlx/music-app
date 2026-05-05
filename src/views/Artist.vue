@@ -9,8 +9,8 @@
 </script>
 
 <template>
-    <Header></Header>
-    <Wrapper>
+    <!-- <Header></Header> -->
+    <!-- <Wrapper> -->
         <div class="profile-info">
             <TitleCard title="artist">
                 <template #image>
@@ -22,15 +22,15 @@
             </div>
             <!-- <Footer></Footer> -->
         </div>
-    </Wrapper>
-    <PlayerBar/>
+    <!-- </Wrapper> -->
+    <!-- <PlayerBar/> -->
 </template>
 
 <style scoped>
     .profile-info{
         background-color: rgb(20, 20, 20);
         flex-grow: 1;
-        height: 100%;
+        min-height: 1vh;
         /* display: flex;
         flex-direction: column; */
         border-radius: 10px;

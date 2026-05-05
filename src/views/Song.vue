@@ -79,7 +79,8 @@
             { 
                 label: 'Добавить в очередь', 
                 action: () => {
-                    console.log("Добавить в очередь") 
+                    playerStore.addToQueue([songData.value.data])
+                    // console.log("Добавить в очередь") 
                 }
             },
         ];
@@ -93,8 +94,8 @@
 </script>
 
 <template>
-    <Header></Header>
-    <Wrapper>
+    <!-- <Header></Header> -->
+    <!-- <Wrapper> -->
         <div class="song-info">
             <TitleCard 
                 :title="songData?.data.name" 
@@ -164,13 +165,13 @@
                 </Section>
             </div>
         </div>
-    </Wrapper>
-    <PlayerBar/>
+    <!-- </Wrapper> -->
+    <!-- <PlayerBar/> -->
 </template>
 
 <style scoped>
     .song-info{
-        height: 1vh;
+        /* height: 1vh; */
         flex-grow: 1;
         background-color: rgb(20, 20, 20);
         border-radius: 10px;
@@ -197,6 +198,7 @@
         }
 
         .info{
+            height: 1vh;
             margin-top: 10px;
             padding: 0 10px;
             display: flex;

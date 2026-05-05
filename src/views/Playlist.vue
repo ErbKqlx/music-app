@@ -158,60 +158,63 @@
 </script>
 
 <template>
-    <Header></Header>
-    <Wrapper>
-        <div class="playlist-info">
-            <TitleCard 
-                :title="playlistData?.data.name" 
-                :id_user="playlistData?.data.user.id"
-                :username="playlistData?.data.user.username" 
-                :created_at="formatDate(playlistData?.data.created_at)" >
-                <template #image>
-                    <Image :url="playlistData?.data.image"/>
-                </template>
-                <template #actions>
-                    <Button @click="startPlaylist(sortedSongs[0])" class="play-button round-button"><Play/></Button>
-                    <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal/></Button>
-                </template>
-            </TitleCard>
-            <div class="info">
-                <div class="list-controls">
-                    <label for="sort-select" class="additional-info">Сортировка:</label>
-                    <select id="sort-select" v-model="sortKey" class="sort-select">
-                        <option value="default">По умолчанию</option>
-                        <option value="date-desc">Дата (сначала новые)</option>
-                        <option value="date-asc">Дата (сначала старые)</option>
-                        <option value="length-desc">Длительность (по убыванию)</option>
-                        <option value="length-asc">Длительность (по возрастанию)</option>
-                    </select>
-                </div>
-                <SongsList v-if="playlistData?.data.songs.length > 0">
-                    <SongCard v-for="(song, index) in sortedSongs"
-                        :song="song"
-                        :index="index + 1"
-
-                        :key="song.id"
-                    />
-                </SongsList>
-                <div class="empty" v-else>
-                    В этом плейлисте нет треков
-                </div>
+    <!-- <Header></Header> -->
+    <!-- <Wrapper> -->
+    <div class="playlist-info">
+        <TitleCard 
+            :title="playlistData?.data.name" 
+            :id_user="playlistData?.data.user.id"
+            :username="playlistData?.data.user.username" 
+            :created_at="formatDate(playlistData?.data.created_at)" >
+            <template #image>
+                <Image :url="playlistData?.data.image"/>
+            </template>
+            <template #actions>
+                <Button @click="startPlaylist(sortedSongs[0])" class="play-button round-button"><Play/></Button>
+                <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal/></Button>
+            </template>
+        </TitleCard>
+        <div class="info">
+            <div class="list-controls">
+                <label for="sort-select" class="additional-info">Сортировка:</label>
+                <select id="sort-select" v-model="sortKey" class="sort-select">
+                    <option value="default">По умолчанию</option>
+                    <option value="date-desc">Дата (сначала новые)</option>
+                    <option value="date-asc">Дата (сначала старые)</option>
+                    <option value="length-desc">Длительность (по убыванию)</option>
+                    <option value="length-asc">Длительность (по возрастанию)</option>
+                </select>
             </div>
-            <!-- <Footer></Footer> -->
+            <SongsList v-if="playlistData?.data.songs.length > 0">
+                <SongCard v-for="(song, index) in sortedSongs"
+                    :song="song"
+                    :index="index + 1"
+
+                    :key="song.id"
+                />
+            </SongsList>
+            <div class="empty" v-else>
+                В этом плейлисте нет треков
+            </div>
         </div>
-    </Wrapper>
-    <PlayerBar/>
+        <!-- <Footer></Footer> -->
+    </div>
+    <!-- </Wrapper> -->
+    <!-- <PlayerBar/> -->
 </template>
 
 <style scoped>
     .playlist-info{
-        height: 1vh;
         flex-grow: 1;
         /* background-color: rgb(20, 20, 20); */
         background-color: var(--primary-color);
         border-radius: 10px;
         overflow-y: scroll;
         padding-bottom: 10px;
+
+        .info{
+            height: 1vh;
+        }
         
         .list-controls {
             padding-left: 10px;

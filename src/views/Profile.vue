@@ -83,67 +83,82 @@
 </script>
 
 <template>
-    <Header></Header>
-    <Wrapper>
-        <div class="profile-info">
-            <TitleCard :title = userData?.username>
-                <template #image>
-                    <Image :url="'http://localhost:8080/' + userData?.avatar" class="round-image"/>
+    <!-- <Wrapper> -->
+    <div class="profile-info">
+        <TitleCard :title = userData?.username>
+            <template #image>
+                <Image :url="'http://localhost:8080/' + userData?.avatar" class="round-image"/>
+            </template>
+            <template #actions>
+                <!-- <Button @click="openContextMenu" class="round-button">Настройки</Button> -->
+                <span class="clickable">Настройки</span>
+            </template>
+        </TitleCard>
+        <div class="info">
+            <Section v-if="true">
+                <template #title>
+                    Плейлисты
                 </template>
-                <template #actions>
-                    <!-- <Button @click="openContextMenu" class="round-button">Настройки</Button> -->
-                    <span class="clickable">Настройки</span>
+                <template #content>
+                    <div class="playlists-list">
+                        <Card @click="toPlaylist(playlist.id)" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
+                            <template #image>
+                                <Image :url="playlist.image"/>
+                            </template>
+                        </Card>
+                    </div>
                 </template>
-            </TitleCard>
-            <div class="info">
-                <Section v-if="true">
-                    <template #title>
-                        Плейлисты
-                    </template>
-                    <template #content>
-                        <div class="playlists-list">
-                            <Card @click="toPlaylist(playlist.id)" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
-                                <template #image>
-                                    <Image :url="playlist.image"/>
-                                </template>
-                            </Card>
-                        </div>
-                    </template>
-                </Section>
-                <!-- <CardsList title="Плейлисты" v-if="true">
-                    
-                </CardsList> -->
-                <div class="empty" v-else>
-                    Вы не добавляли плейлисты
-                    <Button @click.stop="">Добавить плейлист</Button>
-                </div>
-                <!-- <div class="user-playlists">
-                    
-                </div> -->
-
-                <!-- <CardsList title="Исполнители">
-                    <Card @click="toArtist" v-for="i in 5" title="Исполнитель №1" description="Исполнитель">
-                        <template #image>
-                            <Image class="round-image"/>
-                        </template>
-                    </Card>
-                </CardsList> -->
+            </Section>
+            <!-- <CardsList title="Плейлисты" v-if="true">
                 
-                <!-- <div class="user-artists">
-                    
-                </div> -->
+            </CardsList> -->
+            <div class="empty" v-else>
+                Вы не добавляли плейлисты
+                <Button @click.stop="">Добавить плейлист</Button>
             </div>
-            <!-- <Footer></Footer> -->
+
+            <Section>
+                <template #title>
+                    История
+                </template>
+                <!-- <template #content>
+                    <div class="playlists-list">
+                        <Card @click="toPlaylist(playlist.id)" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
+                            <template #image>
+                                <Image :url="playlist.image"/>
+                            </template>
+                        </Card>
+                    </div>
+                </template> -->
+            </Section>
+
+            <!-- <div class="user-playlists">
+                
+            </div> -->
+
+            <!-- <CardsList title="Исполнители">
+                <Card @click="toArtist" v-for="i in 5" title="Исполнитель №1" description="Исполнитель">
+                    <template #image>
+                        <Image class="round-image"/>
+                    </template>
+                </Card>
+            </CardsList> -->
+            
+            <!-- <div class="user-artists">
+                
+            </div> -->
         </div>
-    </Wrapper>    
-    <PlayerBar/>
+        <!-- <Footer></Footer> -->
+    </div>
+    <!-- </Wrapper>     -->
+    <!-- <PlayerBar/> -->
 </template>
 
 <style scoped>
     .profile-info{
         /* background-color: rgb(55, 55, 55); */
         background-color: var(--primary-color);
-        height: 1vh;
+        /* height: 1vh; */
         flex-grow: 1;
         /* display: flex;
         flex-direction: column; */

@@ -126,7 +126,7 @@
 <style scoped>
     .song-card{
         display: grid;
-        grid-template-columns: 20px 45px 2fr 2fr 1fr 100px; 
+        grid-template-columns: 20px 45px 3fr 2fr 2fr 60px; 
         gap: 15px;
 
         /* display: flex;

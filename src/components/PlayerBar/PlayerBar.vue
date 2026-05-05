@@ -17,6 +17,7 @@
     import LyricsSvg from '@/assets/svg/lyrics.svg?component'
     import VolumeSvg from '@/assets/svg/volume.svg?component'
     import VolumeMutedSvg from '@/assets/svg/volume_muted.svg?component'
+    import QueueSvg from '@/assets/svg/queue.svg?component'
 
     
 
@@ -115,6 +116,9 @@
             <ProgressBar/>
         </div>
         <div class="misc-buttons">
+            <Button @click="" class="no-background round-button">
+                <QueueSvg color="#5577ee"></QueueSvg>
+            </Button>
             <Button @click="handleLyricsClick" class="no-background round-button">
                 <LyricsSvg :color="lyricsStore.isOpen? '#5577ee' : 'var(--secondary-text-color)'"/>
             </Button>
