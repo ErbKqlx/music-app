@@ -18,6 +18,7 @@
     import VolumeSvg from '@/assets/svg/volume.svg?component'
     import VolumeMutedSvg from '@/assets/svg/volume_muted.svg?component'
     import QueueSvg from '@/assets/svg/queue.svg?component'
+import QueueList from '../QueueList.vue';
 
     
 
@@ -62,6 +63,10 @@
         }
         
     }
+
+    // function toggleQueue() {
+    //     playerStore.toggleQueue();
+    // }
 
     watch(() => playerStore.currentSong, (newCurrent) => {
         setSongData(newCurrent);
@@ -116,9 +121,10 @@
             <ProgressBar/>
         </div>
         <div class="misc-buttons">
-            <Button @click="" class="no-background round-button">
-                <QueueSvg color="#5577ee"></QueueSvg>
+            <Button @click="playerStore.toggleQueue()" class="no-background round-button">
+                <QueueSvg :color="playerStore.isQueueOpen ? '#5577ee' : 'var(--secondary-text-color)'"></QueueSvg>
             </Button>
+            <!-- <QueueList /> -->
             <Button @click="handleLyricsClick" class="no-background round-button">
                 <LyricsSvg :color="lyricsStore.isOpen? '#5577ee' : 'var(--secondary-text-color)'"/>
             </Button>

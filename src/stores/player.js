@@ -29,6 +29,7 @@ export const usePlayerStore = defineStore('player', () => {
     const queue = ref([])
     const originalQueue = ref([])
     const isShuffled = ref(false)
+    const isQueueOpen = ref(false)
     // const isMuted = ref(false)
 
     let timer = null
@@ -47,7 +48,7 @@ export const usePlayerStore = defineStore('player', () => {
     // }
 
     const currentIndex = computed(() => {
-        return queue.value.findIndex(song => song.id == currentSong.value.id)
+        return queue.value.findIndex(song => song.id == currentSong.value?.id)
     })
 
     const toggleShuffle = () => {
@@ -220,6 +221,10 @@ export const usePlayerStore = defineStore('player', () => {
         }
     }
 
+    const toggleQueue = () => {
+        isQueueOpen.value = !isQueueOpen.value
+    }
+
     const addToQueue = (songs) => {
         // console.log(queue.value.length)
         if (queue.value.length > 0){
@@ -238,6 +243,7 @@ export const usePlayerStore = defineStore('player', () => {
     const removeFromQueue = (song) => {
         
     }
+
 
     const updateProgress = () => {
         if (sound && sound.playing()){
@@ -289,6 +295,7 @@ export const usePlayerStore = defineStore('player', () => {
         originalQueue,
         currentIndex,
         isShuffled,
+        isQueueOpen,
         // setSong,
         // setSound,
         updateProgress,
@@ -303,6 +310,7 @@ export const usePlayerStore = defineStore('player', () => {
         setVolume,
         stopSong,
         addToQueue,
+        toggleQueue,
     }
 },
 {
