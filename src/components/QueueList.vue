@@ -32,6 +32,13 @@ const playerStore = usePlayerStore();
                     <span class="song-name">{{ song.name }}</span>
                     <span class="song-artist additional-info">{{ song.artists?.map(a => a.name).join(', ') }}</span>
                 </div>
+                <div>
+                    <button 
+                        class="remove-btn" 
+                        @click.stop="playerStore.removeFromQueue(index)">
+                        ✕
+                    </button>
+                </div>
             </div>
         </div>
         </div>
@@ -85,6 +92,7 @@ const playerStore = usePlayerStore();
     }
 
     .queue-item {
+        position: relative;
         display: flex;
         align-items: center;
         gap: 12px;
@@ -94,8 +102,29 @@ const playerStore = usePlayerStore();
         cursor: pointer;
     }
 
+    .remove-btn {
+        margin-left: auto; /* Прижать вправо */
+        background: none;
+        border: none;
+        color: #b3b3b3;
+        cursor: pointer;
+        padding: 5px 10px;
+        font-size: 16px;
+        opacity: 0; /* Скрываем по умолчанию */
+        transition: opacity 0.2s, color 0.2s;
+        z-index: 2;
+    }
+
     .queue-item:hover {
         background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .queue-item:hover .remove-btn{
+        opacity: 1;
+    }
+
+    .remove-btn:hover {
+        color: #ff4444;
     }
 
     .queue-item.is-active .song-name {
@@ -114,6 +143,8 @@ const playerStore = usePlayerStore();
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        flex-grow: 1;
+        margin-right: 10px;
     }
 
     .song-name {

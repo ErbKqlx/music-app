@@ -14,34 +14,34 @@
 
     const userStore = useUserStore()
 
-    // async function fetchPlaylistsData() {
-    //     try{
-    //         const playlists = await http.get(`/users/${userStore.currentUser.id}/playlists`, {
-    //             headers: { Authorization: "Bearer " + localStorage.getItem('token')}
-    //         })
-    //         playlistsData.value = playlists.data
-    //         console.log(playlistsData.value)
+    async function fetchPlaylistsData() {
+        try{
+            const playlists = await http.get(`/users/${userStore.currentUser.id}/playlists`, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            })
+            playlistsData.value = playlists.data
+            console.log(playlistsData.value)
 
             
-    //         // console.log(userData.value)
-    //     }
-    //     catch (error){
-    //         // if (error.response.status == 401){
-    //         //     router.push('/')
-    //         // }
-    //         console.log('Ошибка при загрузке плейлистов ' + error)
-    //     }
-    // }
+            // console.log(userData.value)
+        }
+        catch (error){
+            // if (error.response.status == 401){
+            //     router.push('/')
+            // }
+            console.log('Ошибка при загрузке плейлистов ' + error)
+        }
+    }
 
-    // onMounted(() => {
-    //     fetchPlaylistsData()
-    // })
+    onMounted(() => {
+        fetchPlaylistsData()
+    })
 </script>
 
 <template>
     <div class="aside" :class="{minimized: isMinimized}">
-        <PlaylistsAsideMinimized @resize="resizeAside" v-if="isMinimized"></PlaylistsAsideMinimized>
-        <PlaylistsAsideMaximized @resize="resizeAside" v-else></PlaylistsAsideMaximized>
+        <PlaylistsAsideMinimized @resize="resizeAside" v-if="isMinimized" :playlists="playlistsData?.playlists"></PlaylistsAsideMinimized>
+        <PlaylistsAsideMaximized @resize="resizeAside" v-else :playlists="playlistsData?.playlists"></PlaylistsAsideMaximized>
     </div>
 </template>
 

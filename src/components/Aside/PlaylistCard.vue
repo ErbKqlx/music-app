@@ -2,6 +2,7 @@
     import Image from '@/components/Image.vue'
 
     defineProps({
+        image_url: String,
         title: String,
         count: Number,
     })
@@ -10,7 +11,7 @@
 <template>
     <div class="playlist-card">
         <div class="image">
-            <Image/>
+            <Image :url="image_url"/>
         </div>
         <div class="playlist-info">
             <span>{{title}}</span>

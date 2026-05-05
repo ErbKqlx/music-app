@@ -25,8 +25,6 @@ class PlaylistController{
 
         // console.log(playlists)
 
-        
-
 
         playlists.forEach(function(playlist){
             playlist.image = `${host}${playlist.image}`

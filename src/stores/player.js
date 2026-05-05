@@ -47,9 +47,11 @@ export const usePlayerStore = defineStore('player', () => {
     //     currentSound.value = sound
     // }
 
-    const currentIndex = computed(() => {
-        return queue.value.findIndex(song => song.id == currentSong.value?.id)
-    })
+    // const currentIndex = computed(() => {
+    //     return queue.value.findIndex(song => song.id == currentSong.value?.id)
+    // })
+
+    const currentIndex = ref(0)
 
     const toggleShuffle = () => {
         isShuffled.value = !isShuffled.value
@@ -59,7 +61,9 @@ export const usePlayerStore = defineStore('player', () => {
             originalQueue.value = [...queue.value]
 
             const current = currentSong.value
-            const others = queue.value.filter(s => s.id != current.id)
+            const others = queue.value.filter(s => s.id != current?.id)
+
+            console.log(current)
 
             shuffleArray(others)
 
@@ -79,10 +83,18 @@ export const usePlayerStore = defineStore('player', () => {
         }
     }
 
-    const playSong = (song) => {
+    const playSong = (song, index = null) => {
         // console.log(song == songStore.currentSong)
         // console.log(song == currentSong.value)
         console.log(song)
+
+        if (index !== null){
+            currentIndex.value = index
+        }
+        else{
+            currentIndex.value = queue.value.findIndex(s => s.id === song.id)
+        }
+
         if (song == currentSong.value && sound){
             // console.log(currentSong.value)
             // console.log(sound)
@@ -240,8 +252,26 @@ export const usePlayerStore = defineStore('player', () => {
         // queue.value = currentQueue ? [currentQueue, ...songs] : songs
     }
 
-    const removeFromQueue = (song) => {
-        
+    const removeFromQueue = (index) => {
+        queue.value.splice(index, 1);
+
+        if (isShuffled.value && originalQueue.value.length > 0) {
+            const songId = queue.value[index]?.id;
+            const orgIndex = originalQueue.value.findIndex(s => s.id === songId);
+            if (orgIndex !== -1) {
+                originalQueue.value.splice(orgIndex, 1);
+            }
+        }
+
+        if (index === currentIndex.value) {
+            if (queue.value.length > 0) {
+                const nextIndex = index >= queue.value.length ? 0 : index;
+                playSong(queue.value[nextIndex]);
+            } else {
+                stopSong();
+                currentSong.value = null;
+            }
+        }
     }
 
 
@@ -311,6 +341,7 @@ export const usePlayerStore = defineStore('player', () => {
         stopSong,
         addToQueue,
         toggleQueue,
+        removeFromQueue,
     }
 },
 {

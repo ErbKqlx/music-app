@@ -6,7 +6,7 @@
     import TitleCard from '@/components/TitleCard.vue'
     import Image from '@/components/Image.vue'
     import SongCard from '@/components/SongCard.vue';
-    import { computed, onMounted, ref } from 'vue';
+    import { computed, onMounted, ref, watch } from 'vue';
     import { useRoute } from 'vue-router';
     import router from '@/router/index.js';
     import http from '../http';
@@ -151,6 +151,10 @@
         
         contextMenuStore.open(event, options);
     }
+
+    watch(() => route.params.id, (newId) => {
+        fetchPlaylistData(newId);
+    });
 
     onMounted(async () => {
         fetchPlaylistData(route.params.id)

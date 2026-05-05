@@ -9,6 +9,12 @@
     import RightArrowSvg from '@/assets/svg/rightArrow.svg?component'
     import { ref } from 'vue'
 
+    const props = defineProps({
+        playlists: {
+            
+        },
+    })
+
     const emit = defineEmits(
         ['resize']
     )
@@ -17,8 +23,8 @@
         emit('resize')
     }
 
-    function toPlaylist(){
-        router.push('/playlist')
+    function toPlaylist(playlist_id){
+        router.push('/playlist/' + playlist_id)
     }
 
     const isModalOpen = ref(false)
@@ -35,7 +41,12 @@
             </div>
         </div>
         <div class="playlist-cards">
-            <PlaylistCard @click="toPlaylist" title="Плейлист №1" count="1" v-for="i in 4"/>
+            <PlaylistCard @click="toPlaylist(playlist.id)" 
+                :title="playlist.name" 
+                count="1" 
+                v-for="playlist in props.playlists" 
+                :key="playlist.id"
+                :image_url="playlist.image"/>
         </div>
         <div class="playlist-actions">
             <Button class="round-button" @click="isModalOpen = true">

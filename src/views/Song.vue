@@ -254,7 +254,7 @@
                 cursor: pointer;
             }
 
-            .artists-list div:hover{
+            .artist-card:hover{
                 background-color: var(--secondary-color);
             }
 
