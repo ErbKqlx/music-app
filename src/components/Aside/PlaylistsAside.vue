@@ -11,6 +11,7 @@
 
     const isMinimized = ref(false)
     const playlistsData = ref(null)
+    const playlistCount = ref(0)
 
     const userStore = useUserStore()
 
@@ -20,7 +21,8 @@
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
             playlistsData.value = playlists.data
-            console.log(playlistsData.value)
+            playlistCount.value = playlistsData.value.playlists.length
+            // console.log(playlistCount.value)
 
             
             // console.log(userData.value)
@@ -41,7 +43,7 @@
 <template>
     <div class="aside" :class="{minimized: isMinimized}">
         <PlaylistsAsideMinimized @resize="resizeAside" v-if="isMinimized" :playlists="playlistsData?.playlists"></PlaylistsAsideMinimized>
-        <PlaylistsAsideMaximized @resize="resizeAside" v-else :playlists="playlistsData?.playlists"></PlaylistsAsideMaximized>
+        <PlaylistsAsideMaximized @resize="resizeAside" v-else :playlists="playlistsData?.playlists" :count="playlistCount"></PlaylistsAsideMaximized>
     </div>
 </template>
 

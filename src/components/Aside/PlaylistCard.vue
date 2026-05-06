@@ -15,7 +15,8 @@
         </div>
         <div class="playlist-info">
             <span>{{title}}</span>
-            <span class="additional-info">{{count}} трек</span>
+            <!-- <span class="additional-info">Треков: {{count}}</span> -->
+             <span class="additional-info">Треков:</span>
         </div>
     </div>
 </template>
@@ -42,6 +43,10 @@
             gap: 3px;
             flex-grow: 1;
 
+            :first-child{
+                font-size: 16px;
+            }
+            
             :last-child{
                 font-size: 12px;
             }

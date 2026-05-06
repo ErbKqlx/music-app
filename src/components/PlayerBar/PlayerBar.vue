@@ -236,6 +236,7 @@ import QueueList from '../QueueList.vue';
                 display: flex;
                 align-items: center;
                 height: 100%;
+                z-index: 999;
             }
 
             .volume-popover {

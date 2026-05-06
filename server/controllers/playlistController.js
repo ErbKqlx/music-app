@@ -29,8 +29,32 @@ class PlaylistController{
 
         playlists.forEach(function(playlist){
             playlist.image = `${host}${playlist.image}`
-            console.log(playlist.image)
+            // console.log(playlist.image)
         })
+
+        // const playlistsData = await Promise.all(
+        //     playlists.map(async playlist => {
+        //     // console.log(await song.getArtists())
+        //         playlist.image = `${host}${playlist.image}`
+        //         // const song_count = await playlist.getSongs()
+        //         // console.log(song_count)
+            
+        //         return {
+        //             id: playlist.id,
+        //             id_user: playlist.id_user,
+        //             name: playlist.name,
+        //             public: playlist.public,
+        //             created_at: playlist.created_at,
+        //             updated_at: playlist.updated_at,
+        //             image: playlist.image,
+        //             // song_count: song_count
+        //         }
+        //     })
+        // )
+
+        // console.log(playlistsData)
+
+        // return Response.success(res, 'Вывод плейлистов', playlists)
 
         return res.status(200).json({
             playlists
@@ -154,6 +178,14 @@ class PlaylistController{
             })
         }
 
+        await Playlist.create({
+            name: name,
+            public: isPublic,
+            id_user: id_user,
+            created_at: Date.now(),
+            updated_at: Date.now(),
+        })
+
         return Response.success(res, 'Плейлист создан')
     }
 
@@ -164,7 +196,7 @@ class PlaylistController{
         const isPublic = req.body.public
         const userId = req.body.id_user
 
-        console.log(req.body)
+        // console.log(req.body)
 
 
         if (userId != req.userId){
@@ -181,6 +213,7 @@ class PlaylistController{
 
         playlist.name = name
         playlist.public = isPublic
+        playlist.updated_at = Date.now()
         await playlist.save()
 
         console.log(name)
@@ -189,6 +222,26 @@ class PlaylistController{
         return Response.success(res, 'Плейлист обновлен')
     }
     
+    static async deletePlaylist(req, res){
+        // const userId = req.body.id_user
+        // console.log(req.body)
+
+        const playlist = await Playlist.findOne({ where: {
+            id: req.params.id
+        }}).catch((err) => {
+            console.log(err)
+        })
+
+        if (playlist.id_user != req.userId){
+            return res.status(403).json({
+                errorMessage: 'Запрещено удалять чужой плейлист'
+            })
+        }
+
+        await playlist.destroy()
+
+        return Response.success(res, 'Плейлист удален')
+    }
 }
 
 export default PlaylistController

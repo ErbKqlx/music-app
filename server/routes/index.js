@@ -21,6 +21,7 @@ router.get('/playlist/:id', [authJwt.verifyToken], PlaylistController.getOnePlay
 router.get('/playlist/:id/songs', [authJwt.verifyToken], PlaylistController.getPlaylistSongs)
 router.post('/playlist', [authJwt.verifyToken], PlaylistController.createPlaylist)
 router.patch('/playlist/:id', [authJwt.verifyToken], PlaylistController.updatePlaylist)
+router.delete('/playlist/:id', [authJwt.verifyToken], PlaylistController.deletePlaylist)
 
 router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
 

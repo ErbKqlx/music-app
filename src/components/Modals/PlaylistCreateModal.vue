@@ -6,6 +6,7 @@
     import Button from '@/components/Input/Button.vue'
     import http from '@/http.js'
     import { useUserStore } from '@/stores/user'
+    import router from '@/router/index.js';
 
     const modalStore = useModalStore()
     const userStore = useUserStore()
@@ -61,11 +62,13 @@
                 })
             }
             else{
-                await axios.post('/playlist', data,
+                await http.post('/playlist', data,
                 {
                     headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                 });
             }
+
+            router.push('/')
             // const playlist = 
             // playlistsData.value = playlists.data
             

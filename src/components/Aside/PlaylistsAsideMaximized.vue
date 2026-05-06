@@ -7,7 +7,7 @@
     import Image from '@/components/Image.vue'
     import Form from '@/components/Form.vue'
     import Input from '@/components/Input/Input.vue'
-    import { ref } from 'vue'
+    import { onMounted, ref } from 'vue'
     import { useModalStore } from '../../stores/modal'
 
 
@@ -17,6 +17,7 @@
         playlists: {
             
         },
+        count: Number,
     })
 
     const emit = defineEmits(
@@ -31,6 +32,9 @@
         router.push('/playlist/' + playlist_id)
     }
 
+    onMounted(() => {
+        console.log(props.count)
+    })
     // const isModalOpen = ref(false)
 </script>
 
@@ -44,13 +48,16 @@
                 <span @click="resize" class="additional-info clickable">Свернуть</span>
             </div>
         </div>
-        <div class="playlist-cards">
+        <div class="playlist-cards" v-if="props.count > 0">
             <PlaylistCard @click="toPlaylist(playlist.id)" 
-                :title="playlist.name" 
-                count="1" 
+                :title="playlist.name"
+                :count="1" 
                 v-for="playlist in props.playlists" 
                 :key="playlist.id"
                 :image_url="playlist.image"/>
+        </div>
+        <div class="playlist-cards empty" v-else>
+            Нет плейлистов
         </div>
         <div class="playlist-actions">
             <Button @click="modalStore.openModal('playlist')">
@@ -84,6 +91,12 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+        }
+
+        .empty{
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .playlist-actions{

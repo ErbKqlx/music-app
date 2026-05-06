@@ -17,6 +17,8 @@
     import Button from '@/components/Input/Button.vue'
     import Settings from '@/assets/svg/settings.svg?component'
     import Section from '@/components/Section.vue';
+    import { useUserStore } from '../stores/user';
+    import { useModalStore } from '../stores/modal';
     // import soundFile from './Korol_i_SHut_-_Lesnik_62571704.mp3'
 
     const route = useRoute()
@@ -31,6 +33,10 @@
 
     const userData = ref(null)
     const savedPlaylists = ref([])
+    const playlistCount = ref(0)
+
+    const userStore = useUserStore()
+    const modalStore = useModalStore()
 
     // onBeforeMount(async () => {
         
@@ -48,6 +54,10 @@
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
             savedPlaylists.value = playlists.data
+            playlistCount.value = savedPlaylists.value.playlists.length
+            // console.log()
+
+            // console.log(savedPlaylists.value.playlists.length)
             // console.log(savedPlaylists.value.playlists.length == 0)
             
             // console.log(savedPlaylists.value.playlists[0])
@@ -100,24 +110,25 @@
                     Плейлисты
                 </template>
                 <template #content>
-                    <div class="playlists-list">
+                    <div class="playlists-list" v-if="playlistCount > 0">
                         <Card @click="toPlaylist(playlist.id)" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
                             <template #image>
                                 <Image :url="playlist.image"/>
                             </template>
                         </Card>
                     </div>
+                    <div class="empty" v-else>
+                        Вы не добавляли плейлисты
+                        <Button @click="modalStore.openModal('playlist')">Добавить плейлист</Button>
+                    </div>
                 </template>
             </Section>
             <!-- <CardsList title="Плейлисты" v-if="true">
                 
             </CardsList> -->
-            <div class="empty" v-else>
-                Вы не добавляли плейлисты
-                <Button @click.stop="">Добавить плейлист</Button>
-            </div>
+            
 
-            <Section>
+            <Section v-if="userStore.currentUser.id == userData?.id">
                 <template #title>
                     История
                 </template>
@@ -173,6 +184,7 @@
         }
 
         .empty{
+            color: var(--secondary-text-color);
             font-size: 24px;
             text-align: center;
             margin-top: 50px;
@@ -180,7 +192,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 20px;
         }
 
         .playlists-list{

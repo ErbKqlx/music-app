@@ -146,7 +146,22 @@
                 // },
                 { 
                     label: 'Удалить плейлист', 
-                    action: () => console.log("Удалить плейлист"), 
+                    action: async () => {
+                        // console.log("Удалить плейлист")
+                        try{
+                            await http.delete(`/playlist/${playlistData.value?.data.id}`, 
+                                // playlistData.value?.data.user.id,
+                                {
+                                    headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+                                }
+                            )
+
+                            router.push('/')
+                        }
+                        catch (error){
+                            console.log('Ошибка при удалении плейлиста ' + error)
+                        }
+                    }, 
                     danger: true 
                 }
             );
