@@ -17,6 +17,7 @@
     import { useContextMenuStore } from '../stores/contextMenu';
     import { formatDate } from '../composables/formatDate';
     import { useUserStore } from '../stores/user';
+    import { useModalStore } from '../stores/modal';
 
 
     const route = useRoute()
@@ -24,6 +25,7 @@
     const playerStore = usePlayerStore()
     const contextMenuStore = useContextMenuStore();
     const userStore = useUserStore()
+    const modalStore = useModalStore()
 
     const playlistData = ref(null)
     const playlistSongs = ref([])
@@ -45,6 +47,7 @@
 
     const sortedSongs = computed(() => {
         const songs = [...(playlistData.value?.data.songs || [])];
+        console.log(songs)
 
         switch (sortKey.value) {
             case 'date-desc':
@@ -98,8 +101,9 @@
     
 
     function startPlaylist(song){
+        console.log(playlistData.value?.data.songs)
         playerStore.isShuffled = false
-        playerStore.setQueue(sortedSongs.value)
+        playerStore.setQueue([...sortedSongs.value])
         
         if (playerStore.currentSong == song){
             playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
@@ -130,15 +134,16 @@
                 { 
                     label: 'Редактировать информацию о плейлисте', 
                     action: () => {
-                        console.log("Редактировать информацию о плейлисте") 
+                        // console.log("Редактировать информацию о плейлисте") 
+                        modalStore.openModal('playlist', playlistData?.value.data)
                     }
                 },
-                { 
-                    label: 'Сделать открытым', 
-                    action: () => {
-                        console.log("Сделать открытым") 
-                    }
-                },
+                // { 
+                //     label: 'Сделать открытым', 
+                //     action: () => {
+                //         console.log("Сделать открытым") 
+                //     }
+                // },
                 { 
                     label: 'Удалить плейлист', 
                     action: () => console.log("Удалить плейлист"), 

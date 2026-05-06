@@ -19,6 +19,8 @@ router.get('/users/:id', [authJwt.verifyToken], UserController.getUserData)
 router.get('/users/:id/playlists', [authJwt.verifyToken], PlaylistController.getPlaylists)
 router.get('/playlist/:id', [authJwt.verifyToken], PlaylistController.getOnePlaylist)
 router.get('/playlist/:id/songs', [authJwt.verifyToken], PlaylistController.getPlaylistSongs)
+router.post('/playlist', [authJwt.verifyToken], PlaylistController.createPlaylist)
+router.patch('/playlist/:id', [authJwt.verifyToken], PlaylistController.updatePlaylist)
 
 router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
 

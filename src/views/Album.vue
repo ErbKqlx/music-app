@@ -11,8 +11,8 @@
 </script>
 
 <template>
-    <Header></Header>
-    <Wrapper>
+    <!-- <Header></Header> -->
+    <!-- <Wrapper> -->
         <div class="album-info">
             <TitleCard title="Альбом №1" created_by="artist" created_at="28.11.2025" hasActions>
                 <template #image>
@@ -22,13 +22,13 @@
             <!-- <ActionBar></ActionBar> -->
         </div>
         <!-- <SongsList/> -->
-    </Wrapper>
-    <PlayerBar/>
+    <!-- </Wrapper> -->
+    <!-- <PlayerBar/> -->
 </template>
 
 <style scoped>
     .album-info{
-        height: 1vh;
+        /* height: 1vh; */
         flex-grow: 1;
         background-color: rgb(20, 20, 20);
         border-radius: 10px;

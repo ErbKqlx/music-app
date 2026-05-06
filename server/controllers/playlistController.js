@@ -2,6 +2,7 @@
 // import User from "../models/User.js"
 import { Op } from "sequelize"
 import db from "../models/index.js"
+import Response from "../configs/response.js"
 
 // const User = db.user
 const Playlist = db.playlist
@@ -104,44 +105,88 @@ class PlaylistController{
                 },
                 songs: songsData,
                 created_at: playlist.created_at,
-                image: playlist.image
+                image: playlist.image,
+                public: playlist.public
             }
         })
     }
 
     static async getPlaylistSongs(req, res){
-        // const playlistsSongs = await PlaylistsSongs.findAll({ where: {
-        //     id_playlist: req.params.id
-        // }}).catch((err) => {
-        //     console.log(err)
-        // })
-
-        
-        
-
-        // const playlist = await Playlist.findOne({ where: {
-        //     id: req.params.id
-        // }})
-
         const playlistsSongs = await PlaylistsSongs.findAll({ where: {
             id_playlist: req.params.id
         }})
 
-        const songs = []
+        // const songs = []
 
-        for await (const playlistsSong of playlistsSongs){
-            const song = await playlistsSong.getSong()
+        // for await (const playlistsSong of playlistsSongs){
+        //     const song = await playlistsSong.getSong()
+        //     song.image = `${host}${song.image}`
+        //     songs.push(song)
+        // }
+
+        const playlistSongs = await PlaylistsSongs.findAll({
+            where: { id_playlist: req.params.id },
+            include: [{
+                model: Song,
+                as: 'song'
+            }]
+        })
+
+        const songs = playlistSongs.map(playlistsSong => {
+            const song = playlistsSong.song.toJSON()
             song.image = `${host}${song.image}`
-            songs.push(song)
-        }
+            return song
+        })
 
-        // playlistsSongs.forEach(async function(playlistsSong){
-        //     songs.push(await playlistsSong.getSong())
-        // })
-
-        // console.log(songs)
 
         return res.status(200).json(songs)
+    }
+
+    static async createPlaylist(req, res){
+        // const { name, public, id_user } = req.body
+        const name = req.body.name
+        const isPublic = req.body.public
+        const id_user = req.body.id_user
+
+        if (id_user != req.userId){
+            return res.status(403).json({
+                errorMessage: 'Запрещено'
+            })
+        }
+
+        return Response.success(res, 'Плейлист создан')
+    }
+
+    static async updatePlaylist(req, res){
+        // const { name, public, id_user } = req.body
+
+        const name = req.body.name
+        const isPublic = req.body.public
+        const userId = req.body.id_user
+
+        console.log(req.body)
+
+
+        if (userId != req.userId){
+            return res.status(403).json({
+                errorMessage: 'Запрещено редактировать чужой плейлист'
+            })
+        }
+
+        const playlist = await Playlist.findOne({ where: {
+            id: req.params.id
+        }}).catch((err) => {
+            console.log(err)
+        })
+
+        playlist.name = name
+        playlist.public = isPublic
+        await playlist.save()
+
+        console.log(name)
+
+
+        return Response.success(res, 'Плейлист обновлен')
     }
     
 }

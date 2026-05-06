@@ -8,6 +8,10 @@
     import Input from '@/components/Input/Input.vue'
     import RightArrowSvg from '@/assets/svg/rightArrow.svg?component'
     import { ref } from 'vue'
+    import { useModalStore } from '../../stores/modal'
+
+
+    const modalStore = useModalStore()
 
     const props = defineProps({
         playlists: {
@@ -27,7 +31,7 @@
         router.push('/playlist/' + playlist_id)
     }
 
-    const isModalOpen = ref(false)
+    // const isModalOpen = ref(false)
 </script>
 
 <template>
@@ -49,7 +53,7 @@
                 :image_url="playlist.image"/>
         </div>
         <div class="playlist-actions">
-            <Button class="round-button" @click="isModalOpen = true">
+            <Button class="round-button" @click="modalStore.openModal('playlist')">
                 <AddPlus/>
             </Button>
         </div>

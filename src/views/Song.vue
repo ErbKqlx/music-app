@@ -8,7 +8,7 @@
     import Card from '@/components/Card.vue'
     import Wrapper from '@/components/Wrapper.vue'
     // import Lyrics from '@/components/Lyrics.vue'
-    import { onMounted, ref } from 'vue'
+    import { onMounted, ref, watch } from 'vue'
     import { useRoute } from 'vue-router'
     import http from '../http'
     import Button from '@/components/Input/Button.vue'
@@ -88,6 +88,10 @@
     }
 
 
+    watch(() => route.params.id, (newId) => {
+        fetchSongData(newId);
+    });
+
     onMounted(async () => {
         fetchSongData(route.params.id)
     })
@@ -99,7 +103,6 @@
         <div class="song-info">
             <TitleCard 
                 :title="songData?.data.name" 
-                :created_by="''" 
                 :created_at="formatDate(songData?.data.release_date)" >
                 <template #image>
                     <Image :url="songData?.data.image"/>

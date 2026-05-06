@@ -122,7 +122,7 @@ export const usePlayerStore = defineStore('player', () => {
         }
 
         sound = new Howl({
-            src: [currentSong.value.song_url], // Provide multiple formats for browser compatibility
+            src: [currentSong?.value.song_url], // Provide multiple formats for browser compatibility
             onload: function() {
                 console.log('Sound loaded successfully!');
             },

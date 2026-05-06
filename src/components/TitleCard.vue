@@ -1,8 +1,11 @@
 <script setup>
     import ActionBar from '@/components/ActionBar.vue'
-    import { onMounted, onUpdated } from 'vue';
+    import { onMounted, onUpdated, watch } from 'vue';
     import "../../node_modules/colorthief/dist/color-thief.umd.js"
+    import { useRoute } from 'vue-router';
     
+    const route = useRoute()
+
     const props = defineProps({
         title: {
             type: String,
@@ -25,7 +28,7 @@
         },
     })
 
-    console.log(props)
+    // console.log(props)
 
     let colorThief = new ColorThief();
     
@@ -49,19 +52,26 @@
             topCard.style.background = "linear-gradient(rgb(" + finalColor + "), " + primaryColor + ")";
             // topCard.style.background = `rgb(${color})`
             
-            console.log(color);
-            console.log(primaryColor);
-            console.log(topCard.style.background);
+            // console.log(color);
+            // console.log(primaryColor);
+            // console.log(topCard.style.background);
         });
     }
 
     onMounted(() => {
+        
         getDominantImageColor();
+        
     })
 
-    onUpdated(() => {
+    // onUpdated(() => {
+    //     console.log('a')
+    //     getDominantImageColor();
+    // })
+    watch(() => route.params.id, (newId) => {
+        console.log('a')
         getDominantImageColor();
-    })
+    });
     
 </script>
 

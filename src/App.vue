@@ -7,11 +7,15 @@
     import { useLyricsStore } from './stores/lyrics';
     import { useRoute } from 'vue-router';
     import { computed } from 'vue';
-import QueueList from './components/QueueList.vue';
-import { usePlayerStore } from './stores/player';
+    import QueueList from './components/QueueList.vue';
+    import { usePlayerStore } from './stores/player';
+    import { useModalStore } from './stores/modal';
+    import PlaylistCreateModal from './components/Modals/PlaylistCreateModal.vue';
+    import SongUploadModal from './components/Modals/SongUploadModal.vue';
 
     const lyricsStore = useLyricsStore()
     const playerStore = usePlayerStore()
+    const modalStore = useModalStore()
 
 
     const route = useRoute();
@@ -28,6 +32,8 @@ import { usePlayerStore } from './stores/player';
         <RouterView/>
       <!-- </main> -->
       <QueueList />
+      <PlaylistCreateModal v-if="modalStore.activeModal === 'playlist'" />
+      <SongUploadModal v-if="modalStore.activeModal === 'song'" />
     </div>
     <PlayerBar/>
   </template>

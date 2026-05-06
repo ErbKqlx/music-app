@@ -103,14 +103,14 @@ const playerStore = usePlayerStore();
     }
 
     .remove-btn {
-        margin-left: auto; /* Прижать вправо */
+        margin-left: auto;
         background: none;
         border: none;
         color: #b3b3b3;
         cursor: pointer;
         padding: 5px 10px;
         font-size: 16px;
-        opacity: 0; /* Скрываем по умолчанию */
+        opacity: 0;
         transition: opacity 0.2s, color 0.2s;
         z-index: 2;
     }

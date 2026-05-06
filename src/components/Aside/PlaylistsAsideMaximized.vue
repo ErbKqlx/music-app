@@ -8,7 +8,10 @@
     import Form from '@/components/Form.vue'
     import Input from '@/components/Input/Input.vue'
     import { ref } from 'vue'
+    import { useModalStore } from '../../stores/modal'
 
+
+    const modalStore = useModalStore()
 
     const props = defineProps({
         playlists: {
@@ -28,7 +31,7 @@
         router.push('/playlist/' + playlist_id)
     }
 
-    const isModalOpen = ref(false)
+    // const isModalOpen = ref(false)
 </script>
 
 <template>
@@ -50,7 +53,7 @@
                 :image_url="playlist.image"/>
         </div>
         <div class="playlist-actions">
-            <Button @click="isModalOpen = true">
+            <Button @click="modalStore.openModal('playlist')">
                 <AddPlus/>Добавить
             </Button>
         </div>
