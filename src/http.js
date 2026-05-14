@@ -4,9 +4,9 @@ import { useUserStore } from "./stores/user";
 
 const instance = axios.create({
     baseURL: "http://localhost:8080/api",
-    headers: {
-        "Content-type": "application/json"
-    }
+    // headers: {
+    //     "Content-type": "application/json"
+    // }
 })
 
 instance.interceptors.request.use(

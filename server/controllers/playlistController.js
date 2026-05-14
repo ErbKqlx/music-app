@@ -3,6 +3,9 @@
 import { Op } from "sequelize"
 import db from "../models/index.js"
 import Response from "../configs/response.js"
+import fs from 'fs';
+import path from 'path';
+import { deleteFile } from "../utils/filesystem.js";
 
 // const User = db.user
 const Playlist = db.playlist
@@ -10,7 +13,7 @@ const PlaylistsSongs = db.playlists_songs
 const Song = db.song
 const Artist = db.artist
 
-const host = 'http://localhost:8080/'
+const host = 'http://localhost:8080'
 
 class PlaylistController{
     static async getPlaylists(req, res){
@@ -19,16 +22,16 @@ class PlaylistController{
             [Op.or]: [
                 { public: true },
                 { id_user: req.userId }
-            ]
-        }}).catch((err) => {
+            ],
+        },
+    order: [['updated_at', 'DESC']]}).catch((err) => {
             console.log(err)
         })
 
         // console.log(playlists)
 
-
         playlists.forEach(function(playlist){
-            playlist.image = `${host}${playlist.image}`
+            playlist.image = `${host}/${playlist.image}`
             // console.log(playlist.image)
         })
 
@@ -82,7 +85,7 @@ class PlaylistController{
         }
 
 
-        playlist.image = `${host}${playlist.image}`
+        playlist.image = `${host}/${playlist.image}`
         
         const user = await playlist.getUser()
         // const song = playlist.get
@@ -91,8 +94,8 @@ class PlaylistController{
         const songsData = await Promise.all(
             songs.map(async song => {
             // console.log(await song.getArtists())
-                song.image = `${host}${song.image}`
-                song.song_url = `${host}${song.song_url}`
+                song.image = `${host}/${song.image}`
+                song.song_url = `${host}/${song.song_url}`
                 const artists = await song.getArtists()
             
                 const artistsData = artists.map(artist => {
@@ -150,15 +153,16 @@ class PlaylistController{
 
         const playlistSongs = await PlaylistsSongs.findAll({
             where: { id_playlist: req.params.id },
+            // order: [['created_at', 'ASC']],
             include: [{
                 model: Song,
                 as: 'song'
-            }]
+            }],
         })
 
         const songs = playlistSongs.map(playlistsSong => {
             const song = playlistsSong.song.toJSON()
-            song.image = `${host}${song.image}`
+            song.image = `${host}/${song.image}`
             return song
         })
 
@@ -168,7 +172,7 @@ class PlaylistController{
 
     static async createPlaylist(req, res){
         // const { name, public, id_user } = req.body
-        const name = req.body.name
+        let name = req.body.name
         const isPublic = req.body.public
         const id_user = req.body.id_user
 
@@ -178,10 +182,27 @@ class PlaylistController{
             })
         }
 
+        let imagePath = req.file 
+            ? `uploads/playlists/${req.file.filename}` 
+            : `uploads/default/placeholder.jpg`;
+
+        // console.log(req.file)
+
+        const playlists = await Playlist.findAll({ where: {
+            id_user: id_user,
+        }}).catch((err) => {
+            console.log(err)
+        })
+
+        if (!name || name.trim() == ''){
+            name = 'Плейлист №' + (playlists.length + 1)
+        }
+
         await Playlist.create({
             name: name,
             public: isPublic,
             id_user: id_user,
+            image: imagePath,
             created_at: Date.now(),
             updated_at: Date.now(),
         })
@@ -192,14 +213,14 @@ class PlaylistController{
     static async updatePlaylist(req, res){
         // const { name, public, id_user } = req.body
 
-        const name = req.body.name
+        let name = req.body.name
         const isPublic = req.body.public
-        const userId = req.body.id_user
+        const id_user = req.body.id_user
 
         // console.log(req.body)
 
 
-        if (userId != req.userId){
+        if (id_user != req.userId){
             return res.status(403).json({
                 errorMessage: 'Запрещено редактировать чужой плейлист'
             })
@@ -211,9 +232,30 @@ class PlaylistController{
             console.log(err)
         })
 
+        if (req.file && playlist.image && !playlist.image.includes('default')) {
+            // const oldPath = path.resolve(playlist.image);
+            // if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+            deleteFile(playlist.image)
+        }
+
+        let imagePath = req.file 
+            ? `uploads/playlists/${req.file.filename}` 
+            : playlist.image;
+
+        const playlists = await Playlist.findAll({ where: {
+            id_user: id_user,
+        }}).catch((err) => {
+            console.log(err)
+        })
+
+        if (!name || name.trim() == ''){
+            name = 'Плейлист №' + playlists.length
+        }
+
         playlist.name = name
         playlist.public = isPublic
         playlist.updated_at = Date.now()
+        playlist.image = imagePath
         await playlist.save()
 
         console.log(name)
@@ -239,6 +281,8 @@ class PlaylistController{
         }
 
         await playlist.destroy()
+
+        deleteFile(playlist.image)
 
         return Response.success(res, 'Плейлист удален')
     }

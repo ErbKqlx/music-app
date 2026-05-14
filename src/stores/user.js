@@ -3,7 +3,6 @@ import { ref } from "vue";
 import router from "../router";
 
 export const useUserStore = defineStore('user', () => {
-    // 1. Инициализация состояния
     const getInitialUser = () => {
         const savedData = localStorage.getItem("user");
         

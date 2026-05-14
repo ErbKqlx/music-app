@@ -117,9 +117,12 @@
                             </template>
                         </Card>
                     </div>
-                    <div class="empty" v-else>
+                    <div class="empty" v-else-if="userStore.currentUser?.id == userData?.id">
                         Вы не добавляли плейлисты
                         <Button @click="modalStore.openModal('playlist')">Добавить плейлист</Button>
+                    </div>
+                    <div class="empty" v-else>
+                        У этого пользователя нет плейлистов
                     </div>
                 </template>
             </Section>
@@ -128,7 +131,7 @@
             </CardsList> -->
             
 
-            <Section v-if="userStore.currentUser.id == userData?.id">
+            <Section v-if="userStore.currentUser?.id == userData?.id">
                 <template #title>
                     История
                 </template>
@@ -198,6 +201,7 @@
         .playlists-list{
             display: flex;
             /* gap: 50px; */
+            flex-wrap: wrap;
         }
     }
 </style>

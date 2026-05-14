@@ -4,24 +4,7 @@ import { computed, ref } from "vue";
 let sound = null
 
 export const usePlayerStore = defineStore('player', () => {
-
-        // if (localStorage.getItem("user"))
-        //     return JSON.parse(localStorage.getItem("user"))
-        // return {
-        //     currentUser: null,
-        // }
-
-        // if (localStorage.getItem('lastPlayedSong')){
-        //     this.currentSong = JSON.parse(localStorage.getItem('lastPlayedSong'))
-        // }
-        // return {
-        //     currentSong,
-        //     currentSound: null,
-        //     isPaused: false,
-        // }
     const currentSong = ref(null)
-    // const currentSound = ref(null)
-    // const currentTime = ref(0)
     const isPlaying = ref(false)
     const volume = ref(0.2)
     const seek = ref(0)
@@ -30,26 +13,9 @@ export const usePlayerStore = defineStore('player', () => {
     const originalQueue = ref([])
     const isShuffled = ref(false)
     const isQueueOpen = ref(false)
-    // const isMuted = ref(false)
 
     let timer = null
     let debounceTimer = null;
-    // persist: {
-    //     storage: localStorage,
-    //     pick: ['currentSong', 'currentTime', 'currentSound', 'isPaused']
-    // },
-
-    // const setSong = (songData) => {
-    //     currentSong.value = songData
-    // }
-
-    // const setSound = (sound) => {
-    //     currentSound.value = sound
-    // }
-
-    // const currentIndex = computed(() => {
-    //     return queue.value.findIndex(song => song.id == currentSong.value?.id)
-    // })
 
     const currentIndex = ref(0)
 
@@ -84,8 +50,6 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
     const playSong = (song, index = null) => {
-        // console.log(song == songStore.currentSong)
-        // console.log(song == currentSong.value)
         console.log(song)
 
         if (index !== null){
@@ -96,8 +60,6 @@ export const usePlayerStore = defineStore('player', () => {
         }
 
         if (song == currentSong.value && sound){
-            // console.log(currentSong.value)
-            // console.log(sound)
             sound.play()
             return
         }
@@ -108,12 +70,6 @@ export const usePlayerStore = defineStore('player', () => {
 
         if (sound){
             seekTime(0)
-            // sound.stop()
-            // sound.off()
-            // sound.unload()
-            // sound = null
-            // // seek.value = 0
-            // // sound.unload()
             stopSong()
         }
 
@@ -122,7 +78,7 @@ export const usePlayerStore = defineStore('player', () => {
         }
 
         sound = new Howl({
-            src: [currentSong?.value.song_url], // Provide multiple formats for browser compatibility
+            src: [currentSong?.value.song_url],
             onload: function() {
                 console.log('Sound loaded successfully!');
             },
@@ -142,7 +98,6 @@ export const usePlayerStore = defineStore('player', () => {
                     playNext()
                 }
                 
-                // seekTime(0)
             },
             onstop: function (id){
                 console.log('Sound stopped! id: ' + id);
@@ -150,21 +105,17 @@ export const usePlayerStore = defineStore('player', () => {
             },
             onloaderror: function(id, err) {
                 console.error('Error loading sound:', err + ' ' + id);
-                // isPlaying.value = false
                 playNext()
             },
             volume: volume.value,
             loop: onRepeat.value,
         });
 
-        // if (seek.value > 0) {
-        //     sound.seek(seek.value)
-        // }
+
         seekTime(seek.value)
 
         if (seek.value > currentSong.value.length){
             seekTime(0)
-            // console.log(currentSong.length)
         }
 
         sound.play()
@@ -189,15 +140,11 @@ export const usePlayerStore = defineStore('player', () => {
         if (queue.value.length == 0) return
 
         let nextIndex = currentIndex.value + 1
-        // if (nextIndex > queue.value.length){
-        //     nextIndex = 0
-        // }
 
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
             playSong(queue.value[nextIndex]);
         }, 150);
-        // playSong(queue.value[nextIndex])
     }
 
     const playPrev = () => {
@@ -217,7 +164,6 @@ export const usePlayerStore = defineStore('player', () => {
         debounceTimer = setTimeout(() => {
             playSong(queue.value[prevIndex])
         }, 150)
-        // playSong(queue.value[prevIndex]);
     }
 
     const setQueue = (songs) => {
@@ -238,9 +184,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
     const addToQueue = (songs) => {
-        // console.log(queue.value.length)
         if (queue.value.length > 0){
-            // console.log('a')
             setQueue(queue.value.concat(songs))
             console.log('a')
         }
@@ -248,8 +192,6 @@ export const usePlayerStore = defineStore('player', () => {
             setQueue(songs)
         }
 
-        // console.log(currentQueue ? [currentQueue, ...songs] : songs)
-        // queue.value = currentQueue ? [currentQueue, ...songs] : songs
     }
 
     const removeFromQueue = (index) => {
@@ -278,7 +220,6 @@ export const usePlayerStore = defineStore('player', () => {
     const updateProgress = () => {
         if (sound && sound.playing()){
             seek.value = sound.seek()
-            // requestAnimationFrame(() => updateProgress())
         }
     }
 
@@ -286,7 +227,6 @@ export const usePlayerStore = defineStore('player', () => {
         stopTimer()
         timer = setInterval(() => {
             updateProgress()
-            // console.log(seek.value)
         }, 100)
     }
 
@@ -316,7 +256,6 @@ export const usePlayerStore = defineStore('player', () => {
 
     return {
         currentSong,
-        // currentSound,
         isPlaying,
         seek,
         volume,
@@ -326,8 +265,6 @@ export const usePlayerStore = defineStore('player', () => {
         currentIndex,
         isShuffled,
         isQueueOpen,
-        // setSong,
-        // setSound,
         updateProgress,
         playSong,
         pauseSong,

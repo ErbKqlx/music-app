@@ -182,8 +182,6 @@
 </script>
 
 <template>
-    <!-- <Header></Header> -->
-    <!-- <Wrapper> -->
     <div class="playlist-info">
         <TitleCard 
             :title="playlistData?.data.name" 
@@ -221,10 +219,7 @@
                 В этом плейлисте нет треков
             </div>
         </div>
-        <!-- <Footer></Footer> -->
     </div>
-    <!-- </Wrapper> -->
-    <!-- <PlayerBar/> -->
 </template>
 
 <style scoped>

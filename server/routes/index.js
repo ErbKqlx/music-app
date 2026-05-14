@@ -5,39 +5,31 @@ import verifySignUp from "../middlewares/verifySignUp.js"
 import authJwt from "../middlewares/authJwt.js"
 import PlaylistController from "../controllers/playlistController.js"
 import SongController from "../controllers/songController.js"
+import db from "../models/index.js"
+import SearchController from "../controllers/searchController.js"
+import { upload } from "../configs/multer.js"
+import { uploadImage } from "../middlewares/uploadImage.js"
 
 const router = express.Router()
 
-
-
-// router.get('/users', UserController.handleGetUsers)
+const Song = db.song
+const Artist = db.artist
 
 router.get('/users/:id', [authJwt.verifyToken], UserController.getUserData)
-
-
 
 router.get('/users/:id/playlists', [authJwt.verifyToken], PlaylistController.getPlaylists)
 router.get('/playlist/:id', [authJwt.verifyToken], PlaylistController.getOnePlaylist)
 router.get('/playlist/:id/songs', [authJwt.verifyToken], PlaylistController.getPlaylistSongs)
-router.post('/playlist', [authJwt.verifyToken], PlaylistController.createPlaylist)
-router.patch('/playlist/:id', [authJwt.verifyToken], PlaylistController.updatePlaylist)
+router.post('/playlist', authJwt.verifyToken, uploadImage, PlaylistController.createPlaylist)
+router.patch('/playlist/:id', authJwt.verifyToken, uploadImage, PlaylistController.updatePlaylist)
 router.delete('/playlist/:id', [authJwt.verifyToken], PlaylistController.deletePlaylist)
 
 router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
 
-// router.route('/users').post(handleCreateUser)
-
-// router.route('/users/:id').get(handleGetUser)
-
-// router.route('/users/:id').put(handleUpdateUser)
-
-// router.route('/users/:id').delete(handleDeleteUser)
-
+router.get('/search', [authJwt.verifyToken], SearchController.search)
 
 router.post('/login', AuthController.login)
 router.post('/register', AuthController.register)
-// router.post('/logout', [authJwt.verifyToken], AuthController.logout)
 router.post('/verify-code', AuthController.verifyCode);
-// router.get('/check-email', AuthController.register)
 
 export default router

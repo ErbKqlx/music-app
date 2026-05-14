@@ -4,6 +4,11 @@
     import { useUserStore } from '../stores/user';
     import { usePlayerStore } from '../stores/player';
     import router from '../router';
+    import { useSearchStore } from '../stores/search';
+    import { ref } from 'vue';
+    
+    const searchStore = useSearchStore();
+    const query = ref('');
 
     const userStore = useUserStore()
     const playerStore = usePlayerStore()
@@ -38,22 +43,26 @@
     }
 
     function logout(){
-        // if (userStore.currentUser){
-        //     userStore.setUser(null)
-        //     localStorage.setItem('token', null)
-        //     // await http.post('/logout')
-        //     //     .then(function (axiosResponse){
-        //     //         localStorage.setItem('token', null)
-        //     //         router.push(`/`)
-        //     //         console.log(axiosResponse)
-        //     //     })
-        // }
-
         userStore.logout()
         playerStore.stopSong()
         router.push(`/`)
         
     }
+
+    let timeout = null;
+
+    const handleInput = () => {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            if (query.value.trim().length >= 2) {
+                router.push({ 
+                    path: '/search', 
+                    query: { q: query.value } 
+                });
+            }
+        }, 500);
+    };
 </script>
 
 <template>
@@ -61,7 +70,7 @@
         <RouterLink to="/home" class="clickable">Главная</RouterLink>
         <div class="search">
             <form role="search">
-                <input id="search" type="search" placeholder="поиск">
+                <input id="search" type="search" placeholder="поиск" v-model="query" @input="handleInput">
             </form>
         </div>
         <div>

@@ -24,10 +24,22 @@
 
     function onFileChange(e) {
         const file = e.target.files[0]
-        if (file) {
-            formData.image = file
-            previewImage.value = URL.createObjectURL(file)
+        if (!file) return
+
+        if (!file.type.startsWith('image/')){
+            alert('Пожалуйста, выберите изображение!')
+            e.target.value = '' // Сбрасываем инпут
+            return
         }
+
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Файл слишком большой (макс. 20МБ)')
+            e.target.value = ''
+            return
+        }
+
+        formData.image = file
+        previewImage.value = URL.createObjectURL(file)
     }
 
     function triggerFileInput() {
@@ -37,7 +49,10 @@
     }
 
     async function handleSubmit() {
-        if (!formData.name.trim()) return alert('Введите название плейлиста')
+        // !formData.name.trim()
+        if (formData.name == '') {
+            // return alert('Введите название плейлиста')
+        } 
 
         const data = new FormData()
         data.append('name', formData.name)
@@ -45,7 +60,7 @@
         data.append('id_user', formData.id_user)
 
         // if (form.image) formData.append('image', form.image)
-        if (formData.image instanceof File) {
+        if (formData.image) {
             data.append('image', formData.image)
         }
 
@@ -53,33 +68,28 @@
         console.log(playlistId)
 
         try{
-            // console.log(formData.value)
             if (isEdit.value){
-                // console.log(data)
                 await http.patch(`/playlist/${playlistId}`, data,
                 {
                     headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                 })
+                
+                // router.push(`/playlist/${playlistId}`)
+                location.reload()
             }
             else{
+                // console.log(data.get('image'));
                 await http.post('/playlist', data,
                 {
                     headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                 });
+
+                router.push('/')
             }
 
-            router.push('/')
-            // const playlist = 
-            // playlistsData.value = playlists.data
-            
-
-            
-            // console.log(userData.value)
+            // router.push('/')
         }
         catch (error){
-            // if (error.response.status == 401){
-            //     router.push('/')
-            // }
             console.log('Ошибка при создании плейлиста ' + error)
         }
 
@@ -96,8 +106,6 @@
 <template>
     <Modal @close="modalStore.closeModal">
         <template #header>
-            <!-- <h2 class="modal-title" v-if="!isEdit">Создание плейлиста</h2>
-            <h2 class="modal-title" v-else>Редактирование плейлиста</h2> -->
             <h2 class="modal-title">{{ isEdit ? 'Редактирование' : 'Создание' }} плейлиста</h2>
         </template>
 
