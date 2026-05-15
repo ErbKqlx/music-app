@@ -64,6 +64,18 @@ class SongController{
             }
         })
     }
+
+    static async createSong(req, res){
+        console.log(req.files)
+    }
+
+    static async updateSong(req, res){
+        console.log(req.body)
+    }
+
+    static async deleteSong(req, res){
+        
+    }
 }
 
 export default SongController

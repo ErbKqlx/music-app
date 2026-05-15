@@ -183,7 +183,7 @@ class PlaylistController{
         }
 
         let imagePath = req.file 
-            ? `uploads/playlists/${req.file.filename}` 
+            ? `uploads/covers/${req.file.filename}` 
             : `uploads/default/placeholder.jpg`;
 
         // console.log(req.file)
@@ -239,7 +239,7 @@ class PlaylistController{
         }
 
         let imagePath = req.file 
-            ? `uploads/playlists/${req.file.filename}` 
+            ? `uploads/covers/${req.file.filename}` 
             : playlist.image;
 
         const playlists = await Playlist.findAll({ where: {

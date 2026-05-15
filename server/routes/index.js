@@ -9,6 +9,7 @@ import db from "../models/index.js"
 import SearchController from "../controllers/searchController.js"
 import { upload } from "../configs/multer.js"
 import { uploadImage } from "../middlewares/uploadImage.js"
+import { uploadTrackFiles } from "../middlewares/uploadTrackFiles.js"
 
 const router = express.Router()
 
@@ -24,6 +25,9 @@ router.post('/playlist', authJwt.verifyToken, uploadImage, PlaylistController.cr
 router.patch('/playlist/:id', authJwt.verifyToken, uploadImage, PlaylistController.updatePlaylist)
 router.delete('/playlist/:id', [authJwt.verifyToken], PlaylistController.deletePlaylist)
 
+router.post('/song', uploadTrackFiles, SongController.createSong)
+router.patch('/song/:id', uploadTrackFiles, SongController.updateSong)
+router.delete('/song/:id', [authJwt.verifyToken], SongController.deleteSong)
 router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
 
 router.get('/search', [authJwt.verifyToken], SearchController.search)

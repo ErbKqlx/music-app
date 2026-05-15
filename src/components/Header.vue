@@ -6,12 +6,15 @@
     import router from '../router';
     import { useSearchStore } from '../stores/search';
     import { ref } from 'vue';
+    import Button from '@/components/Input/Button.vue'
+    import { useModalStore } from '../stores/modal';
     
     const searchStore = useSearchStore();
     const query = ref('');
 
     const userStore = useUserStore()
     const playerStore = usePlayerStore()
+    const modalStore = useModalStore()
 
     console.log(userStore.currentUser)
     function toProfile(){
@@ -74,6 +77,7 @@
             </form>
         </div>
         <div>
+            <Button @click="modalStore.openModal('song')">Загрузить трек</Button>
             <RouterLink :to="'/profile/' + userStore.currentUser?.id" @click="toProfile()">Профиль</RouterLink>
             <RouterLink to="/" @click="logout()">Выйти</RouterLink>
         </div>
@@ -132,5 +136,17 @@
 
     a{
         color: white;
+        align-self: center;
+    }
+
+    button{
+        background-color: #5577ee;
+        color: white;
+        font-size: 14px;
+    }
+
+    button:hover{
+        background-color: #5555ee;
+        transform: initial;
     }
 </style>

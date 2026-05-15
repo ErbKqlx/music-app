@@ -18,11 +18,13 @@
     import { useContextMenuStore } from '@/stores/contextMenu'
     import Section from '@/components/Section.vue'
     import { formatDate } from '../composables/formatDate'
+    import { useModalStore } from '../stores/modal'
 
     const route = useRoute()
 
     const playerStore = usePlayerStore()
     const contextMenuStore = useContextMenuStore()
+    const modalStore = useModalStore()
 
     
 
@@ -82,6 +84,20 @@
                     playerStore.addToQueue([songData.value.data])
                     // console.log("Добавить в очередь") 
                 }
+            },
+             { 
+                label: 'Редактировать информацию о треке', 
+                action: () => {
+                    modalStore.openModal('song', songData?.value.data)
+                    // console.log("Редактировать информацию о треке") 
+                }
+            },
+             { 
+                label: 'Удалить трек', 
+                action: () => {
+                    console.log("Удалить трек") 
+                },
+                danger: true,
             },
         ];
         contextMenuStore.open(event, options);

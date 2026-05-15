@@ -34,7 +34,6 @@
             },
             password: { required: helpers.withMessage('Поле не может быть пустым', required), },
             consent: { sameAs: helpers.withMessage('Вы должны отдать согласие', sameAs(true)), }
-
         }
         
     }
@@ -88,7 +87,7 @@
             <span>Регистрация</span>
             <div class="register-fields">
                 <div>
-                    <label for="username">Имя пользователя</label>
+                    <label for="username">Имя пользователя <span style="color:red;">*</span></label>
                     <input 
                         type="text" 
                         id="username" 
@@ -100,7 +99,7 @@
                     <!-- <span class="error" v-for="error of form.errors.username" :key="error.$uid">{{ error.$message }}</span> -->
                 </div>
                 <div>
-                    <label for="email">Email</label>
+                    <label for="email">Email <span style="color:red;">*</span></label>
                     <input 
                         type="email" 
                         id="email" 
@@ -123,7 +122,7 @@
                     <span class="error" v-for="error of form.errors.email" :key="error.$uid">{{ error.$message }}</span> -->
                 </div>
                 <div>
-                    <label for="password">Пароль</label>
+                    <label for="password">Пароль <span style="color:red;">*</span></label>
                     <input 
                         type="password" 
                         id="password" 
@@ -147,8 +146,8 @@
                 </div>
                 <div>
                     <div class="consent-wrapper">
-                        <label for="consent">Согласие на обработку персональных данных</label>
                         <input type="checkbox" name="consent" id="consent" v-model="form.data.consent">
+                        <label for="consent">Согласие на обработку персональных данных <span style="color:red;">*</span></label>
                     </div>
                     <div class="error" v-for="error of $v.data.consent.$errors" :key="error.$uid">
                         {{ error.$message }}

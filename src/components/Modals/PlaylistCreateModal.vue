@@ -28,12 +28,12 @@
 
         if (!file.type.startsWith('image/')){
             alert('Пожалуйста, выберите изображение!')
-            e.target.value = '' // Сбрасываем инпут
+            e.target.value = ''
             return
         }
 
-        if (file.size > 2 * 1024 * 1024) {
-            alert('Файл слишком большой (макс. 20МБ)')
+        if (file.size > 50 * 1024 * 1024) {
+            alert('Файл слишком большой (макс. 50МБ)')
             e.target.value = ''
             return
         }

@@ -104,13 +104,13 @@
             <span>Авторизация</span>
             <div class="auth-fields">
                 <div>
-                    <label for="email">Email</label>
+                    <label for="email">Email <span style="color:red;">*</span></label>
                     <input type="text" id="email" name="email" v-model="form.data.email">
                     <span class="error" v-for="error of $v.data.email.$errors" :key="error.$uid">{{ error.$message }}</span>
                     <span class="error" v-if="error">{{ error }}</span>
                 </div>
                 <div>
-                    <label for="password">Пароль</label>
+                    <label for="password">Пароль <span style="color:red;">*</span></label>
                     <input type="password" id="password" name="password" v-model="form.data.password">
                     <span class="error" v-for="error of $v.data.password.$errors" :key="error.$uid">{{ error.$message }}</span>
                 </div>
