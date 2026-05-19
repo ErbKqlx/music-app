@@ -14,7 +14,7 @@ export default function(sequelize, DataTypes) {
   }, {
     tableName: 'genres',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "pk_genres_id",

@@ -17,6 +17,7 @@
     const previewImage = ref(null)
     const isEdit = computed(() => !!modalStore.modalData);
 
+    const genresData = ref([])
 
     const rules = {
         data: {
@@ -159,10 +160,25 @@
         }
     }
 
+    async function fetchGenresData(){
+        try{
+            const genres = await http.get('/genres', {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            })
+            genresData.value = genres.data
+            // console.log(genreData.value)
+        }
+        catch (error){
+            console.log('Ошибка при загрузке жанров ' + error)
+        }
+    }
+
     onMounted(() => {
         if (modalStore.modalData) {
             previewImage.value = modalStore.modalData.image
         }
+
+        fetchGenresData()
     })
 </script>
 
@@ -207,22 +223,6 @@
                         <span class="error" v-for="error of $v.data.song_file.$errors" :key="error.$uid">{{ error.$message }}</span>
                     </div>
 
-                    
-
-                    <!-- <div class="row-fields">
-                        <div class="field">
-                            <label>Дата релиза</label>
-                            <input type="date" v-model="formData.release_date">
-                        </div>
-                        <div class="field checkbox-field">
-                            <label class="switch">
-                                <input type="checkbox" v-model="formData.public" :value="formData.public">
-                                <span class="slider"></span>
-                            </label>
-                            <span>Нецензурная лексика</span>
-                        </div>
-                    </div> -->
-
                     <div class="field">
                         <label>Дата релиза</label>
                         <input type="date" v-model="formData.release_date">
@@ -239,6 +239,15 @@
                     <div class="field">
                         <label>Текст песни</label>
                         <textarea v-model="formData.lyrics" placeholder="Введите текст песни..."></textarea>
+                    </div>
+                </div>
+
+                <div class="genres-section">
+                    <div class="genres-header">
+                        <label>Жанры</label>
+                    </div>
+                    <div class="genres-buttons">
+                        <Button @click.prevent="" v-for="genre in genresData" :key="genre.id">{{ genre.name }}</Button>
                     </div>
                 </div>
             </form>
@@ -306,6 +315,31 @@
         gap: 20px;
     }
 
+    .genres-section{
+        display: flex;
+        flex-direction: column;
+        /* gap: 10px; */
+        align-items: baseline;
+
+        .genres-header{
+            margin-bottom: 10px;
+        }
+
+        .genres-buttons{
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            /* align-items: ; */
+            width: 400px;
+
+            button{
+                background-color: var(--secondary-color);
+                color: white;
+                /* border: 1px solid white; */
+            }
+        }
+    }
+
     .field {
         display: flex;
         flex-direction: column;
@@ -322,7 +356,7 @@
         }
     }
 
-    .field label {
+    .field label, .genres-header {
         font-size: 14px;
         font-weight: bold;
         color: #efefef;
