@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import '@/assets/styles/variables/colors.css';
+@import './assets/styles/themes.css';
 
 *{
   margin: 0;
@@ -9,13 +10,13 @@
 
 body{
   font-family: Inter;
-  color: var(--primary-text-color);
+  /* color: var(--primary-text-color); */
   /* background-color: rgb(44, 44, 44); */
-  background-color: var(--background-color);
+  background-color: var(--bg-primary);
 }
 
 .additional-info{
-  color: var(--secondary-text-color);
+  color: var(--text-secondary);
 }
 
 .clickable:hover{
@@ -30,7 +31,7 @@ body{
 }
 
 a{
-  color: var(--primary-text-color);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -39,13 +40,12 @@ a:hover{
 }
 
 ::-webkit-scrollbar{
-  /* background-color: rgba(0, 0, 0, 0); */
   background-color: transparent;
   width: 5px;
 }
 
 ::-webkit-scrollbar-thumb{
-  background-color: var(--secondary-color);
+  background-color: var(--text-tertiary);
   border-radius: 10px;
 }
 

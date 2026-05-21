@@ -6,6 +6,7 @@ import Response from "../configs/response.js"
 import fs from 'fs';
 import path from 'path';
 import { deleteFile } from "../utils/filesystem.js";
+import { getFileUrl } from "../utils/fileHelper.js";
 
 // const User = db.user
 const Playlist = db.playlist
@@ -31,7 +32,8 @@ class PlaylistController{
         // console.log(playlists)
 
         playlists.forEach(function(playlist){
-            playlist.image = `${host}/${playlist.image}`
+            playlist.image = getFileUrl(playlist.image)
+            // playlist.image = `${host}/${playlist.image}`
             // console.log(playlist.image)
         })
 
@@ -84,8 +86,19 @@ class PlaylistController{
             })
         }
 
+        // if (playlist.image) {
+        //     if (fs.existsSync(playlist.image)) {
+        //         playlist.image = `${host}/${playlist.image}`;
+        //     } else {
+        //         playlist.image = `${host}/uploads/default/placeholder.jpg`;
+        //     }
+        // } else {
+        //     playlist.image = `${host}/uploads/default/placeholder.jpg`;
+        // }
 
-        playlist.image = `${host}/${playlist.image}`
+        playlist.image = getFileUrl(playlist.image)
+        // playlist.image = `${host}/${playlist.image}`
+        
         
         const user = await playlist.getUser()
         // const song = playlist.get
@@ -94,7 +107,17 @@ class PlaylistController{
         const songsData = await Promise.all(
             songs.map(async song => {
             // console.log(await song.getArtists())
-                song.image = `${host}/${song.image}`
+                // if (song.image) {
+                //     if (fs.existsSync(song.image)) {
+                //         song.image = `${host}/${song.image}`;
+                //     } else {
+                //         song.image = `${host}/uploads/default/placeholder.jpg`;
+                //     }
+                // } else {
+                //     song.image = `${host}/uploads/default/placeholder.jpg`;
+                // }
+                song.image = getFileUrl(song.image)
+                // song.image = `${host}/${song.image}`
                 song.song_url = `${host}/${song.song_url}`
                 const artists = await song.getArtists()
             
@@ -138,37 +161,37 @@ class PlaylistController{
         })
     }
 
-    static async getPlaylistSongs(req, res){
-        const playlistsSongs = await PlaylistsSongs.findAll({ where: {
-            id_playlist: req.params.id
-        }})
+    // static async getPlaylistSongs(req, res){
+    //     const playlistsSongs = await PlaylistsSongs.findAll({ where: {
+    //         id_playlist: req.params.id
+    //     }})
 
-        // const songs = []
+    //     // const songs = []
 
-        // for await (const playlistsSong of playlistsSongs){
-        //     const song = await playlistsSong.getSong()
-        //     song.image = `${host}${song.image}`
-        //     songs.push(song)
-        // }
+    //     // for await (const playlistsSong of playlistsSongs){
+    //     //     const song = await playlistsSong.getSong()
+    //     //     song.image = `${host}${song.image}`
+    //     //     songs.push(song)
+    //     // }
 
-        const playlistSongs = await PlaylistsSongs.findAll({
-            where: { id_playlist: req.params.id },
-            // order: [['created_at', 'ASC']],
-            include: [{
-                model: Song,
-                as: 'song'
-            }],
-        })
+    //     const playlistSongs = await PlaylistsSongs.findAll({
+    //         where: { id_playlist: req.params.id },
+    //         // order: [['created_at', 'ASC']],
+    //         include: [{
+    //             model: Song,
+    //             as: 'song'
+    //         }],
+    //     })
 
-        const songs = playlistSongs.map(playlistsSong => {
-            const song = playlistsSong.song.toJSON()
-            song.image = `${host}/${song.image}`
-            return song
-        })
+    //     const songs = playlistSongs.map(playlistsSong => {
+    //         const song = playlistsSong.song.toJSON()
+    //         song.image = `${host}/${song.image}`
+    //         return song
+    //     })
 
 
-        return res.status(200).json(songs)
-    }
+    //     return res.status(200).json(songs)
+    // }
 
     static async createPlaylist(req, res){
         // const { name, public, id_user } = req.body

@@ -15,7 +15,6 @@
     }
 
     const sliderStyle = computed(() => {
-        // Вычисляем процент заполнения
         const percentage = (playerStore.seek / playerStore.currentSong?.length) * 100 || 0;
         
         return {
@@ -66,6 +65,7 @@
     .slider .range-input::-webkit-slider-thumb{
         -webkit-appearance: none;
         background-color: white;
+        border: 1px solid black;
         width: 12px;
         height: 12px;
         border-radius: 50%;

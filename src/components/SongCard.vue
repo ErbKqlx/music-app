@@ -86,7 +86,7 @@
         <div @click="playSong()" class="play-button clickable">
             <!-- <PlaySvg v-if="!playerStore.isPlaying" width="100%" height="100%"/>
             <PauseSvg v-else width="100%" height="100%"/> -->
-            <PlaySvg width="100%" height="100%"/>
+            <PlaySvg width="100%" height="100%" color="var(--text-primary)"/>
         </div>
         <div class="image">
             <!-- <img src="" alt="Изображение плейлиста"> -->
@@ -192,13 +192,13 @@
 
             span{
                 font-size: 12px;
+                color: var(--text-primary);
             }
-
-            
 
             .misc-button{
                 height: 20px;
                 width: 20px;
+                color: var(--text-primary);
             }
 
         }
@@ -206,7 +206,7 @@
 
     .song-card:hover{
         /* background-color: rgb(70, 70, 70); */
-        background-color: var(--secondary-color);
+        background-color: var(--bg-hover);
         
         .play-button{
             display: block;
@@ -218,7 +218,7 @@
     }
 
     .active{
-        background-color: var(--secondary-color);
+        background-color: var(--bg-hover);
         border: 2px solid #5577ee;
     }
 </style>

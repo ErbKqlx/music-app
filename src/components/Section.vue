@@ -23,6 +23,7 @@
     }
 
     .section-header{
+        color: var(--text-primary);
         margin: 10px;
 
         .section-title{

@@ -97,11 +97,11 @@
     <div class="profile-info">
         <TitleCard :title = userData?.username>
             <template #image>
-                <Image :url="'http://localhost:8080/' + userData?.avatar" class="round-image"/>
+                <Image :url="userData?.avatar" class="round-image"/>
             </template>
             <template #actions>
                 <!-- <Button @click="openContextMenu" class="round-button">Настройки</Button> -->
-                <span class="clickable">Настройки</span>
+                <!-- <span class="clickable">Настройки</span> -->
             </template>
         </TitleCard>
         <div class="info">
@@ -171,7 +171,7 @@
 <style scoped>
     .profile-info{
         /* background-color: rgb(55, 55, 55); */
-        background-color: var(--primary-color);
+        background-color: var(--bg-tertiary);
         /* height: 1vh; */
         flex-grow: 1;
         /* display: flex;
@@ -187,7 +187,7 @@
         }
 
         .empty{
-            color: var(--secondary-text-color);
+            color: var(--text-secondary);
             font-size: 24px;
             text-align: center;
             margin-top: 50px;

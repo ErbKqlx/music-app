@@ -19,12 +19,14 @@
     import Section from '@/components/Section.vue'
     import { formatDate } from '../composables/formatDate'
     import { useModalStore } from '../stores/modal'
+    import { useLyricsStore } from '../stores/lyrics'
 
     const route = useRoute()
 
     const playerStore = usePlayerStore()
     const contextMenuStore = useContextMenuStore()
     const modalStore = useModalStore()
+    const lyricsStore = useLyricsStore()
 
     
 
@@ -92,15 +94,37 @@
                     // console.log("Редактировать информацию о треке") 
                 }
             },
-             { 
-                label: 'Удалить трек', 
-                action: () => {
-                    console.log("Удалить трек") 
-                },
+            { 
+                label: 'Удалить трек',
+                action: async () => {
+                    try{
+                        await http.delete(`/song/${songData?.value.data.id}`, 
+                            {
+                                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+                            }
+                        )
+
+                        router.push('/')
+                    }
+                    catch (error){
+                        console.log('Ошибка при удалении трека ' + error)
+                    }
+                }, 
                 danger: true,
             },
         ];
         contextMenuStore.open(event, options);
+    }
+
+    function handleLyricsClick() {
+        // lyricsStore.toggleLyrics()
+        if (!lyricsStore.isOpen){
+            lyricsStore.openLyrics(songData.value.data.lyrics, songData.value.data.artists, songData.value.data.name)
+        }
+        else{
+            lyricsStore.closeLyrics()
+        }
+        
     }
 
 
@@ -124,13 +148,13 @@
                     <Image :url="songData?.data.image"/>
                 </template>
                 <template #actions>
-                    <Button @click="startSong(songData?.data)" class="play-button round-button"><Play/></Button>
-                    <!-- <Button @click="showLyrics()">Посмотреть текст</Button> -->
-                    <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal/></Button>
+                    <Button @click="startSong(songData?.data)" class="play-button round-button"><Play color="var(--bg-primary)"/></Button>
+                    <Button @click="handleLyricsClick">Посмотреть текст</Button>
+                    <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal color="var(--text-primary)"/></Button>
                 </template>
             </TitleCard>
             <div class="info">
-                <Section>
+                <!-- <Section>
                     <template #title>
                         Альбомы
                     </template>
@@ -143,7 +167,7 @@
                             </Card>
                         </div>
                     </template>
-                </Section>
+                </Section> -->
                 <Section>
                     <template #title>
                         Исполнители
@@ -162,7 +186,7 @@
                         </div>
                     </template>
                 </Section>
-                <Section>
+                <!-- <Section>
                     <template #title>
                         Текст
                     </template>
@@ -171,7 +195,7 @@
                             <pre>{{songData?.data.lyrics || 'Текст для этой песни пока не добавлен'}}</pre>
                         </div>
                     </template>
-                </Section>
+                </Section> -->
                 <Section>
                     <template #title>
                         Комментарии
@@ -192,10 +216,16 @@
     .song-info{
         /* height: 1vh; */
         flex-grow: 1;
-        background-color: rgb(20, 20, 20);
+        /* background-color: rgb(20, 20, 20); */
+        background-color: var(--bg-tertiary);
         border-radius: 10px;
         overflow-y: scroll;
         padding-bottom: 10px;
+
+        button{
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+        }
 
         .song-actions{
             display: flex;
@@ -210,6 +240,8 @@
                 /* border-radius: 100%; */
                 font-size: 14px;
             }
+
+            
 
             .play-btn{
                 border-radius: 100%;
@@ -253,6 +285,7 @@
                             width: 100%;
                             font-size: 32px;
                             margin-bottom: 10px;
+                            color: var(--text-primary);
                         }
 
                         .artist-bio{
@@ -274,15 +307,15 @@
             }
 
             .artist-card:hover{
-                background-color: var(--secondary-color);
+                background-color: var(--bg-hover);
             }
 
-            .lyrics-content {
+            /* .lyrics-content {
                 font-size: 1.2rem;
                 line-height: 1.6;
                 white-space: pre-wrap;
                 color: var(--secondary-text-color);
-            }
+            } */
         }
         
     }

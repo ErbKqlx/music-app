@@ -10,7 +10,7 @@
         <div v-if="lyricsStore.isOpen" class="lyrics-overlay" @click.self="lyricsStore.closeLyrics()">
             <div class="lyrics-container">
                 <div class="lyrics-header">
-                    <h2>Текси песни: {{ lyricsStore.songTitle }}</h2>
+                    <h2><span v-for="artist in lyricsStore.artistsTitle" class="artists-title">{{ artist.name }}</span> - {{ lyricsStore.songTitle }}</h2>
                     <button class="close-btn" @click="lyricsStore.closeLyrics()">×</button>
                 </div>
                 <div class="lyrics-scroll-area">
@@ -39,12 +39,12 @@
     .lyrics-container {
         width: 70vw;
         height: 70vh;
-        background: var(--primary-color);
+        background: var(--bg-tertiary);
         border-radius: 20px;
         display: flex;
         flex-direction: column;
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        border: 1px solid #333;
+        border: 1px solid var(--border-color);
         overflow: hidden;
     }
 
@@ -53,13 +53,13 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid #222;
+        border-bottom: 1px solid var(--border-hover);
     }
 
     .lyrics-header h2 {
         margin: 0;
         font-size: 2rem;
-        color: white;
+        color: var(--text-primary);
     }
 
     .lyrics-scroll-area {
@@ -73,7 +73,7 @@
         white-space: pre-wrap;
         font-size: 1.5rem;
         line-height: 1.8;
-        color: #ccc;
+        color: var(--text-secondary);
         font-family: inherit;
         text-align: center;
         margin: 0;
@@ -82,21 +82,21 @@
     .close-btn {
         background: none;
         border: none;
-        color: #666;
+        color: var(--text-primary);
         font-size: 40px;
         cursor: pointer;
         transition: color 0.2s;
     }
 
     .close-btn:hover {
-        color: white;
+        color: var(--text-secondary);
     }
 
     .lyrics-scroll-area::-webkit-scrollbar {
         width: 8px;
     }
     .lyrics-scroll-area::-webkit-scrollbar-thumb {
-        background: #444;
+        background: var(--text-secondary);
         border-radius: 4px;
     }
 
@@ -122,5 +122,9 @@
     .lyrics-fade-leave-to .lyrics-window {
         transform: scale(0.95);
         opacity: 0;
+    }
+
+    .artists-title:not(:last-child)::after {
+        content: ", ";
     }
 </style>

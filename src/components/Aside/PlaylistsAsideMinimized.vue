@@ -39,7 +39,7 @@
         <div class="aside-header">
             <div>
                 <Button @click="resize" class="no-background round-button">
-                    <RightArrowSvg/>
+                    <RightArrowSvg color="var(--text-secondary)"/>
                 </Button>
                 <!-- <span @click="resize" class="additional-info clickable">Развернуть</span> -->
             </div>
@@ -66,7 +66,7 @@
         /* background-color: rgb(20, 20, 20); */
         /* max-width: 85px; */
         height: 100%;
-        background-color: var(--primary-color);
+        background-color: var(--bg-tertiary);
         padding: 10px 10px;
         border-radius: 10px;
         display: flex;

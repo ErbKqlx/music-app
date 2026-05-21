@@ -3,8 +3,10 @@ import { StatusCode } from "../constants.js"
 import db from "../models/index.js"
 // import User from "../models/Users.js"
 import { Sequelize } from "sequelize"
+import { getFileUrl } from "../utils/fileHelper.js"
 
 const User = db.user
+
 class UserController{
     static async getUserData(req, res){
         // return Response.success(res, 'Профиль')
@@ -12,7 +14,8 @@ class UserController{
 
         const user = await User.findByPk(userId)
 
-        console.log(user.avatar)
+        // console.log(user.avatar)
+        user.avatar = getFileUrl(user.avatar, 'uploads/default/placeholder_avatar.jpg')
 
         return res.status(200).json({
             id: user.id,

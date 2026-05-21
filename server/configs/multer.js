@@ -4,7 +4,7 @@ import path from 'path';
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === 'song_url') {
-            cb(null, 'uploads/tracks');
+            cb(null, 'uploads/sounds');
         } else if (file.fieldname === 'image') {
             cb(null, 'uploads/covers'); 
         }

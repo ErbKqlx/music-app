@@ -28,6 +28,7 @@
         font-size: 14px;
         padding: 7px 5px;
         border-radius: 5px;
+        color: var(--text-primary);
 
         .image{
             /* background-color: lightgray; */
@@ -55,7 +56,8 @@
 
     .playlist-card:hover{
         /* background-color: rgb(70, 70, 70); */
-        background-color: var(--secondary-color);
+        /* background-color: var(--secondary-color); */
+        background-color: var(--bg-hover);
         cursor: pointer;
     }
 </style>

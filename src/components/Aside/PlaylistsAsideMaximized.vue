@@ -72,7 +72,8 @@
         /* width: 20vw; */
         /* background-color: rgb(20, 20, 20); */
         height: 100%;
-        background-color: var(--primary-color);
+        /* background-color: var(--primary-color); */
+        background-color: var(--bg-tertiary);
         padding: 10px 10px;
         border-radius: 10px;
         display: flex;
@@ -84,6 +85,7 @@
             justify-content: space-between;
             font-size: 14px;
             font-weight: bold;
+            color: var(--text-primary)
             /* margin-bottom: 10px; */
         }
 
@@ -97,6 +99,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            color: var(--text-secondary)
         }
 
         .playlist-actions{

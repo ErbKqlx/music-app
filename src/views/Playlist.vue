@@ -192,8 +192,8 @@
                 <Image :url="playlistData?.data.image"/>
             </template>
             <template #actions>
-                <Button @click="startPlaylist(sortedSongs[0])" class="play-button round-button"><Play/></Button>
-                <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal/></Button>
+                <Button @click="startPlaylist(sortedSongs[0])" class="play-button round-button"><Play color="var(--bg-primary)"/></Button>
+                <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal color="var(--text-primary)"/></Button>
             </template>
         </TitleCard>
         <div class="info">
@@ -226,13 +226,17 @@
     .playlist-info{
         flex-grow: 1;
         /* background-color: rgb(20, 20, 20); */
-        background-color: var(--primary-color);
+        background-color: var(--bg-tertiary);
         border-radius: 10px;
         overflow-y: scroll;
         padding-bottom: 10px;
 
         .info{
             height: 1vh;
+        }
+
+        button{
+            background-color: var(--text-primary);
         }
         
         .list-controls {
@@ -244,7 +248,7 @@
         }
 
         .sort-select {
-            background-color: var(--secondary-color);
+            background-color: var(--text-tertiary);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 4px;
@@ -267,6 +271,7 @@
             font-size: 24px;
             text-align: center;
             margin-top: 50px;
+            color: var(--text-secondary);
         }
     }
 </style>

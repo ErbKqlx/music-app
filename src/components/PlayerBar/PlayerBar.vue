@@ -18,7 +18,7 @@
     import VolumeSvg from '@/assets/svg/volume.svg?component'
     import VolumeMutedSvg from '@/assets/svg/volume_muted.svg?component'
     import QueueSvg from '@/assets/svg/queue.svg?component'
-import QueueList from '../QueueList.vue';
+    import QueueList from '../QueueList.vue';
 
     
 
@@ -56,7 +56,7 @@ import QueueList from '../QueueList.vue';
     function handleLyricsClick() {
         // lyricsStore.toggleLyrics()
         if (!lyricsStore.isOpen){
-            lyricsStore.openLyrics(playerStore.currentSong.lyrics, playerStore.currentSong.name)
+            lyricsStore.openLyrics(playerStore.currentSong.lyrics, playerStore.currentSong.artists, playerStore.currentSong.name)
         }
         else{
             lyricsStore.closeLyrics()
@@ -102,31 +102,31 @@ import QueueList from '../QueueList.vue';
         <div class="main-actions">
             <div class="player-buttons">
                 <Button @click="playerStore.toggleShuffle()" class="no-background round-button">
-                    <ShuffleSvg :color="playerStore.isShuffled? '#5577ee' : 'var(--secondary-text-color)'"/>
+                    <ShuffleSvg :color="playerStore.isShuffled? '#5577ee' : 'var(--text-primary)'"/>
                 </Button>
                 <Button @click="playPrevSong()" class="no-background round-button">
-                    <PreviousSvg/>
+                    <PreviousSvg color='var(--text-primary)'/>
                 </Button>
                 <Button @click="playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)" class="round-button">
                     <PlaySvg v-if="!playerStore.isPlaying"/>
                     <PauseSvg v-else/>
                 </Button>
                 <Button @click="playNextSong()" class="no-background round-button">
-                    <NextSvg/>
+                    <NextSvg color='var(--text-primary)'/>
                 </Button>
                 <Button @click="playerStore.setRepeat(playerStore.onRepeat)" class="no-background round-button">
-                    <RepeatSvg :color="playerStore.onRepeat? '#5577ee' : 'var(--secondary-text-color)'"/>
+                    <RepeatSvg :color="playerStore.onRepeat? '#5577ee' : 'var(--text-primary)'"/>
                 </Button>
             </div>
             <ProgressBar/>
         </div>
         <div class="misc-buttons">
             <Button @click="playerStore.toggleQueue()" class="no-background round-button">
-                <QueueSvg :color="playerStore.isQueueOpen ? '#5577ee' : 'var(--secondary-text-color)'"></QueueSvg>
+                <QueueSvg :color="playerStore.isQueueOpen ? '#5577ee' : 'var(--text-primary)'"></QueueSvg>
             </Button>
             <!-- <QueueList /> -->
             <Button @click="handleLyricsClick" class="no-background round-button">
-                <LyricsSvg :color="lyricsStore.isOpen? '#5577ee' : 'var(--secondary-text-color)'"/>
+                <LyricsSvg :color="lyricsStore.isOpen? '#5577ee' : 'var(--text-primary)'"/>
             </Button>
             <div class="volume-container" @mouseenter="isVolumeHovered = true" @mouseleave="isVolumeHovered = false">
                 <transition name="fade">
@@ -144,8 +144,8 @@ import QueueList from '../QueueList.vue';
                 </transition>
 
                 <Button @click="playerStore.volume != 0 ? playerStore.setVolume(0) : playerStore.setVolume(0.5)" class="no-background round-button">
-                    <VolumeSvg v-if="playerStore.volume > 0"/>
-                    <VolumeMutedSvg color="lightgray" v-else/>
+                    <VolumeSvg color='var(--text-primary)' v-if="playerStore.volume > 0"/>
+                    <VolumeMutedSvg color='var(--text-primary)' v-else/>
                 </Button>
             </div>
         </div>
@@ -154,7 +154,8 @@ import QueueList from '../QueueList.vue';
 
 <style scoped>
     .player-bar{
-        background-color: black;
+        /* background-color: black; */
+        background-color: var(--bg-primary);
         width: 100%;
         height: 80px;
         display: flex;
@@ -187,6 +188,10 @@ import QueueList from '../QueueList.vue';
                 gap: 5px;
             }
 
+            :last-child :not(.additional-info){
+                color: var(--accent-color);
+            }
+
             :last-child .additional-info{
                 font-size: 12px;
             }
@@ -199,18 +204,21 @@ import QueueList from '../QueueList.vue';
             align-items: center;
             /* justify-content: center; */
             gap: 10px;
+            color: var(--text-primary);
 
             .player-buttons{
                 display: flex;
                 gap: 15px;
                 align-items: center;
 
-                .button{
-                    background-color: lightgray;
+                button{
+                    background-color: var(--text-primary);
+                    /* background-color: var(--); */
                     width: 38px;
                     height: 38px;
                     border-radius: 360px;
-                    color: black;
+                    /* color: black; */
+                    color: var(--bg-primary);
 
                     display: flex;
                     align-items: center;
@@ -244,14 +252,16 @@ import QueueList from '../QueueList.vue';
                 bottom: 40px;
                 left: 50%;
                 transform: translateX(-50%);
-                background-color: #282828;
+                /* background-color: #282828; */
+                background-color: var(--bg-tertiary);
                 padding: 12px 15px;
                 border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+                box-shadow: var(--shadow-sm);
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                border: 1px solid black;
+                /* border: 1px solid black; */
+                border: 1px solid var(--border-hover);
             }
 
             .volume-slider {
@@ -259,7 +269,7 @@ import QueueList from '../QueueList.vue';
                 -webkit-appearance: none;
                 width: 6px;
                 height: 100px;
-                background: #4d4d4d;
+                /* background: #4d4d4d; */
                 border-radius: 2px;
                 outline: none;
                 appearance: slider-vertical;

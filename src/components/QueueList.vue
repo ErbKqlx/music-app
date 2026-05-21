@@ -53,7 +53,7 @@ const playerStore = usePlayerStore();
         right: 0;
         width: 340px;
         height: calc(100vh - 60px - 80px);
-        background-color: var(--primary-color);
+        background-color: var(--bg-tertiary);
         z-index: 10;
         border-radius: 10px;
     }
@@ -63,26 +63,26 @@ const playerStore = usePlayerStore();
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid #282828;
+        border-bottom: 1px solid var(--border-hover);
     }
 
     .queue-header h2 {
         font-size: 18px;
         margin: 0;
-        color: var(--primary-text-color);
+        color: var(--text-primary);
     }
 
     .close-btn {
         background: none;
         border: none;
-        color: #b3b3b3;
+        color: var(--text-secondary);
         font-size: 20px;
         cursor: pointer;
         transition: color 0.2s;
     }
 
     .close-btn:hover {
-        color: white;
+        color: var(--text-primary);
     }
 
     .queue-content {

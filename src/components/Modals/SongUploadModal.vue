@@ -111,6 +111,7 @@
             data.append('release_date', formData.release_date)
             data.append('explicit_content', formData.explicit_content ? 1 : 0)
             data.append('lyrics', formData.lyrics)
+            data.append('length', formData.length)
             // length: modalStore.modalData?.length || 0,
             // image: modalStore.modalData?.image || null,
             // song_file: null,
@@ -123,6 +124,10 @@
             // if (form.image) formData.append('image', form.image)
             if (formData.image) {
                 data.append('image', formData.image)
+            }
+
+            if (formData.song_file){
+                data.append('song_url', formData.song_file)
             }
 
             const songId = modalStore.modalData?.id
@@ -140,14 +145,20 @@
                 }
                 else{
                     // console.log(data.get('image'));
-                    await http.post('/song', data,
+                    const response = await http.post('/song', data,
                     {
                         headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                     });
 
                     // const 
 
-                    router.push(`/song/${song.id}`)
+                    if (response.data?.data?.id){
+                        router.push(`/song/${response.data.data.id}`)
+                    }
+                    else{
+                        router.push('/')
+                    }
+                    
                 }
 
                 // router.push('/')
@@ -247,7 +258,7 @@
                         <label>Жанры</label>
                     </div>
                     <div class="genres-buttons">
-                        <Button @click.prevent="" v-for="genre in genresData" :key="genre.id">{{ genre.name }}</Button>
+                        <Button @click.prevent="" v-for="genre in genresData" :key="genre.id" :class="{'active': genre.id == 1}">{{ genre.name }}</Button>
                     </div>
                 </div>
             </form>
@@ -266,6 +277,7 @@
     .modal-title {
         margin: 0;
         font-size: 1.5rem;
+        color: var(--text-primary);
     }
 
     .create-song-form {
@@ -313,6 +325,7 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+        width: 400px;
     }
 
     .genres-section{
@@ -337,6 +350,12 @@
                 color: white;
                 /* border: 1px solid white; */
             }
+
+            .active{
+                background-color: var(--accent-color);
+                color: white;
+                /* border: 2px solid #5577ee; */
+            }
         }
     }
 
@@ -359,7 +378,7 @@
     .field label, .genres-header {
         font-size: 14px;
         font-weight: bold;
-        color: #efefef;
+        color: var(--text-primary);
     }
 
     .field input[type='text'], 

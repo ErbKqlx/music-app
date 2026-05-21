@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router/index.js'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import './assets/styles/themes.css'
 
 const app = createApp(App)
 const pinia = createPinia()

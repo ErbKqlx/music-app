@@ -48,6 +48,7 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
+            color: var(--text-primary);
 
             .additional-info{
                 font-size: 12px;
@@ -56,7 +57,8 @@
     }
 
     .card:hover{
-        background-color: rgb(70, 70, 70);
+        /* background-color: rgb(70, 70, 70); */
+        background-color: var(--bg-hover);
         cursor: pointer;
     }
 </style>
