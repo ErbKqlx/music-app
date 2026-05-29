@@ -24,7 +24,8 @@ import { RouterLink } from 'vue-router';
         display: flex;
         flex-direction: column;
         /* min-height: 1vh; */
-        background-color: var(--primary-color);
+        background-color: var(--bg-tertiary);
+        border-radius: 10px;
         width: 100%;
         align-items: center;
         justify-content: center;

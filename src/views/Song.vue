@@ -20,6 +20,7 @@
     import { formatDate } from '../composables/formatDate'
     import { useModalStore } from '../stores/modal'
     import { useLyricsStore } from '../stores/lyrics'
+    import { useUserStore } from '../stores/user'
 
     const route = useRoute()
 
@@ -27,6 +28,7 @@
     const contextMenuStore = useContextMenuStore()
     const modalStore = useModalStore()
     const lyricsStore = useLyricsStore()
+    const userStore = useUserStore()
 
     
 
@@ -77,7 +79,7 @@
             { 
                 label: 'Добавить в плейлист', 
                 action: () => {
-                    console.log("Добавить в плейлист") 
+                    modalStore.openModal('selectPlaylists', songData.value.data)
                 }
             },
             { 

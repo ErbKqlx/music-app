@@ -169,6 +169,7 @@
             max-width: 25%;
             flex-grow: 1;
             gap: 10px;
+            color: var(--text-primary);
 
             .artist-link:not(:last-child)::after {
                 content: ", ";

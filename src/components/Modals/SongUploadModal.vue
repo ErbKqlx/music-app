@@ -363,6 +363,7 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
+        color: var(--text-primary);
 
         input[type='text']{
             border-radius: 5px;

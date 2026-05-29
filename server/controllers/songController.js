@@ -200,6 +200,10 @@ class SongController{
             return res.status(500).json({ errorMessage: 'Внутренняя ошибка сервера при удалении трека' });
         }
     }
+
+    static async getNewSongs(req, res){
+        
+    }
 }
 
 export default SongController

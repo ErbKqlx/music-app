@@ -23,10 +23,6 @@ export default function(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
   }, {
     tableName: 'playlists_songs',
     schema: 'public',

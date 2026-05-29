@@ -12,6 +12,7 @@
     import { useModalStore } from './stores/modal';
     import PlaylistCreateModal from './components/Modals/PlaylistCreateModal.vue';
     import SongUploadModal from './components/Modals/SongUploadModal.vue';
+    import SelectPlaylists from './components/Modals/SelectPlaylists.vue';
 
     const lyricsStore = useLyricsStore()
     const playerStore = usePlayerStore()
@@ -34,6 +35,7 @@
       <QueueList />
       <PlaylistCreateModal v-if="modalStore.activeModal === 'playlist'" />
       <SongUploadModal v-if="modalStore.activeModal === 'song'" />
+      <SelectPlaylists v-if="modalStore.activeModal === 'selectPlaylists'" />
     </div>
     <PlayerBar/>
   </template>

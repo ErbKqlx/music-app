@@ -26,10 +26,16 @@ router.post('/playlist', authJwt.verifyToken, uploadImage, PlaylistController.cr
 router.patch('/playlist/:id', authJwt.verifyToken, uploadImage, PlaylistController.updatePlaylist)
 router.delete('/playlist/:id', [authJwt.verifyToken], PlaylistController.deletePlaylist)
 
+router.delete('/playlist/:id_playlist/song/:id_song', [authJwt.verifyToken], PlaylistController.deleteSongFromPlaylist)
+router.post('/playlist/:id_playlist/song/:id_song', [authJwt.verifyToken], PlaylistController.addSongToPlaylist)
+
+
 router.post('/song', uploadTrackFiles, SongController.createSong)
 router.patch('/song/:id', uploadTrackFiles, SongController.updateSong)
 router.delete('/song/:id', [authJwt.verifyToken], SongController.deleteSong)
 router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
+
+router.get('/songs/new', [authJwt.verifyToken], SongController.getNewSongs)
 
 router.get('/search', [authJwt.verifyToken], SearchController.search)
 

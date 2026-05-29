@@ -161,6 +161,7 @@
     .modal-title {
         margin: 0;
         font-size: 1.5rem;
+        color: var(--text-primary);
     }
 
     .create-playlist-form {
@@ -229,7 +230,7 @@
     .field label {
         font-size: 14px;
         font-weight: bold;
-        color: #efefef;
+        color: var(--text-primary);
     }
 
     .checkbox-field {
@@ -237,6 +238,7 @@
         align-items: center;
         gap: 12px;
         margin-top: 10px;
+        color: var(--text-primary);
     }
 
     .actions {

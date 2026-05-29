@@ -2,7 +2,7 @@ import fs from 'fs';
 
 const host = 'http://localhost:8080';
 
-export const getFileUrl = (relativePath, defaultPath = 'uploads/default/placeholder.jpg') => {
+export const getFileUrl = (relativePath, defaultPath = 'uploads/default/placeholder.webp') => {
     const cleanPath = relativePath ? relativePath.replace(/^\/+/, '') : null;
     const cleanDefault = defaultPath.replace(/^\/+/, '');
 

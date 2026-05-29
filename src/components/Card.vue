@@ -30,6 +30,8 @@
     .card{
         padding: 10px 15px;
         border-radius: 5px;
+        width: 220px;
+        
 
         /* .artist-image{
             aspect-ratio: 1 / 1;
@@ -50,8 +52,18 @@
             gap: 5px;
             color: var(--text-primary);
 
+            font-size: 20px;
+
+            span{
+                white-space: nowrap;
+            
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+
             .additional-info{
-                font-size: 12px;
+                font-size: 14px;
             }
         }
     }

@@ -172,6 +172,16 @@
         contextMenuStore.open(event, options);
     }
 
+    function removeSongFromList(deletedSongId){
+        // sortedSongs.value = sortedSongs.value.filter(
+        //     song => song.id !== deletedSongId
+        // )
+
+        playlistData.value.data.songs = playlistData.value.data.songs.filter(
+            song => song.id !== deletedSongId
+        )
+    }
+
     watch(() => route.params.id, (newId) => {
         fetchPlaylistData(newId);
     });
@@ -207,10 +217,12 @@
                     <option value="length-asc">Длительность (по возрастанию)</option>
                 </select>
             </div>
-            <SongsList v-if="playlistData?.data.songs.length > 0">
+            <SongsList v-if="sortedSongs.length > 0">
                 <SongCard v-for="(song, index) in sortedSongs"
                     :song="song"
+                    :playlist="playlistData?.data"
                     :index="index + 1"
+                    @song-deleted="removeSongFromList"
 
                     :key="song.id"
                 />

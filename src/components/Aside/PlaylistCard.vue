@@ -16,7 +16,7 @@
         <div class="playlist-info">
             <span>{{title}}</span>
             <!-- <span class="additional-info">Треков: {{count}}</span> -->
-             <span class="additional-info">Треков:</span>
+             <span class="additional-info">Треков: 0</span>
         </div>
     </div>
 </template>
@@ -33,7 +33,7 @@
         .image{
             /* background-color: lightgray; */
             aspect-ratio: 1 / 1;
-            width: 55px;
+            max-width: 100px;
             overflow: hidden;
         }
 
@@ -44,12 +44,23 @@
             gap: 3px;
             flex-grow: 1;
 
+            white-space: nowrap;
+            overflow: hidden;
+
+            span{
+                text-wrap: wrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            
+
             :first-child{
-                font-size: 16px;
+                font-size: 24px;
             }
             
             :last-child{
-                font-size: 12px;
+                font-size: 16px;
             }
         }
     }

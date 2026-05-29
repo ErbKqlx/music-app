@@ -10,6 +10,8 @@
     import { useContextMenuStore } from '../stores/contextMenu';
     import { formatDate } from '../composables/formatDate';
     import { useUserStore } from '../stores/user';
+    import http from '../http';
+
 
     const props = defineProps({
         song: {
@@ -18,12 +20,18 @@
         index: {
             type: Number
         },
+        playlist: {
+            // type: [String, Number],
+            // required: true
+        }
         // onPlay: {
         //     type: Function
         // }
     })
 
     // const highlighted = ref(false)
+
+    const emit = defineEmits(['song-deleted'])
 
     const playerStore = usePlayerStore()
     const userStore = useUserStore()
@@ -45,7 +53,7 @@
     const contextMenuStore = useContextMenuStore();
 
     const handleMiscClick = (event) => {
-        // const isOwner = userStore.currentUser?.id === playlistData.value?.data.user.id;
+        const isOwner = userStore.currentUser?.id === props.playlist?.user.id;
 
         const options = []
         // console.log(event)
@@ -60,11 +68,24 @@
             },
         )
 
-        if (true){
+        if (isOwner){
             options.push(
                 {
                     label: 'Удалить из плейлиста', 
-                    action: () => console.log("Удалить из плейлиста"), 
+                    action: async () => {
+                        try{
+                            await http.delete(`/playlist/${props.playlist.id}/song/${props.song.id}`, 
+                                {
+                                    headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+                                }
+                            )
+
+                            emit('song-deleted', props.song.id)
+                        }
+                        catch (error){
+                            console.log('Ошибка при удалении трека из плейлиста ' + error)
+                        }
+                    }, 
                     danger: true 
                 },
             )
