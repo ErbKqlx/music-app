@@ -3,12 +3,14 @@ import fs from 'fs';
 import { getFileUrl } from "../utils/fileHelper.js";
 import { deleteFile } from "../utils/filesystem.js";
 import Response from "../configs/response.js"
+import { col, fn, literal, Op } from "sequelize";
 
 
 // const Playlist = db.playlist
 // const PlaylistsSongs = db.playlists_songs
 const Song = db.song
 const Artist = db.artist
+const SongsHistories = db.songs_histories
 
 const host = 'http://localhost:8080'
 
@@ -237,6 +239,89 @@ class SongController{
             return res.status(500).json({ message: 'Внутренняя ошибка сервера' });
         }
 
+    }
+
+    static async trackListen(req, res){
+        try {
+            const songId = req.params.id;
+
+            const userId = req.userId
+
+            const song = await Song.findByPk(songId);
+            if (!song) {
+                return res.status(404).json({ status: "error", message: "Песня не найдена" });
+            }
+
+            await SongsHistories.create({
+                id_song: songId,
+                id_user: userId,
+                listened_at: new Date()
+            });
+
+            return res.status(201).json({
+                status: "success",
+                message: "Прослушивание успешно зарегистрировано"
+            });
+        } catch (error) {
+            console.error('Ошибка при фиксации прослушивания:', error);
+            return res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+        }
+    }
+
+    static async getPopularSongs(req, res){
+        try {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+            const dateString = oneWeekAgo.toISOString()
+
+            const listensCountSubquery = `(
+                SELECT COUNT(*)
+                FROM public.songs_histories AS history
+                WHERE history.id_song = "Songs"."id"
+                AND history.listened_at >= '${dateString}'
+            )`;
+
+            const popularSongs = await Song.findAll({
+                attributes: [
+                    'id', 'name', 'length', 'release_date', 'explicit_content', 'image', 'song_url',
+                    [
+                        literal(listensCountSubquery),
+                        'weekly_listens_count'
+                    ]
+                ],
+                where: literal(`${listensCountSubquery} > 0`),
+                include: [
+                    {
+                        model: Artist,
+                        as: 'artists',
+                        through: { attributes: [] },
+                        attributes: ['id', 'name']
+                    }
+                ],
+                order: [
+                    [literal('weekly_listens_count'), 'DESC'],
+                    ['id', 'DESC']
+                ],
+                limit: 20
+            });
+
+            popularSongs.map(song => {
+                song.image = getFileUrl(song.image)
+                song.song_url = getFileUrl(song.song_url)
+            })
+
+            return Response.success(res, "Популярные треки за неделю", popularSongs)
+
+            // return res.status(200).json({
+            //     status: "success",
+            //     message: "Популярные треки за неделю",
+            //     data: popularSongs
+            // });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+        }
     }
 }
 

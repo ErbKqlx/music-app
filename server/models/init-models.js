@@ -14,6 +14,7 @@ import _SongsArtists from "./SongsArtists.js";
 import _SongsSubgenres from "./SongsSubgenres.js";
 import _Subgenres from "./Subgenres.js";
 import _Users from "./Users.js";
+import _SongsHistories from "./SongsHistories.js";
 
 function initModels(sequelize) {
   var Albums = _Albums(sequelize, DataTypes);
@@ -31,6 +32,7 @@ function initModels(sequelize) {
   var SongsSubgenres = _SongsSubgenres(sequelize, DataTypes);
   var Subgenres = _Subgenres(sequelize, DataTypes);
   var Users = _Users(sequelize, DataTypes);
+  var SongsHistories = _SongsHistories(sequelize, DataTypes);
 
   SongsAlbums.belongsTo(Albums, { as: "album", foreignKey: "id_album"});
   Albums.hasMany(SongsAlbums, { as: "songsAlbums", foreignKey: "id_album"});
@@ -77,6 +79,12 @@ function initModels(sequelize) {
   Reports.belongsTo(Users, { as: "user", foreignKey: "id_user"});
   Users.hasMany(Reports, { as: "reports", foreignKey: "id_user"});
 
+  SongsHistories.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
+  Songs.hasMany(SongsHistories, { as: "histories", foreignKey: "id_song"});
+
+  SongsHistories.belongsTo(Users, { as: "user", foreignKey: "id_user"});
+  Users.hasMany(SongsHistories, { as: "histories", foreignKey: "id_user"});
+
   return {
     Albums,
     Artists,
@@ -93,6 +101,7 @@ function initModels(sequelize) {
     SongsSubgenres,
     Subgenres,
     Users,
+    SongsHistories,
   };
 }
 export default initModels;

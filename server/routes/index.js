@@ -35,7 +35,11 @@ router.patch('/song/:id', uploadTrackFiles, SongController.updateSong)
 router.delete('/song/:id', [authJwt.verifyToken], SongController.deleteSong)
 router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
 
+router.post('/song/:id/listen', [authJwt.verifyToken], SongController.trackListen)
+
 router.get('/songs/new', [authJwt.verifyToken], SongController.getNewSongs)
+router.get('/songs/popular', [authJwt.verifyToken], SongController.getPopularSongs)
+
 
 router.get('/search', [authJwt.verifyToken], SearchController.search)
 

@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import http from '../http';
+
 
 let sound = null
 
@@ -119,6 +121,8 @@ export const usePlayerStore = defineStore('player', () => {
         }
 
         sound.play()
+
+        logSongListen(currentSong?.value.id)
     }
 
     const pauseSong = () => {
@@ -251,6 +255,16 @@ export const usePlayerStore = defineStore('player', () => {
 
         if (sound){
             sound.volume(value)
+        }
+    }
+
+    const logSongListen = async (songId) => {
+        try {
+            await http.post(`/song/${songId}/listen`, {}, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+            });
+        } catch (error) {
+            console.error('Не удалось отправить статистику прослушивания:', error);
         }
     }
 

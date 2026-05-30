@@ -13,13 +13,16 @@
     import { useContextMenuStore } from '../stores/contextMenu';
     import { formatDate } from '../composables/formatDate';
     import { useUserStore } from '../stores/user';
+    import Card from '../components/Card.vue';
+    import router from '../router';
+    import Image from '../components/Image.vue'
 
     const playerStore = usePlayerStore()
     const contextMenuStore = useContextMenuStore();
     const userStore = useUserStore()
 
     const newSongs = ref([])
-    const popularTracks = ref([])
+    const popularSongs = ref([])
     const featuredPlaylists = ref([])
     const isLoading = ref(true)
 
@@ -46,25 +49,17 @@
         try {
             isLoading.value = true
 
-            // const newTracksRes = await http.get('/songs/new', {
-            //     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
-            // })
-            const [newSongsRes, popularTracksRes, featuredPlaylistsRes] = await Promise.all([
+            const [newSongsRes, popularSongsRes] = await Promise.all([
                 http.get('/songs/new', {
                     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
                 }),
-                // http.get('/tracks/popular', {
-                //     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
-                // }),
-                // http.get('/playlists/featured', {
-                //     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
-                // })
+                http.get('/songs/popular', {
+                    headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+                }),
             ])
             
             newSongs.value = newSongsRes.data.data
-            console.log(newSongs.value)
-            popularTracks.value = popularTracksRes.data
-            featuredPlaylists.value = featuredPlaylistsRes.data
+            popularSongs.value = popularSongsRes.data.data
         } catch (error) {
             console.log('Ошибка при загрузке данных главной страницы: ' + error)
         } finally {
@@ -72,7 +67,7 @@
         }
     }
 
-    function startPlaylist(songs, startSong = null) {
+    function startQueue(songs, startSong = null) {
         playerStore.isShuffled = false
         playerStore.setQueue([...songs])
         
@@ -85,12 +80,12 @@
         }
     }
 
-    function handleMiscClick(event, tracks) {
+    function handleMiscClick(event, songs) {
         const options = [
             { 
                 label: 'Добавить в очередь', 
                 action: () => {
-                    playerStore.addToQueue(tracks)
+                    playerStore.addToQueue(songs)
                 }
             },
             { 
@@ -104,6 +99,10 @@
         contextMenuStore.open(event, options);
     }
 
+    function toSong(songId){
+        router.push(`/song/${songId}`)
+    }
+
     onMounted(async () => {
         await fetchHomeData()
     })
@@ -111,16 +110,41 @@
 
 <template>
     <div class="home-info">
-        <!-- <div v-if="!isLoading && newTracks.length > 0" class="carousel-section">
-            <Carousel 
-                :items="newTracks" 
-                :auto-play="true"
-                :interval="4000"
-                @play-track="handlePlayTrack"
-            />
-        </div> -->
-
         <div class="info">
+            <div class="section">
+                <div class="section-header">
+                    <div>
+                        <h2>Популярные треки за неделю</h2>
+                        <p class="section-subtitle">Треки, которые слушают больше всего</p>
+                    </div>
+                </div>
+                
+                <div class="popular-list" v-if="popularSongs.length > 0">
+                    <Card 
+                        @click="toSong(song.id)" 
+                        v-for="(song, index) in popularSongs.slice(0, 12)" 
+                        :title=song.name 
+                        description="Трек" 
+                        :key="song.id">
+
+                        <template #image>
+                            <Image :url="song.image"/>
+                        </template>
+                    </Card>
+                </div>
+
+                <!-- <SongsList v-if="popularSongs.length > 0">
+                    <SongCard 
+                        v-for="(song, index) in popularSongs.slice(0, 20)"
+                        :song="song"
+                        :index="index + 1"
+                        :key="song.id"
+                    />
+                </SongsList> -->
+                <div class="empty" v-else>
+                    Популярных треков пока нет
+                </div>
+            </div>
             <div class="section">
                 <div class="section-header">
                     <div>
@@ -135,7 +159,7 @@
                             <option value="length-desc">Длительность (по убыванию)</option>
                             <option value="length-asc">Длительность (по возрастанию)</option>
                         </select>
-                        <Button @click="startPlaylist(sortedNewTracks)" class="play-all-button">
+                        <Button @click="startQueue(sortedNewSongs)" class="play-all-button">
                             <Play color="var(--bg-primary)"/>
                             <span>Слушать всё</span>
                         </Button>
@@ -152,31 +176,6 @@
                 </SongsList>
                 <div class="empty" v-else>
                     Новых треков пока нет
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-header">
-                    <div>
-                        <h2>Популярное сейчас</h2>
-                        <p class="section-subtitle">Треки, которые слушают больше всего</p>
-                    </div>
-                    <Button @click="startPlaylist(popularTracks)" class="play-all-button">
-                        <Play color="var(--bg-primary)"/>
-                        <span>Слушать всё</span>
-                    </Button>
-                </div>
-                
-                <SongsList v-if="popularTracks.length > 0">
-                    <SongCard 
-                        v-for="(song, index) in popularTracks.slice(0, 20)"
-                        :song="song"
-                        :index="index + 1"
-                        :key="song.id"
-                    />
-                </SongsList>
-                <div class="empty" v-else>
-                    Популярных треков пока нет
                 </div>
             </div>
         </div>
@@ -217,6 +216,13 @@
             margin: 0;
             color: var(--text-secondary);
             font-size: 14px;
+        }
+
+        .popular-list{
+            display: flex;
+            padding: 0 10px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
         }
 
         .list-controls {
@@ -274,60 +280,6 @@
         .no-background {
             background: transparent;
             border: none;
-        }
-
-        .carousel-section {
-            padding: 20px;
-            margin-bottom: 0;
-        }
-
-        .carousel-item {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .carousel-item:hover {
-            transform: scale(1.02);
-        }
-
-        .carousel-image {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            overflow: hidden;
-        }
-
-        .carousel-image img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .carousel-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: white;
-        }
-
-        .carousel-info h3 {
-            margin: 0 0 5px 0;
-            font-size: 20px;
-        }
-
-        .carousel-info p {
-            margin: 0;
-            font-size: 14px;
-            opacity: 0.9;
         }
 
         .playlist-author {
