@@ -39,8 +39,8 @@ function initModels(sequelize) {
   // SongsArtists.belongsTo(Artists, { as: "artist", foreignKey: "id_artist"});
   // Artists.hasMany(SongsArtists, { as: "songsArtists", foreignKey: "id_artist"});
 
-  Songs.belongsToMany(Artists, { through: SongsArtists, foreignKey: 'id_song', otherKey: 'id_artist' });
-  Artists.belongsToMany(Songs, { through: SongsArtists, foreignKey: 'id_artist', otherKey: 'id_song' });
+  Songs.belongsToMany(Artists, { through: SongsArtists, as: 'artists', foreignKey: 'id_song', otherKey: 'id_artist' });
+  Artists.belongsToMany(Songs, { through: SongsArtists, as: 'songs', foreignKey: 'id_artist', otherKey: 'id_song' });
 
   Reports.belongsTo(Comments, { as: "comment", foreignKey: "id_comment"});
   Comments.hasMany(Reports, { as: "reports", foreignKey: "id_comment"});

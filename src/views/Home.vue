@@ -18,46 +18,51 @@
     const contextMenuStore = useContextMenuStore();
     const userStore = useUserStore()
 
-    const newTracks = ref([])
+    const newSongs = ref([])
     const popularTracks = ref([])
     const featuredPlaylists = ref([])
     const isLoading = ref(true)
 
     const sortKey = ref('date-desc');
 
-    const sortedNewTracks = computed (() => {
-        const tracks = [...newTracks.value];
+    const sortedNewSongs = computed (() => {
+        const songs = [...newSongs.value];
         
         switch (sortKey.value) {
             case 'date-desc':
-                return tracks.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+                return songs.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
             case 'date-asc':
-                return tracks.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
+                return songs.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
             case 'length-desc':
-                return tracks.sort((a, b) => b.length - a.length);
+                return songs.sort((a, b) => b.length - a.length);
             case 'length-asc': 
-                return tracks.sort((a, b) => a.length - b.length);
+                return songs.sort((a, b) => a.length - b.length);
             default:
-                return tracks;
+                return songs;
         }
     })
 
     async function fetchHomeData() {
         try {
             isLoading.value = true
-            const [newTracksRes, popularTracksRes, featuredPlaylistsRes] = await Promise.all([
+
+            // const newTracksRes = await http.get('/songs/new', {
+            //     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+            // })
+            const [newSongsRes, popularTracksRes, featuredPlaylistsRes] = await Promise.all([
                 http.get('/songs/new', {
                     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
                 }),
-                http.get('/tracks/popular', {
-                    headers: { Authorization: "Bearer " + localStorage.getItem('token') }
-                }),
-                http.get('/playlists/featured', {
-                    headers: { Authorization: "Bearer " + localStorage.getItem('token') }
-                })
+                // http.get('/tracks/popular', {
+                //     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+                // }),
+                // http.get('/playlists/featured', {
+                //     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+                // })
             ])
             
-            newTracks.value = newTracksRes.data
+            newSongs.value = newSongsRes.data.data
+            console.log(newSongs.value)
             popularTracks.value = popularTracksRes.data
             featuredPlaylists.value = featuredPlaylistsRes.data
         } catch (error) {
@@ -120,7 +125,7 @@
                 <div class="section-header">
                     <div>
                         <h2>Новые релизы</h2>
-                        <p class="section-subtitle">Свежие треки, добавленные на этой неделе</p>
+                        <p class="section-subtitle">Свежие треки, добавленные недавно</p>
                     </div>
                     <div class="list-controls">
                         <label for="sort-select" class="additional-info">Сортировка:</label>
@@ -137,9 +142,9 @@
                     </div>
                 </div>
                 
-                <SongsList v-if="sortedNewTracks.length > 0">
+                <SongsList v-if="sortedNewSongs.length > 0">
                     <SongCard 
-                        v-for="(song, index) in sortedNewTracks.slice(0, 20)"
+                        v-for="(song, index) in sortedNewSongs.slice(0, 15)"
                         :song="song"
                         :index="index + 1"
                         :key="song.id"

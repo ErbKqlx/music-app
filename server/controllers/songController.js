@@ -2,11 +2,13 @@ import db from "../models/index.js"
 import fs from 'fs';
 import { getFileUrl } from "../utils/fileHelper.js";
 import { deleteFile } from "../utils/filesystem.js";
+import Response from "../configs/response.js"
+
 
 // const Playlist = db.playlist
 // const PlaylistsSongs = db.playlists_songs
 const Song = db.song
-// const Artist = db.artist
+const Artist = db.artist
 
 const host = 'http://localhost:8080'
 
@@ -202,7 +204,39 @@ class SongController{
     }
 
     static async getNewSongs(req, res){
-        
+        try {
+            const newSongs = await Song.findAll({
+                attributes: ['id', 'name', 'length', 'release_date', 'explicit_content', 'image', 'song_url'],
+                
+                include: [
+                    {
+                        model: Artist,
+                        as: 'artists',
+                        through: { attributes: [] },
+                        attributes: ['id', 'name']
+                    }
+                ],
+                
+                order: [
+                    ['release_date', 'DESC'],
+                    ['id', 'DESC']
+                ],
+                
+                limit: 15 
+            });
+
+            newSongs.map(song => {
+                song.image = getFileUrl(song.image)
+                song.song_url = getFileUrl(song.song_url)
+            })
+
+            return Response.success(res, "Новые треки", newSongs)
+        } catch (error) {
+            console.error('Ошибка при получении новых треков:', error);
+            // return Response.
+            return res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+        }
+
     }
 }
 
