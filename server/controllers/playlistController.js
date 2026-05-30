@@ -137,6 +137,7 @@ class PlaylistController{
                     song_url: song.song_url,
                     release_date: song.release_date,
                     lyrics: song.lyrics,
+                    explicit_content: song.explicit_content,
                 }
             })
         )

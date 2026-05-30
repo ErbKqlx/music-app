@@ -14,6 +14,10 @@
             type: String,
             default: '',
         },
+        explicit_content: {
+            type: Boolean,
+            default: false,
+        },
         id_user: {
             type: Number
         },
@@ -137,6 +141,7 @@
             <div>
                 <div class="title">
                     <span>{{ title }}</span>
+                    <span v-if="explicit_content" class="explicit-badge" title="Нецензурная лексика">E</span>
                 </div>
                 <div class="created">
                     <RouterLink :to="'/profile/' + id_user" class="additional-info clickable">{{ username }}</RouterLink>
@@ -179,6 +184,26 @@
                 font-size: 3rem;
                 font-weight: bold;
                 color: var(--text-primary);
+                display: flex;
+                gap: 15px;
+                align-items: center;
+            }
+            
+            .explicit-badge {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                /* background-color: rgba(255, 255, 255, 0.15); */
+                color: var(--text-primary);
+                font-size: 24px;
+                font-weight: bold;
+                font-family: sans-serif;
+                width: 28px;
+                height: 28px;
+                border-radius: 2px;
+                border: 1px solid var(--border-hover);
+                user-select: none;
+                flex-shrink: 0;
             }
 
             .created{

@@ -115,7 +115,10 @@
         </div>
         <div class="song-info">
             <!-- <span class="clickable">{{title}}</span> -->
-            <RouterLink :to="'/song/' + song.id" class="clickable">{{ song.name }}</RouterLink>
+            <div class="title-container">
+                <RouterLink :to="'/song/' + song.id" class="clickable">{{ song.name }}</RouterLink>
+                <span v-if="song.explicit_content" class="explicit-badge" title="Нецензурная лексика">E</span>
+            </div>
             <div class="artists">
                 <RouterLink :to="'/artist/' + artist.id" v-for="artist in song.artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
             </div>
@@ -183,6 +186,30 @@
             .artist-link:not(:last-child)::after {
                 content: ", ";
             }
+        }
+
+        .title-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .explicit-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            /* background-color: rgba(255, 255, 255, 0.15); */
+            color: var(--text-primary);
+            font-size: 10px;
+            font-weight: bold;
+            font-family: sans-serif;
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            border: 1px solid var(--border-hover);
+            user-select: none;
+            flex-shrink: 0;
         }
 
         .album-name{

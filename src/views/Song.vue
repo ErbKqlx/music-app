@@ -145,7 +145,8 @@
         <div class="song-info">
             <TitleCard 
                 :title="songData?.data.name" 
-                :created_at="formatDate(songData?.data.release_date)" >
+                :created_at="formatDate(songData?.data.release_date)"
+                :explicit_content="songData?.data.explicit_content" >
                 <template #image>
                     <Image :url="songData?.data.image"/>
                 </template>
