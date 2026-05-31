@@ -25,7 +25,7 @@ class SearchController{
                     },
                     include: [{
                         model: Artist,
-                        as: 'Artists',
+                        as: 'artists',
                         through: { attributes: [] }
                     }],
                     limit: 10

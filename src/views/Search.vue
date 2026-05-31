@@ -45,13 +45,12 @@
                         <div class="song-meta">
                             <!-- <RouterLink :to="'/song/' + song.id" class="item-name">{{ song.name }}</RouterLink> -->
                             <span :to="'/song/' + song.id" class="item-name">{{ song.name }}</span>
-                            <span class="item-sub additional-info" v-for="artist in song?.artists" :key="artist.id">
-                                <!-- {{ song.artists.map(a => a.name).join(', ') }} -->
-                                  {{ artist.name }}
-                            </span>
-                            <span>
-                                <!-- {{ song.Artists }} -->
-                            </span>
+                            <div>
+                                <span class="item-sub additional-info" v-for="artist in song?.artists" :key="artist.id">
+                                    <!-- {{ song.artists.map(a => a.name).join(', ') }} -->
+                                    {{ artist.name }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -66,7 +65,7 @@
                         </div>
                         <!-- <RouterLink :to="'/artist/' + artist.id" class="item-name card-name">{{ artist.name }}</RouterLink> -->
                         <span :to="'/artist/' + artist.id" class="item-name card-name">{{ artist.name }}</span>
-                        <span class="item-sub">Исполнитель</span>
+                        <span class="item-sub additional-info">Исполнитель</span>
                     </div>
                 </div>
             </section>
@@ -76,11 +75,11 @@
                 <div class="artists-grid">
                     <div v-for="user in searchStore.results.users" :key="user.id" class="grid-card" @click="navigate('/profile/' + user.id)">
                         <div class="avatar-wrapper user-avatar">
-                            <img :src="user.image" alt="Пользователь" />
+                            <img :src="user.avatar" alt="Пользователь" />
                         </div>
                         <!-- <RouterLink :to="'/profile/' + user.id" class="item-name card-name">{{ user.username }}</RouterLink> -->
                         <span :to="'/profile/' + user.id" class="item-name card-name">{{ user.username }}</span>
-                        <span class="item-sub">Профиль</span>
+                        <span class="item-sub additional-info">Профиль</span>
                     </div>
                 </div>
             </section>
@@ -218,6 +217,10 @@
     .item-sub {
         font-size: 13px;
         /* color: var(--secondary-text-color, #b3b3b3); */
+    }
+
+    .item-sub:not(:last-child)::after {
+        content: ", ";
     }
 
     .empty-state {
