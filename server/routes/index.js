@@ -37,8 +37,8 @@ router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
 
 router.post('/song/:id/listen', [authJwt.verifyToken], SongController.trackListen)
 
-router.get('/songs/new', [authJwt.verifyToken], SongController.getNewSongs)
-router.get('/songs/popular', [authJwt.verifyToken], SongController.getPopularSongs)
+router.get('/songs/new', SongController.getNewSongs)
+router.get('/songs/popular', SongController.getPopularSongs)
 
 
 router.get('/search', [authJwt.verifyToken], SearchController.search)

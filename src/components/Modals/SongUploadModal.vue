@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, onMounted, reactive, ref } from 'vue'
+    import { computed, nextTick, onMounted, reactive, ref } from 'vue'
     import { useModalStore } from '@/stores/modal'
     import Modal from '@/components/Modal.vue'
     import Input from '@/components/Input/Input.vue'
@@ -9,22 +9,28 @@
     import router from '@/router/index.js';
     import { helpers, required } from '@vuelidate/validators'
     import useVuelidate from '@vuelidate/core'
+    import 'cropperjs'
 
     const modalStore = useModalStore()
     const userStore = useUserStore()
 
     const fileInput = ref(null)
+    const cropperRef = ref(null)
     const previewImage = ref(null)
     const isEdit = computed(() => !!modalStore.modalData);
 
+    const currentFileType = ref('image/jpeg')
+
     const genresData = ref([])
+
+    const isCropping = ref(false)
+    const rawImageSrc = ref(null)
 
     const rules = {
         data: {
             name: { required: helpers.withMessage('Поле не может быть пустым', required) },
             song_file: { required: helpers.withMessage('Вы должны загрузить трек', required), },
         }
-        
     }
 
     const formData = reactive({
@@ -50,14 +56,68 @@
             return
         }
 
-        if (file.size > 50 * 1024 * 1024) {
-            alert('Файл слишком большой (макс. 50МБ)')
-            e.target.value = ''
-            return
-        }
+        
+        rawImageSrc.value = URL.createObjectURL(file)
+        currentFileType.value = file.type
+        isCropping.value = true
 
-        formData.image = file
-        previewImage.value = URL.createObjectURL(file)
+    }
+
+    function onCropperReady() {
+        if (!cropperRef.value) return
+        
+        
+        const selection = cropperRef.value.querySelector('cropper-selection')
+        if (selection) {
+            selection.movable = true
+            selection.resizable = true
+            selection.setAttribute('action', 'move')
+            
+            selection.bounds = 'Position' 
+            selection.setAttribute('bounds', 'Position')
+        }
+    }
+
+    async function saveCroppedImage() {
+        if (!cropperRef.value) return
+
+        try {
+            const selection = cropperRef.value.querySelector('cropper-selection')
+            if (!selection) return
+
+            const croppedCanvas = await selection.$toCanvas()
+
+            if (croppedCanvas) {
+                previewImage.value = croppedCanvas.toDataURL(currentFileType.value, 0.9)
+
+                const blob = await new Promise((resolve) => {
+                    croppedCanvas.toBlob((b) => resolve(b), currentFileType.value, 0.9)
+                })
+
+                if (blob) {
+                    const extension = currentFileType.value.split('/')[1] || 'jpg'
+                    const fileName = `cover.${extension}`
+                    
+                    const croppedFile = new File([blob], fileName, { type: currentFileType.value })
+                    
+                    formData.image = croppedFile
+                    
+                    console.log('Обрезанный файл успешно сохранен в formData:', croppedFile)
+                }
+            }
+
+            isCropping.value = false
+
+        } catch (error) {
+            console.error('Ошибка при обрезке:', error)
+            alert('Не удалось обработать изображение.')
+        }
+    }
+
+    function cancelCrop() {
+        isCropping.value = false
+        if (rawImageSrc.value) URL.revokeObjectURL(rawImageSrc.value)
+        fileInput.value.value = ''
     }
 
     function onAudioChange(e){
@@ -68,7 +128,6 @@
         }
         formData.song_file = file
         
-        // const audio = new Audio()
         const fileURL = URL.createObjectURL(file);
 
         const sound = new Howl({
@@ -76,7 +135,6 @@
             format: [file.name.split('.').pop()],
             onload: function() {
                 formData.length = Math.round(sound.duration());
-                
                 URL.revokeObjectURL(fileURL);
                 sound.unload(); 
             },
@@ -84,27 +142,16 @@
                 console.error('Ошибка при чтении файла: ', error);
             }
         });
-
-        // audio.src = URL.createObjectURL(file)
-        // audio.addEventListener('loadedmetadata', () => {
-        //     formData.length = Math.round(audio.duration)
-        // })
     }
 
     function triggerFileInput() {
-        fileInput.value.click()
-        console.log(modalStore.modalData?.image)
-        
+        if (!isCropping.value) {
+            fileInput.value.click()
+        }
     }
 
     async function handleSubmit() {
-        // $v.value.$touch()
-
         if (true){
-            // !formData.name.trim()
-
-            console.log('a')
-
             const data = new FormData()
             data.append('name', formData.name)
             data.append('public', formData.public ? 1 : 0)
@@ -112,16 +159,7 @@
             data.append('explicit_content', formData.explicit_content ? 1 : 0)
             data.append('lyrics', formData.lyrics)
             data.append('length', formData.length)
-            // length: modalStore.modalData?.length || 0,
-            // image: modalStore.modalData?.image || null,
-            // song_file: null,
 
-
-
-            // data.append('id_user', formData.id_user)
-
-            
-            // if (form.image) formData.append('image', form.image)
             if (formData.image) {
                 data.append('image', formData.image)
             }
@@ -131,39 +169,25 @@
             }
 
             const songId = modalStore.modalData?.id
-            // console.log(playlistId)
 
             try{
                 if (isEdit.value){
-                    await http.patch(`/song/${songId}`, data,
-                    {
+                    await http.patch(`/song/${songId}`, data, {
                         headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                     })
-                    
-                    // router.push(`/playlist/${playlistId}`)
                     location.reload()
-                }
-                else{
-                    // console.log(data.get('image'));
-                    const response = await http.post('/song', data,
-                    {
+                } else {
+                    const response = await http.post('/song', data, {
                         headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                     });
 
-                    // const 
-
                     if (response.data?.data?.id){
                         router.push(`/song/${response.data.data.id}`)
-                    }
-                    else{
+                    } else {
                         router.push('/')
                     }
-                    
                 }
-
-                // router.push('/')
-            }
-            catch (error){
+            } catch (error){
                 console.log('Ошибка при загрузке трека ' + error)
             }
 
@@ -177,9 +201,7 @@
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
             genresData.value = genres.data
-            // console.log(genreData.value)
-        }
-        catch (error){
+        } catch (error){
             console.log('Ошибка при загрузке жанров ' + error)
         }
     }
@@ -188,7 +210,6 @@
         if (modalStore.modalData) {
             previewImage.value = modalStore.modalData.image
         }
-
         fetchGenresData()
     })
 </script>
@@ -201,31 +222,68 @@
 
         <template #body>
             <form @submit.prevent="handleSubmit" novalidate class="create-song-form">
-                <div class="upload-section" @click="triggerFileInput">
-                    <div v-if="previewImage" class="image-preview">
-                        <img :src="previewImage" alt="Превью" />
+                <div class="image-upload-container">
+                    <div class="upload-section" @click="triggerFileInput">
+                        <div v-if="previewImage" class="image-preview">
+                            <img :src="previewImage" alt="Превью" />
+                        </div>
+                        <div v-else class="upload-placeholder">
+                            <span>Выбрать обложку</span>
+                        </div>
+                        <input 
+                            type="file" 
+                            ref="fileInput" 
+                            @change="onImageChange" 
+                            accept="image/*" 
+                            hidden 
+                        />
                     </div>
-                    <div v-else class="upload-placeholder">
-                        <span>Выбрать обложку</span>
-                    </div>
-                    <input 
-                        type="file" 
-                        ref="fileInput" 
-                        @change="onImageChange" 
-                        accept="image/*" 
-                        hidden 
-                    />
+
+                    <Modal v-if="isCropping" @close="cancelCrop">
+                        <template #header>
+                            <h3 class="cropper-title">Редактирование обложки</h3>
+                        </template>
+
+                        <template #body>
+                            <div class="cropper-area">
+                                <cropper-area>
+                                    <cropper-canvas ref="cropperRef" background @canvas:ready="onCropperReady">
+                                        <cropper-image :src="rawImageSrc" alt="Редактирование" policy="cover"></cropper-image>
+                                        <cropper-shade></cropper-shade>
+                                        
+                                        <cropper-selection 
+                                            aspect-ratio="1" 
+                                            initial-coverage="1" 
+                                            action="move" 
+                                            movable 
+                                            resizable
+                                            bounds="Position">
+                                            
+                                            <cropper-handle action="ne-resize"></cropper-handle>
+                                            <cropper-handle action="nw-resize"></cropper-handle>
+                                            <cropper-handle action="se-resize"></cropper-handle>
+                                            <cropper-handle action="sw-resize"></cropper-handle>
+                                            
+                                        </cropper-selection>
+                                    </cropper-canvas>
+                                </cropper-area>
+                            </div>
+                        </template>
+
+                        <template #footer>
+                            <div class="crop-actions">
+                                <button type="button" class="btn-crop-cancel" @click="cancelCrop">Отмена</button>
+                                <button type="button" class="btn-crop-confirm" @click="saveCroppedImage">Применить</button>
+                            </div>
+                        </template>
+                    </Modal>
                 </div>
 
                 <div class="inputs-section">
                     <div class="field">
                         <label>Название <span style="color:red;">*</span></label>
-                        <input 
-                            type="text"
-                            v-model="formData.name" 
-                            placeholder="Мой трек" 
-                            required>
-                            <span class="error" v-for="error of $v.data.name.$errors" :key="error.$uid">{{ error.$message }}</span>
+                        <input type="text" v-model="formData.name" placeholder="Мой трек" required>
+                        <span class="error" v-for="error of $v.data.name.$errors" :key="error.$uid">{{ error.$message }}</span>
                     </div>
 
                     <div class="field">
@@ -331,32 +389,24 @@
     .genres-section{
         display: flex;
         flex-direction: column;
-        /* gap: 10px; */
         align-items: baseline;
-
-        .genres-header{
-            margin-bottom: 10px;
-        }
-
-        .genres-buttons{
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            /* align-items: ; */
-            width: 400px;
-
-            button{
-                background-color: var(--secondary-color);
-                color: white;
-                /* border: 1px solid white; */
-            }
-
-            .active{
-                background-color: var(--accent-color);
-                color: white;
-                /* border: 2px solid #5577ee; */
-            }
-        }
+    }
+    .genres-section .genres-header{
+        margin-bottom: 10px;
+    }
+    .genres-section .genres-buttons{
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        width: 400px;
+    }
+    .genres-section .genres-buttons button{
+        background-color: var(--secondary-color);
+        color: white;
+    }
+    .genres-section .genres-buttons .active{
+        background-color: var(--accent-color);
+        color: white;
     }
 
     .field {
@@ -364,16 +414,15 @@
         flex-direction: column;
         gap: 8px;
         color: var(--text-primary);
-
-        input[type='text']{
-            border-radius: 5px;
-            height: 33px;
-            font-size: 20px;
-            background-color: rgb(217 , 217, 217);
-            border: none;
-            padding-left: 5px;
-            width: 100%;
-        }
+    }
+    .field input[type='text']{
+        border-radius: 5px;
+        height: 33px;
+        font-size: 20px;
+        background-color: rgb(217 , 217, 217);
+        border: none;
+        padding-left: 5px;
+        width: 100%;
     }
 
     .field label, .genres-header {
@@ -399,12 +448,6 @@
         font-family: sans-serif;
     }
 
-    /* .row-fields {
-        display: flex;
-        align-items: flex-end;
-        gap: 20px;
-    } */
-
     .checkbox-field {
         flex-direction: row;
         align-items: center;
@@ -420,7 +463,6 @@
     }
 
     .secondary {
-        /* background: ; */
         border: 1px solid #555;
     }
 
@@ -464,4 +506,86 @@
     .error-input {
         border: 1.5px solid red !important;
     }
+
+    .cropper-title {
+        color: var(--text-primary);
+    }
+
+    .cropper-area {
+        width: 400px;
+        height: 400px;
+        max-width: 100%;
+        background-color: #1e1e1e;
+        overflow: hidden;
+        border-radius: 6px;
+    }
+
+    .cropper-area cropper-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    .crop-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-crop-confirm, .btn-crop-cancel {
+        padding: 8px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        border: none;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .btn-crop-confirm {
+        background-color: #3b82f6;
+        color: white;
+    }
+
+    .btn-crop-cancel {
+        background-color: transparent;
+        color: var(--text-secondary, #9ca3af);
+        border: 1px solid var(--border-color, #374151);
+    }
+    
+    :deep(cropper-selection) {
+        --grid-line-color: rgba(255, 255, 255, 0.95);
+        
+        background-image: 
+            linear-gradient(to bottom, transparent 33.33%, var(--grid-line-color) 33.33%, var(--grid-line-color) calc(33.33% + 1px), transparent calc(33.33% + 1px), transparent 66.66%, var(--grid-line-color) 66.66%, var(--grid-line-color) calc(66.66% + 1px), transparent calc(66.66% + 1px)),
+            linear-gradient(to right, transparent 33.33%, var(--grid-line-color) 33.33%, var(--grid-line-color) calc(33.33% + 1px), transparent calc(33.33% + 1px), transparent 66.66%, var(--grid-line-color) 66.66%, var(--grid-line-color) calc(66.66% + 1px), transparent calc(66.66% + 1px)) !important;
+        
+        filter: drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.8));
+    }
+
+    :deep(cropper-handle) {
+        z-index: 10 !important;
+        pointer-events: auto !important;
+    }
+
+    :deep(cropper-selection) {
+        pointer-events: auto !important;
+        cursor: move;
+    }
+
+    :deep(cropper-handle) {
+        display: block !important;
+        position: absolute;
+        background-color: #3b82f6;
+        border: 2px solid white;
+        border-radius: 50%;
+        width: 12px !important;
+        height: 12px !important;
+        opacity: 1 !important;
+        z-index: 9999 !important;
+        pointer-events: auto !important;
+    }
+
+    :deep(cropper-handle[action="nw-resize"]) { top: -6px; left: -6px; cursor: nwse-resize; }
+    :deep(cropper-handle[action="ne-resize"]) { top: -6px; right: -6px; cursor: nesw-resize; }
+    :deep(cropper-handle[action="sw-resize"]) { bottom: -6px; left: -6px; cursor: nesw-resize; }
+    :deep(cropper-handle[action="se-resize"]) { bottom: -6px; right: -6px; cursor: nwse-resize; }
 </style>

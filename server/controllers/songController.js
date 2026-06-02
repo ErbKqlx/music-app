@@ -149,6 +149,7 @@ class SongController{
             if (lyrics !== undefined) song.lyrics = lyrics;
 
             if (req.files?.['image']?.[0]) {
+                deleteFile(song.image)
                 song.image = req.files['image'][0].path.replace(/\\/g, '/');
             }
             if (req.files?.['song_url']?.[0]) {

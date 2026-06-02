@@ -15,5 +15,11 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
-  plugins: [vue(), svgLoader()],
+  plugins: [vue({
+    template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('cropper-')
+        }
+      }
+  }), svgLoader()],
 })

@@ -149,7 +149,7 @@ const playerStore = usePlayerStore();
 
     .song-name {
         font-size: 14px;
-        color: var(--primary-text-color);
+        color: var(--text-primary);
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
