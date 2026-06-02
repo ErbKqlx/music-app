@@ -119,6 +119,7 @@
         max-height: 300px;
         overflow-y: auto;
         padding-right: 4px;
+        width: 400px;
     }
 
     .playlist-item {
@@ -158,12 +159,6 @@
         justify-content: flex-end;
         gap: 12px;
         width: 100%;
-    }
-
-    .secondary {
-        border: 1px solid #555;
-        background: transparent;
-        color: var(--text-primary);
     }
     
     button:disabled {

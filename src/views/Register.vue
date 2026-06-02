@@ -3,15 +3,18 @@
     import SubmitButton from '@/components/Input/SubmitButton.vue';
     import router from '@/router/index.js'
     import Form from '@/components/Form.vue'
-    import { ref } from 'vue';
+    import { onMounted, ref } from 'vue';
     import http from '../http';
     import useVuelidate from '@vuelidate/core';
     import { email, helpers, required, sameAs } from '@vuelidate/validators';
     import { useFormErrors } from '@/composables/useFormErrors';
+    import { usePlayerStore } from '../stores/player';
 
     // function toProfile(){
     //     router.push('/profile')
     // }
+
+    const playerStore = usePlayerStore()
 
     const { errors, setErrors, clearErrors, getErrors, hasErrors } = useFormErrors()
 
@@ -77,8 +80,11 @@
         }
         
         form.value.isSending = false
-            
     }
+
+    onMounted(() => {
+        playerStore.stopSong()
+    })
 </script>
 
 <template>
@@ -156,7 +162,7 @@
             </div>
             <div class="have-account">
                 <span>Есть аккаунт? </span>
-                <RouterLink to="/">Войти</RouterLink>
+                <RouterLink to="/login">Войти</RouterLink>
             </div>
             <SubmitButton :disabled="form.isSending" :class="{'disabled': form.isSending}" value="Создать аккаунт"/>
         </form>

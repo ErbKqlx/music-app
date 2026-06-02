@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import router from "../router";
+import { usePlayerStore } from "./player";
 
 export const useUserStore = defineStore('user', () => {
     const getInitialUser = () => {
@@ -36,7 +37,10 @@ export const useUserStore = defineStore('user', () => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
 
-        router.push('/')
+        const playerStore = usePlayerStore()
+        playerStore.stopSong()
+
+        router.push('/login')
     }
 
     return {

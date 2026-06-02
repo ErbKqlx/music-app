@@ -11,6 +11,7 @@
     import { useUserStore } from '@/stores/user';
     import { usePlaylistStore } from '@/stores/playlist';
     import { useFormErrors } from '@/composables/useFormErrors';
+    import { usePlayerStore } from '../stores/player';
 
     const { errors, setErrors, clearErrors, getErrors, hasErrors } = useFormErrors()
 
@@ -40,6 +41,7 @@
     
     const userStore = useUserStore()
     const playlistStore = usePlaylistStore()
+    const playerStore = usePlayerStore()
 
     async function sendData(){
         if (form.value.isSending) return
@@ -94,6 +96,9 @@
         
         if (localStorage.getItem('token') != null){
             router.push('/profile/' + userStore.currentUser.id)
+        }
+        else{
+            playerStore.stopSong()
         }
     })
 </script>

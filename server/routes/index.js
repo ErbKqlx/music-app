@@ -30,12 +30,12 @@ router.delete('/playlist/:id_playlist/song/:id_song', [authJwt.verifyToken], Pla
 router.post('/playlist/:id_playlist/song/:id_song', [authJwt.verifyToken], PlaylistController.addSongToPlaylist)
 
 
-router.post('/song', uploadTrackFiles, SongController.createSong)
-router.patch('/song/:id', uploadTrackFiles, SongController.updateSong)
+router.post('/song', authJwt.verifyToken, uploadTrackFiles, SongController.createSong)
+router.patch('/song/:id', authJwt.verifyToken, uploadTrackFiles, SongController.updateSong)
 router.delete('/song/:id', [authJwt.verifyToken], SongController.deleteSong)
 router.get('/song/:id', [authJwt.verifyToken], SongController.getOneSong)
 
-router.post('/song/:id/listen', [authJwt.verifyToken], SongController.trackListen)
+router.post('/song/:id/listen', SongController.trackListen)
 
 router.get('/songs/new', SongController.getNewSongs)
 router.get('/songs/popular', SongController.getPopularSongs)

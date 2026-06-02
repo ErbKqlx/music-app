@@ -29,7 +29,7 @@
                 </div>
             </div>
             <SubmitButton @click=""/>
-            <RouterLink to="/">Вспомнили пароль?</RouterLink>
+            <RouterLink to="/login">Вспомнили пароль?</RouterLink>
         </form>
     </div>
 </template>

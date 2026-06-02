@@ -100,9 +100,9 @@
 
 <template>
     <div class="page-header">
-        <RouterLink to="/home" class="clickable">Главная</RouterLink>
+        <RouterLink to="/" class="clickable">Главная</RouterLink>
         
-        <div class="search">
+        <div v-if="userStore.currentUser" class="search">
             <form role="search">
                 <input 
                     id="search" 
@@ -186,7 +186,7 @@
             </div>
             
             <div v-else class="auth-buttons">
-                <RouterLink to="/" class="auth-link">Войти</RouterLink>
+                <RouterLink to="/login" class="auth-link">Войти</RouterLink>
                 <RouterLink to="/register" class="auth-link register">Регистрация</RouterLink>
             </div>
         </div>

@@ -151,7 +151,7 @@
                         <h2>Новые релизы</h2>
                         <p class="section-subtitle">Свежие треки, добавленные недавно</p>
                     </div>
-                    <div class="list-controls">
+                    <div v-if="userStore.currentUser" class="list-controls">
                         <label for="sort-select" class="additional-info">Сортировка:</label>
                         <select id="sort-select" v-model="sortKey" class="sort-select">
                             <option value="date-desc">Дата (сначала новые)</option>

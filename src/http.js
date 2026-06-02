@@ -28,7 +28,7 @@ instance.interceptors.response.use(
         return response
     },
     (error) => {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401 || error.response.status === 403) {
             console.warn("Токен истек или невалиден")
             
             // localStorage.removeItem('token')
@@ -36,7 +36,7 @@ instance.interceptors.response.use(
 
             const userStore = useUserStore();
             userStore.logout();
-
+            // router.push('/')
         
             // if (router.currentRoute.value.path !== '/') {
             //     router.push('/')

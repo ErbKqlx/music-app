@@ -15,7 +15,7 @@ import Search from '@/views/Search.vue'
 
 const routes = [
     {
-        path: "/",
+        path: "/login",
         component: Auth,
         name: 'Login',
     },
@@ -50,7 +50,7 @@ const routes = [
         component: Song,
     },
     {
-        path: "/home",
+        path: "/",
         component: Home,
     },
     {

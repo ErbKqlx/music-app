@@ -13,10 +13,12 @@
     import PlaylistCreateModal from './components/Modals/PlaylistCreateModal.vue';
     import SongUploadModal from './components/Modals/SongUploadModal.vue';
     import SelectPlaylists from './components/Modals/SelectPlaylists.vue';
+  import { useUserStore } from './stores/user.js';
 
     const lyricsStore = useLyricsStore()
     const playerStore = usePlayerStore()
     const modalStore = useModalStore()
+    const userStore = useUserStore()
 
 
     const route = useRoute();
@@ -28,7 +30,7 @@
   <template v-if="!hideLayout">
     <Header></Header>
     <div class="wrapper" :class="{ 'queue-open': playerStore.isQueueOpen }">
-      <PlaylistsAside/>
+      <PlaylistsAside v-if="userStore.currentUser"/>
       <!-- <main class="main-content"> -->
         <RouterView/>
       <!-- </main> -->
