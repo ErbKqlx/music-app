@@ -135,15 +135,11 @@
                 <template #title>
                     История
                 </template>
-                <!-- <template #content>
-                    <div class="playlists-list">
-                        <Card @click="toPlaylist(playlist.id)" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
-                            <template #image>
-                                <Image :url="playlist.image"/>
-                            </template>
-                        </Card>
+                <template #content>
+                    <div class="empty">
+                        Истории прослушанных треков нет
                     </div>
-                </template> -->
+                </template>
             </Section>
 
             <!-- <div class="user-playlists">
