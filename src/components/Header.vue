@@ -159,9 +159,9 @@
                             <span>Загрузить трек</span>
                         </div>
 
-                        <div class="dropdown-item">
+                        <!-- <div class="dropdown-item">
                             <span>Настройки</span>
-                        </div>
+                        </div> -->
 
                         <div class="dropdown-item theme-toggle" @click="toggleTheme">
                             <!-- <span class="theme-icon">{{ themeIcon }}</span> -->

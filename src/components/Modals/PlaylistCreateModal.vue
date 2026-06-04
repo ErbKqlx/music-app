@@ -75,7 +75,7 @@
                 })
                 
                 // router.push(`/playlist/${playlistId}`)
-                location.reload()
+                router.push(`/profile/${userStore.currentUser.id}`)
             }
             else{
                 // console.log(data.get('image'));
@@ -84,7 +84,7 @@
                     headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                 });
 
-                router.push('/')
+                router.push(`/profile/${userStore.currentUser.id}`)
             }
 
             // router.push('/')
