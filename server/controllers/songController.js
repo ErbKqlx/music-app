@@ -47,8 +47,8 @@ class SongController{
 
             return {
                 id: artist.id,
+                id_user: artist.id_user,
                 name: artist.name,
-                image: artist.image,
                 bio: artist.bio,
             }
         })
@@ -142,6 +142,18 @@ class SongController{
                 return res.status(404).json({ errorMessage: 'Трек не найден' });
             }
 
+            if (req.userRole !== 'Администратор') {
+                const artists = await song.getArtists();
+                
+                const isOwner = artists.some(artist => Number(artist.id_user) === Number(req.userId));
+
+                if (!isOwner) {
+                    return res.status(403).json({
+                        errorMessage: 'Запрещено редактировать чужой трек'
+                    });
+                }
+            }
+
             if (name) song.name = name;
             if (length) song.length = parseInt(length, 10);
             if (release_date) song.release_date = release_date;
@@ -178,20 +190,22 @@ class SongController{
                 return res.status(404).json({ errorMessage: 'Трек не найден' });
             }
 
-            // if (song.image) {
-            //     if (fs.existsSync(song.image)) {
-            //         fs.unlinkSync(song.image);
-            //     }
-            // }
+            if (req.userRole !== 'Администратор' && req.userRole !== 'Модератор') {
+                const artists = await song.getArtists();
+                
+                const isOwner = artists.some(artist => Number(artist.id_user) === Number(req.userId));
+
+                if (!isOwner) {
+                    return res.status(403).json({
+                        errorMessage: 'Запрещено удалять чужой трек'
+                    });
+                }
+            }
 
             deleteFile(song.image)
             deleteFile(song.song_url)
 
-            // if (song.song_url) {
-            //     if (fs.existsSync(song.song_url)) {
-            //         fs.unlinkSync(song.song_url);
-            //     }
-            // }
+
 
             await song.destroy();
 

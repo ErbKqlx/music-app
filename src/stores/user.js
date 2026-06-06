@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import router from "../router";
 import { usePlayerStore } from "./player";
 
@@ -22,8 +22,20 @@ export const useUserStore = defineStore('user', () => {
 
     const currentUser = ref(getInitialUser());
 
+    const isAuthenticated = computed(() => !!currentUser.value);
+
+    const userRole = computed(() => currentUser.value?.role_name || 'Гость');
+
+    const isAdmin = computed(() => userRole.value === 'Администратор');
+
+    const isArtist = computed(() => userRole.value === 'Исполнитель' || userRole.value === 'Администратор');
+
+    const isModerator = computed(() => userRole.value === 'Модератор' || userRole.value === 'Администратор');
+
     function setUser(userData) {
         currentUser.value = userData;
+
+        console.log(userData)
         
         if (userData) {
             localStorage.setItem("user", JSON.stringify(userData));
@@ -45,6 +57,11 @@ export const useUserStore = defineStore('user', () => {
 
     return {
         currentUser,
+        isAuthenticated,
+        userRole,
+        isAdmin,
+        isArtist,
+        isModerator,
         setUser,
         logout
     };

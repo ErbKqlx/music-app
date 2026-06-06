@@ -23,10 +23,6 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    image: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    }
   }, {
     tableName: 'artists',
     schema: 'public',

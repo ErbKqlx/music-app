@@ -37,6 +37,8 @@ const checkRole = (allowedRoles = []) => {
         if (!allowedRoles.includes(req.userRole)) {
             return Response.forbidden(res, "Доступ запрещен: недостаточно прав");
         }
+
+        next()
     }
 }
 

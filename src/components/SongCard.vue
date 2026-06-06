@@ -123,10 +123,9 @@
                 <RouterLink :to="'/artist/' + artist.id" v-for="artist in song.artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
             </div>
         </div>
-        <div class="album-name">
-            <!-- <span class="additional-info clickable">Альбом №1</span> -->
+        <!-- <div class="album-name">
             <RouterLink class="additional-info clickable" to="/album">Альбом №1</RouterLink>
-        </div>
+        </div> -->
         <div class="release-date">
             <span class="additional-info">{{ formatDate(song.release_date) }}</span>
         </div>

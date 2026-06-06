@@ -68,6 +68,7 @@
                         avatar: response.data.data.avatar,
                         registration_date: response.data.data.registration_date,
                         id_role: response.data.data.id_role,
+                        role_name: response.data.data.role_name,
                     }
 
                     console.log(user)

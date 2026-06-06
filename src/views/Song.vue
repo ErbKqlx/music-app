@@ -74,6 +74,10 @@
     }
 
     function handleMiscClick(event){
+        const isOwner = userStore.currentUser?.id && 
+            songData.value.data.artists?.some(artist => Number(artist.id_user) === Number(userStore.currentUser.id));
+
+        // console.log(songData.value.data)
         // console.log(event)
         const options = [
             { 
@@ -89,32 +93,37 @@
                     // console.log("Добавить в очередь") 
                 }
             },
-            { 
-                label: 'Редактировать информацию о треке', 
-                action: () => {
-                    modalStore.openModal('song', songData?.value.data)
-                    // console.log("Редактировать информацию о треке") 
-                }
-            },
-            { 
-                label: 'Удалить трек',
-                action: async () => {
-                    try{
-                        await http.delete(`/song/${songData?.value.data.id}`, 
-                            {
-                                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
-                            }
-                        )
-
-                        router.push('/')
-                    }
-                    catch (error){
-                        console.log('Ошибка при удалении трека ' + error)
-                    }
-                }, 
-                danger: true,
-            },
         ];
+
+        if (isOwner && userStore.isArtist){
+            options.push(
+                { 
+                    label: 'Редактировать информацию о треке', 
+                    action: () => {
+                        modalStore.openModal('song', songData?.value.data)
+                        // console.log("Редактировать информацию о треке") 
+                    }
+                },
+                { 
+                    label: 'Удалить трек',
+                    action: async () => {
+                        try{
+                            await http.delete(`/song/${songData?.value.data.id}`, 
+                                {
+                                    headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+                                }
+                            )
+
+                            router.push('/')
+                        }
+                        catch (error){
+                            console.log('Ошибка при удалении трека ' + error)
+                        }
+                    }, 
+                    danger: true,
+                },
+            )
+        }
         contextMenuStore.open(event, options);
     }
 
