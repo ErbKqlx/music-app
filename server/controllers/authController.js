@@ -6,7 +6,7 @@ import mailer from "../configs/nodemailer.js";
 import jwt from 'jsonwebtoken'
 import authConfig from "../configs/auth.config.js";
 
-// const Role = db.role
+const Role = db.role
 const User = db.user
 
 async function sendMail(code, email){
@@ -38,7 +38,12 @@ class AuthController{
             const user = await User.findOne({
                 where: {
                     email: email,
-                }
+                },
+                include: [{
+                    model: Role,
+                    as: 'role',
+                    attributes: ['name']
+                }]
             })
 
             if (!user){
@@ -78,7 +83,7 @@ class AuthController{
                 // return Response.forbidden(res, 'Пожалуйста, подтвердите вашу почту');
             }
 
-            const token = jwt.sign({ id: user.id }, authConfig.secret, {
+            const token = jwt.sign({ id: user.id, role: user.role?.name }, authConfig.secret, {
                 expiresIn: 86400,
             })
 
@@ -91,6 +96,7 @@ class AuthController{
                 avatar: user.avatar,
                 registration_date: user.registration_date,
                 id_role: user.id_role,
+                role_name: user.role?.name,
                 accessToken: token,
                 isActivated: user.isActivated,
             })
@@ -160,7 +166,10 @@ class AuthController{
         try {
             const { email, code } = req.body;
             
-            const user = await User.findOne({ where: { email, activationCode: code } });
+            const user = await User.findOne({ 
+                where: { email, activationCode: code },
+                include: [{ model: Role, as: 'role', attributes: ['name']}]
+            });
 
             if (!user) {
                 return Response.forbidden(res, "Неверный код подтверждения");
@@ -170,7 +179,7 @@ class AuthController{
             user.activationCode = null;
             await user.save();
 
-            const token = jwt.sign({ id: user.id }, authConfig.secret, { 
+            const token = jwt.sign({ id: user.id, role: user.role?.name }, authConfig.secret, { 
                 expiresIn: 86400 
             });
 
@@ -184,6 +193,7 @@ class AuthController{
                     avatar: user.avatar,
                     registration_date: user.registration_date,
                     id_role: user.id_role,
+                    role_name: user.role?.name,
                     isActivated: user.isActivated,
                 }
             });

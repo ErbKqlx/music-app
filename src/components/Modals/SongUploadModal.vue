@@ -533,7 +533,7 @@
 
     .btn-crop-confirm, .btn-crop-cancel {
         padding: 8px 18px;
-        border-radius: 6px;
+        border-radius: 20px;
         cursor: pointer;
         border: none;
         font-weight: 500;
@@ -541,14 +541,14 @@
     }
 
     .btn-crop-confirm {
-        background-color: #3b82f6;
+        background-color: var(--accent-color);
         color: white;
     }
 
     .btn-crop-cancel {
         background-color: transparent;
         color: var(--text-secondary, #9ca3af);
-        border: 1px solid var(--border-color, #374151);
+        border: 1px solid var(--border-hover, #374151);
     }
     
     :deep(cropper-selection) {

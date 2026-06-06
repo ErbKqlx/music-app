@@ -89,7 +89,7 @@
                     // console.log("Добавить в очередь") 
                 }
             },
-             { 
+            { 
                 label: 'Редактировать информацию о треке', 
                 action: () => {
                     modalStore.openModal('song', songData?.value.data)
@@ -204,8 +204,11 @@
                         Комментарии
                     </template>
                     <template #content>
-                        <div class="comments-content">
+                        <!-- <div class="comments-content">
                             
+                        </div> -->
+                        <div class="empty">
+                            Комментариев пока нет
                         </div>
                     </template>
                 </Section>
@@ -321,5 +324,11 @@
             } */
         }
         
+        .empty{
+            font-size: 24px;
+            text-align: center;
+            margin-top: 50px;
+            color: var(--text-secondary);
+        }
     }
 </style>

@@ -3,7 +3,7 @@ import Response from "../configs/response.js"
 import db from "../models/index.js"
 import jwt from 'jsonwebtoken'
 
-const User = db.user
+// const User = db.user
 
 const verifyToken = (req, res, next) => {
     const token = req.headers["x-access-token"] || req.headers["authorization"]
@@ -23,12 +23,26 @@ const verifyToken = (req, res, next) => {
         }
         
         req.userId = decoded.id
+        req.userRole = decoded.role
         next()
     })
 }
 
+const checkRole = (allowedRoles = []) => {
+    return (req, res, next) => {
+        if (!req.userRole){
+            return Response.forbidden(res, "Роль пользователя не определена");
+        }
+
+        if (!allowedRoles.includes(req.userRole)) {
+            return Response.forbidden(res, "Доступ запрещен: недостаточно прав");
+        }
+    }
+}
+
 const authJwt = {
     verifyToken,
+    checkRole,
 }
 
 export default authJwt
