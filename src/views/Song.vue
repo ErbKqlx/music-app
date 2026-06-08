@@ -188,7 +188,7 @@
                         <div class="artists-list">
                             <div class="artist-card" v-for="artist in songData?.data.artists" :key="artist.id">
                                 <div class="image">
-                                    <Image class="round-image" :url="artist.image"/>
+                                    <Image class="round-image" :url="artist.user[0].avatar"/>
                                 </div>
                                 <div class="info">
                                     <div class="artist-name">{{ artist.name }}</div>

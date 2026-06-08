@@ -327,7 +327,7 @@
 
                 <div class="genres-section">
                     <div class="genres-header">
-                        <label>Жанры</label>
+                        <label>Жанры <span style="color:red;">*</span></label>
                     </div>
                     <div class="genres-buttons">
                         <Button 

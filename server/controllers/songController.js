@@ -32,16 +32,27 @@ class SongController{
         }
         
         const artists = await song.getArtists()
-        const artistsData = artists.map(artist => {
-            artist.image = getFileUrl(artist.image, 'uploads/default/placeholder_avatar.jpg')
+        const artistsData = await Promise.all(artists.map(async artist => {
+            const user = await artist.getUser()
+            const userData = artists.map(user => {
+                    user.avatar = getFileUrl(user.avatar, 'uploads/default/placeholder_avatar.jpg')
+
+                    return {
+                        id: user.id,
+                        username: user.name,
+                        avatar: user.avatar
+                    }
+                })
+            // console.log(user)
 
             return {
                 id: artist.id,
                 id_user: artist.id_user,
+                user: userData,
                 name: artist.name,
                 bio: artist.bio,
             }
-        })
+        }))
 
         const genresData = await song.getGenres()
 
