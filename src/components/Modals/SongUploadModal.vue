@@ -28,10 +28,15 @@
     const isCropping = ref(false)
     const rawImageSrc = ref(null)
 
+    const searchArtistQuery = ref('')
+    const foundArtists = ref([])
+    const selectedArtists = ref([]) 
+    const selectedGenreIds = ref([]) 
+
     const rules = {
         data: {
             name: { required: helpers.withMessage('Поле не может быть пустым', required) },
-            song_file: { required: helpers.withMessage('Вы должны загрузить трек', required), },
+            song_file: { required: helpers.withMessage('Вы должны загрузить трек', required), }
         }
     }
 
@@ -47,6 +52,46 @@
     })
 
     const $v = useVuelidate(rules, formData)
+
+    function toggleGenre(genreId) {
+        const index = selectedGenreIds.value.indexOf(genreId)
+        if (index > -1) {
+            selectedGenreIds.value.splice(index, 1)
+        } else {
+            selectedGenreIds.value.push(genreId)
+        }
+    }
+
+    async function searchArtists() {
+        if (!searchArtistQuery.value.trim()) {
+            foundArtists.value = []
+            return
+        }
+        try {
+            const response = await http.get(`/search?q=${searchArtistQuery.value}`, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            })
+            
+            const usersList = response.data.users || []
+
+            foundArtists.value = usersList.filter(artist => 
+                artist.id !== userStore.currentUser?.id && 
+                !selectedArtists.value.some(selected => selected.id === artist.id)
+            )
+        } catch (error) {
+            console.error('Ошибка при поиске исполнителей:', error)
+        }
+    }
+
+    function addArtist(artist) {
+        selectedArtists.value.push(artist)
+        searchArtistQuery.value = ''
+        foundArtists.value = []
+    }
+
+    function removeArtist(artistId) {
+        selectedArtists.value = selectedArtists.value.filter(artist => artist.id !== artistId)
+    }
 
     function onImageChange(e) {
         const file = e.target.files[0]
@@ -117,6 +162,14 @@
             data.append('lyrics', formData.lyrics)
             data.append('length', formData.length)
 
+            selectedGenreIds.value.forEach(id => {
+                data.append('genres[]', id)
+            })
+
+            selectedArtists.value.forEach(artist => {
+                data.append('artists[]', artist.id)
+            })
+
             if (formData.image) {
                 data.append('image', formData.image)
             }
@@ -134,7 +187,6 @@
                     })
                     router.push('/')
                     toastStore.show('Трек обновлен', 'success')
-
                 } 
                 else {
                     const response = await http.post('/song', data, {
@@ -143,7 +195,6 @@
 
                     if (response.data?.data?.id){
                         toastStore.show('Трек загружен', 'success')
-
                         router.push(`/song/${response.data.data.id}`)
                     } 
                     else {
@@ -168,13 +219,18 @@
         } catch (error){
             console.log('Ошибка при загрузке жанров ' + error)
             toastStore.show('Ошибка при загрузке жанров', 'error')
-
         }
     }
 
     onMounted(() => {
         if (modalStore.modalData) {
             previewImage.value = modalStore.modalData.image
+            if (modalStore.modalData.genres) {
+                selectedGenreIds.value = modalStore.modalData.genres.map(g => g.id)
+            }
+            if (modalStore.modalData.artists) {
+                selectedArtists.value = [...modalStore.modalData.artists]
+            }
         }
         fetchGenresData()
     })
@@ -219,6 +275,35 @@
                         <span class="error" v-for="error of $v.data.song_file.$errors" :key="error.$uid">{{ error.$message }}</span>
                     </div>
 
+                    <div class="field artists-field">
+                        <label>Исполнители (Соавторы)</label>
+                        <div class="search-wrapper">
+                            <input 
+                                type="text" 
+                                v-model="searchArtistQuery" 
+                                @input="searchArtists" 
+                                placeholder="Поиск исполнителя..."
+                            />
+                            <div v-if="foundArtists.length > 0" class="search-dropdown">
+                                <div 
+                                    v-for="artist in foundArtists" 
+                                    :key="artist.id" 
+                                    class="search-item" 
+                                    @click="addArtist(artist)"
+                                >
+                                    <img :src="artist.avatar || '/default-avatar.png'" class="search-avatar" />
+                                    <span>{{ artist.username }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="selectedArtists.length > 0" class="tags-container">
+                            <div v-for="artist in selectedArtists" :key="artist.id" class="artist-tag">
+                                <span>{{ artist.username }}</span>
+                                <button type="button" @click="removeArtist(artist.id)" class="remove-tag-btn">×</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="field">
                         <label>Дата релиза</label>
                         <input type="date" v-model="formData.release_date">
@@ -243,7 +328,14 @@
                         <label>Жанры</label>
                     </div>
                     <div class="genres-buttons">
-                        <Button @click.prevent="" v-for="genre in genresData" :key="genre.id" :class="{'active': genre.id == 1}">{{ genre.name }}</Button>
+                        <Button 
+                            @click.prevent="toggleGenre(genre.id)" 
+                            v-for="genre in genresData" 
+                            :key="genre.id" 
+                            :class="{'active': selectedGenreIds.includes(genre.id)}"
+                        >
+                            {{ genre.name }}
+                        </Button>
                     </div>
                 </div>
             </form>
@@ -446,5 +538,92 @@
     :deep(.cropper-modal.modal-overlay) {
         z-index: 1100;
         background: rgba(0, 0, 0, 0.85);
+    }
+
+    .field.artists-field {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .search-wrapper {
+        position: relative;
+        width: 100%;
+    }
+    .search-wrapper input[type='text'] {
+        border-radius: 5px;
+        height: 33px;
+        font-size: 16px;
+        background-color: rgb(217 , 217, 217);
+        border: none;
+        padding-left: 5px;
+        width: 100%;
+        color: black;
+    }
+
+    .search-dropdown {
+        position: absolute;
+        top: calc(100% + 4px); 
+        left: 0; 
+        right: 0;
+        
+        background-color: var(--bg-primary);
+        border: 1px solid #444;
+        border-radius: 5px;
+        max-height: 180px;
+        overflow-y: auto;
+        
+        z-index: 999; 
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    .search-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .search-item:hover {
+        background-color: var(--bg-hover);
+    }
+
+    .search-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .tags-container {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+        min-height: 0;
+    }
+
+    .artist-tag {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background-color: var(--accent-color, #5577ee);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 13px;
+    }
+
+    .remove-tag-btn {
+        background: none !important;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
     }
 </style>
