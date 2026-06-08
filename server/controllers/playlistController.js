@@ -25,7 +25,12 @@ class PlaylistController{
                 { id_user: req.userId }
             ],
         },
-    order: [['updated_at', 'DESC']]}).catch((err) => {
+        // include: [{
+        //     model: Song,
+        //     as: 'songs',
+        //     attributes: ['id',]
+        // }],
+        order: [['updated_at', 'DESC']]}).catch((err) => {
             console.log(err)
         })
 
@@ -60,6 +65,8 @@ class PlaylistController{
         // console.log(playlistsData)
 
         // return Response.success(res, 'Вывод плейлистов', playlists)
+
+        
 
         return res.status(200).json({
             playlists

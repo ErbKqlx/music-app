@@ -101,20 +101,18 @@
 
 <template>
     <div class="song-card" :class="{ active: song.id == playerStore.currentSong?.id }">
-        <div class="index additional-info">
-            {{ index }}
+        <div class="index-container">
+            <span class="index additional-info">{{ index }}</span>
+            <div @click="playSong()" class="play-button clickable">
+                <PlaySvg width="100%" height="100%" color="var(--text-primary)"/>
+            </div>
         </div>
-        <div @click="playSong()" class="play-button clickable">
-            <!-- <PlaySvg v-if="!playerStore.isPlaying" width="100%" height="100%"/>
-            <PauseSvg v-else width="100%" height="100%"/> -->
-            <PlaySvg width="100%" height="100%" color="var(--text-primary)"/>
-        </div>
+
         <div class="image">
-            <!-- <img src="" alt="Изображение плейлиста"> -->
             <Image :src="song.image"/>
         </div>
+
         <div class="song-info">
-            <!-- <span class="clickable">{{title}}</span> -->
             <div class="title-container">
                 <RouterLink :to="'/song/' + song.id" class="clickable">{{ song.name }}</RouterLink>
                 <span v-if="song.explicit_content" class="explicit-badge" title="Нецензурная лексика">E</span>
@@ -123,25 +121,19 @@
                 <RouterLink :to="'/artist/' + artist.id" v-for="artist in song.artists" :key="artist.id" class="artist-link additional-info clickable">{{ artist.name }}</RouterLink>
             </div>
         </div>
-        <!-- <div class="album-name">
-            <RouterLink class="additional-info clickable" to="/album">Альбом №1</RouterLink>
-        </div> -->
+
         <div class="release-date">
             <span class="additional-info">{{ formatDate(song.release_date) }}</span>
         </div>
-        <div class="song-actions">
+
+        <div class="duration">
             <span>{{ Math.trunc(song.length/60) }}:{{ (song.length%60).toString().padStart(2, '0') }}</span>
-            <!-- <SvgButton>
-                <PlaySvg width="100%" height="100%" viewBox="0 0 15 15"/>
-            </SvgButton>
-            <SvgButton>
-                <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
-            </SvgButton> -->
+        </div>
+
+        <div class="song-actions">
             <div class="misc-button clickable" @click.stop="handleMiscClick">
                 <MiscSvg width="100%" height="100%" viewBox="0 0 16 16"/>
             </div>
-            
-            
         </div>
     </div>
 </template>
@@ -149,38 +141,41 @@
 <style scoped>
     .song-card{
         display: grid;
-        grid-template-columns: 20px 45px 3fr 2fr 2fr 60px; 
-        gap: 15px;
-
-        /* display: flex;
-        gap: 10px; */
-        /* width: 100%; */
-        padding: 7px;
+        grid-template-columns: 32px 45px minmax(0, 3fr) minmax(0, 2fr) 50px 24px; 
+        gap: 16px;
+        padding: 8px;
         font-size: 14px;
         align-items: center;
-        justify-content: space-between;
         border: 2px solid transparent;
-        border-radius: 5px;        
+        border-radius: 6px;
+
+        .index-container {
+            width: 100%;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
 
         .index{
-            width: 20px;
-            display: flex;
-            justify-content: center;
-            align-self: center;
+            display: block;
         }
 
         .image{
             aspect-ratio: 1 / 1;
             width: 45px;
+            overflow: hidden;
         }
 
         .song-info{
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 3px;
-            flex-grow: 0.5;
-            flex-basis: 25%;
+            gap: 4px;
+            /* flex-grow: 0.5;
+            flex-basis: 25%; */
+            overflow: hidden;
 
             .artist-link:not(:last-child)::after {
                 content: ", ";
@@ -190,19 +185,34 @@
         .title-container {
             display: flex;
             align-items: center;
-            gap: 10px;
-            width: 100%;
+            gap: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .title-container a {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .artists {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .artist-link:not(:last-child)::after {
+            content: ", ";
         }
 
         .explicit-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            /* background-color: rgba(255, 255, 255, 0.15); */
             color: var(--text-primary);
             font-size: 10px;
             font-weight: bold;
-            font-family: sans-serif;
             width: 14px;
             height: 14px;
             border-radius: 2px;
@@ -210,24 +220,22 @@
             user-select: none;
             flex-shrink: 0;
         }
-
-        .album-name{
-            flex-grow: 1;
-        }
         
-        .release-date{
-            flex-grow: 1;
-            text-align: left;
+        .release-date {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .duration {
+            text-align: right;
+            /* font-size: 12px; */
+            color: var(--text-primary);
         }
 
         .play-button{
-            /* background: url(); */
             height: 20px;
             width: 20px;
-            /* display: flex;
-            justify-content: center;
-            align-items: center; */
-            /* visibility: hidden; */
             display: none;
             
         }
@@ -252,7 +260,6 @@
     }
 
     .song-card:hover{
-        /* background-color: rgb(70, 70, 70); */
         background-color: var(--bg-hover);
         
         .play-button{

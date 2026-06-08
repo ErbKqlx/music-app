@@ -16,7 +16,7 @@
         <div class="playlist-info">
             <span>{{title}}</span>
             <!-- <span class="additional-info">Треков: {{count}}</span> -->
-             <span class="additional-info">Треков: 0</span>
+             <span class="additional-info">Треков: {{ count }}</span>
         </div>
     </div>
 </template>
