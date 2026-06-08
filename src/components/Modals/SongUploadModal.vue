@@ -11,9 +11,11 @@
     import useVuelidate from '@vuelidate/core'
     import 'cropperjs'
     import ImageCropperModal from '@/components/Modals/ImageCropperModal.vue'
+    import { useToastStore } from '../../stores/toast'
 
     const modalStore = useModalStore()
     const userStore = useUserStore()
+    const toastStore = useToastStore()
 
     const fileInput = ref(null)
     const previewImage = ref(null)
@@ -144,6 +146,7 @@
                 }
             } catch (error){
                 console.log('Ошибка при загрузке трека ' + error)
+                toastStore.show('Ошибка при загрузке трека', 'error')
             }
 
             modalStore.closeModal()

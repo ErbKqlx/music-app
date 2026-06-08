@@ -264,8 +264,6 @@ class PlaylistController{
         })
 
         if (req.file && playlist.image && !playlist.image.includes('default')) {
-            // const oldPath = path.resolve(playlist.image);
-            // if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
             deleteFile(playlist.image)
         }
 
@@ -296,9 +294,6 @@ class PlaylistController{
     }
     
     static async deletePlaylist(req, res){
-        // const userId = req.body.id_user
-        // console.log(req.body)
-
         const playlist = await Playlist.findOne({ where: {
             id: req.params.id
         }}).catch((err) => {
@@ -311,9 +306,9 @@ class PlaylistController{
             })
         }
 
-        await playlist.destroy()
-
         deleteFile(playlist.image)
+
+        await playlist.destroy()
 
         return Response.success(res, 'Плейлист удален')
     }

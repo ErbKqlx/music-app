@@ -13,7 +13,8 @@
     import PlaylistCreateModal from './components/Modals/PlaylistCreateModal.vue';
     import SongUploadModal from './components/Modals/SongUploadModal.vue';
     import SelectPlaylists from './components/Modals/SelectPlaylists.vue';
-  import { useUserStore } from './stores/user.js';
+    import { useUserStore } from './stores/user.js';
+    import ToastContainer from '@/components/ToastContainer.vue'
 
     const lyricsStore = useLyricsStore()
     const playerStore = usePlayerStore()
@@ -40,6 +41,7 @@
       <SelectPlaylists v-if="modalStore.activeModal === 'selectPlaylists'" />
     </div>
     <PlayerBar/>
+    <ToastContainer />
   </template>
 
   <RouterView v-else/>
