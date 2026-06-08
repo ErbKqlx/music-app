@@ -55,35 +55,15 @@
             })
             savedPlaylists.value = playlists.data
             playlistCount.value = savedPlaylists.value.playlists.length
-            // console.log()
 
-            // console.log(savedPlaylists.value.playlists.length)
-            // console.log(savedPlaylists.value.playlists.length == 0)
-            
-            // console.log(savedPlaylists.value.playlists[0])
-            
-            // console.log(userData.value)
         }
         catch (error){
-            // if (error.response.status == 401){
-            //     router.push('/')
-            // }
             console.log('Ошибка при загрузке профиля ' + error)
         }
     }
 
     onMounted(async () => {
         fetchUserData(route.params.id)
-
-        // var sound = new Howl({
-        //     src: ['Korol_i_SHut_-_Lesnik_62571704.mp3']
-        // });
-
-        
-        
-       
-        // sound.seek(180)
-        // sound.loop
     })
 
     watch(() => route.params.id, (newId) => {
@@ -93,15 +73,12 @@
 </script>
 
 <template>
-    <!-- <Wrapper> -->
     <div class="profile-info">
         <TitleCard :title = userData?.username>
             <template #image>
                 <Image :url="userData?.avatar" class="round-image"/>
             </template>
             <template #actions>
-                <!-- <Button @click="openContextMenu" class="round-button">Настройки</Button> -->
-                <!-- <span class="clickable">Настройки</span> -->
             </template>
         </TitleCard>
         <div class="info">
@@ -126,10 +103,6 @@
                     </div>
                 </template>
             </Section>
-            <!-- <CardsList title="Плейлисты" v-if="true">
-                
-            </CardsList> -->
-            
 
             <Section v-if="userStore.currentUser?.id == userData?.id">
                 <template #title>
@@ -141,45 +114,20 @@
                     </div>
                 </template>
             </Section>
-
-            <!-- <div class="user-playlists">
-                
-            </div> -->
-
-            <!-- <CardsList title="Исполнители">
-                <Card @click="toArtist" v-for="i in 5" title="Исполнитель №1" description="Исполнитель">
-                    <template #image>
-                        <Image class="round-image"/>
-                    </template>
-                </Card>
-            </CardsList> -->
-            
-            <!-- <div class="user-artists">
-                
-            </div> -->
         </div>
-        <!-- <Footer></Footer> -->
     </div>
-    <!-- </Wrapper>     -->
-    <!-- <PlayerBar/> -->
 </template>
 
 <style scoped>
     .profile-info{
-        /* background-color: rgb(55, 55, 55); */
         background-color: var(--bg-tertiary);
-        /* height: 1vh; */
         flex-grow: 1;
-        /* display: flex;
-        flex-direction: column; */
         overflow-y: scroll;
         border-radius: 10px;
 
         .user-info{
             display: flex;
             flex-direction: column;
-            /* gap: 50px; */
-            /* padding: 20px; */
         }
 
         .empty{
@@ -196,7 +144,6 @@
 
         .playlists-list{
             display: flex;
-            /* gap: 50px; */
             flex-wrap: wrap;
         }
     }

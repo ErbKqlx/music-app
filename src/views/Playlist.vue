@@ -19,6 +19,7 @@
     import { useUserStore } from '../stores/user';
     import { useModalStore } from '../stores/modal';
     import { useToastStore } from '../stores/toast';
+    import { usePlaylistStore } from '../stores/playlist';
 
 
     const route = useRoute()
@@ -28,22 +29,10 @@
     const userStore = useUserStore()
     const modalStore = useModalStore()
     const toastStore = useToastStore()
+    const playlistStore = usePlaylistStore()
 
     const playlistData = ref(null)
     const playlistSongs = ref([])
-
-    // Типы: 'default', 'date', 'length'
-    // const sortType = ref('default'); 
-    // const sortOrder = ref('asc');
-
-    // function toggleSort(type) {
-    //     if (sortType.value === type) {
-    //         sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
-    //     } else {
-    //         sortType.value = type;
-    //         sortOrder.value = 'desc'; // По умолчанию новые/длинные сверху
-    //     }
-    // }
 
     const sortKey = ref('default');
 
@@ -126,30 +115,23 @@
                 { 
                     label: 'Редактировать информацию о плейлисте', 
                     action: () => {
-                        // console.log("Редактировать информацию о плейлисте") 
                         modalStore.openModal('playlist', playlistData?.value.data)
                     }
                 },
-                // { 
-                //     label: 'Сделать открытым', 
-                //     action: () => {
-                //         console.log("Сделать открытым") 
-                //     }
-                // },
                 { 
                     label: 'Удалить плейлист', 
                     action: async () => {
-                        // console.log("Удалить плейлист")
                         try{
                             await http.delete(`/playlist/${playlistData.value?.data.id}`, 
-                                // playlistData.value?.data.user.id,
                                 {
                                     headers: { Authorization: "Bearer " + localStorage.getItem('token')}
                                 }
                             )
 
+                            await playlistStore.fetchPlaylists(userStore.currentUser.id)
+
                             router.push('/')
-                            toastStore.show(`Плейлист (${playlistData.value?.data.name}) удален`, 'error')
+                            toastStore.show(`Плейлист (${playlistData.value?.data.name}) удален`, 'success')
 
                         }
                         catch (error){
@@ -162,17 +144,11 @@
                 }
             );
         }
-
-        // console.log(event)
         
         contextMenuStore.open(event, options);
     }
 
     function removeSongFromList(deletedSongId){
-        // sortedSongs.value = sortedSongs.value.filter(
-        //     song => song.id !== deletedSongId
-        // )
-
         playlistData.value.data.songs = playlistData.value.data.songs.filter(
             song => song.id !== deletedSongId
         )
@@ -233,7 +209,6 @@
 <style scoped>
     .playlist-info{
         flex-grow: 1;
-        /* background-color: rgb(20, 20, 20); */
         background-color: var(--bg-tertiary);
         border-radius: 10px;
         overflow-y: scroll;

@@ -9,12 +9,12 @@
     import router from '@/router/index.js';
     import ImageCropperModal from '@/components/Modals/ImageCropperModal.vue'
     import { useToastStore } from '../../stores/toast'
-
+    import { usePlaylistStore } from '../../stores/playlist'
 
     const modalStore = useModalStore()
     const userStore = useUserStore()
     const toastStore = useToastStore()
-
+    const playlistStore = usePlaylistStore()
 
     const fileInput = ref(null)
     const previewImage = ref(null)
@@ -91,7 +91,10 @@
                     headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                 })
                 
-                router.push(`/profile/${userStore.currentUser.id}`)
+                await playlistStore.fetchPlaylists(userStore.currentUser.id)
+
+                // router.push(`/playlist/${playlistId}`)
+                location.reload()
                 toastStore.show('Плейлист обновлен', 'success')
             }
             else{
@@ -100,7 +103,9 @@
                     headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                 });
 
-                router.push(`/profile/${userStore.currentUser.id}`)
+                await playlistStore.fetchPlaylists(userStore.currentUser.id)
+
+                // router.push(`/profile/${userStore.currentUser.id}`)
                 toastStore.show('Плейлист добавлен', 'success')
 
             }

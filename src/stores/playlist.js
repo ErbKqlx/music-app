@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
+import http from '@/http.js';
 
 export const usePlaylistStore = defineStore('playlist', () => {
     const savedPlaylists = ref(
@@ -12,6 +13,19 @@ export const usePlaylistStore = defineStore('playlist', () => {
         savedPlaylists.value = playlistsData;
     }
 
+    async function fetchPlaylists(userId) {
+        if (!userId) return;
+        try {
+            const response = await http.get(`/users/${userId}/playlists`, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            });
+            savedPlaylists.value = response.data;
+        } catch (error) {
+            console.error('Ошибка при обновлении плейлистов в сторе:', error);
+            throw error;
+        }
+    }
+
     watch(
         savedPlaylists, 
         (newPlaylists) => {
@@ -22,6 +36,7 @@ export const usePlaylistStore = defineStore('playlist', () => {
 
     return {
         savedPlaylists,
-        setSavedPlaylists
+        setSavedPlaylists,
+        fetchPlaylists
     };
 });

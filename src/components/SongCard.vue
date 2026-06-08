@@ -40,7 +40,6 @@
     const userStore = useUserStore()
     const toastStore = useToastStore()
     const modalStore = useModalStore()
-    const playlistStore = usePlaylistStore()
 
     function playSong(){
         if (playerStore.currentSong == props.song){

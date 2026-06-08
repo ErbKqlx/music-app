@@ -1,35 +1,29 @@
 <script setup>
     import PlaylistsAsideMinimized from '@/components/Aside/PlaylistsAsideMinimized.vue'
     import PlaylistsAsideMaximized from '@/components/Aside/PlaylistsAsideMaximized.vue'
-    import { onMounted, ref } from 'vue'
+    import { computed, onMounted, ref } from 'vue'
     import { useUserStore } from '../../stores/user'
     import http from '../../http'
+    import { usePlaylistStore } from '../../stores/playlist'
+    import { useToastStore } from '../../stores/toast'
 
     function resizeAside(){
         isMinimized.value = !isMinimized.value
     }
 
     const isMinimized = ref(false)
-    const playlistsData = ref(null)
-    const playlistCount = ref(0)
 
     const userStore = useUserStore()
+    const playlistStore = usePlaylistStore()
+    const toastStore = useToastStore()
 
-    async function fetchPlaylistsData() {
-        try{
-            const playlists = await http.get(`/users/${userStore.currentUser.id}/playlists`, {
-                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
-            })
-            playlistsData.value = playlists.data
-            playlistCount.value = playlistsData.value.playlists.length
-        }
-        catch (error){
-            console.log('Ошибка при загрузке плейлистов ' + error)
-        }
-    }
+    const playlistsData = computed(() => playlistStore.savedPlaylists)
+    const playlistCount = computed(() => playlistStore.savedPlaylists?.playlists?.length || 0)
 
     onMounted(() => {
-        fetchPlaylistsData()
+        if (!playlistStore.savedPlaylists) {
+            playlistStore.fetchPlaylists(userStore.currentUser.id)
+        }
     })
 </script>
 
