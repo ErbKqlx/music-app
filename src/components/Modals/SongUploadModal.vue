@@ -72,10 +72,10 @@
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
             
-            const usersList = response.data.users || []
+            const usersList = response.data.artists || []
 
             foundArtists.value = usersList.filter(artist => 
-                artist.id !== userStore.currentUser?.id && 
+                artist.id_user !== userStore.currentUser?.id && 
                 !selectedArtists.value.some(selected => selected.id === artist.id)
             )
         } catch (error) {
@@ -156,7 +156,6 @@
         if (true){
             const data = new FormData()
             data.append('name', formData.name)
-            data.append('public', formData.public ? 1 : 0)
             data.append('release_date', formData.release_date)
             data.append('explicit_content', formData.explicit_content ? 1 : 0)
             data.append('lyrics', formData.lyrics)
@@ -185,7 +184,8 @@
                     await http.patch(`/song/${songId}`, data, {
                         headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                     })
-                    router.push('/')
+                    // router.push('/')
+                    location.reload()
                     toastStore.show('Трек обновлен', 'success')
                 } 
                 else {
@@ -292,14 +292,14 @@
                                     @click="addArtist(artist)"
                                 >
                                     <img :src="artist.avatar || '/default-avatar.png'" class="search-avatar" />
-                                    <span>{{ artist.username }}</span>
+                                    <span>{{ artist.name }}</span>
                                 </div>
                             </div>
                         </div>
                         <div v-if="selectedArtists.length > 0" class="tags-container">
-                            <div v-for="artist in selectedArtists" :key="artist.id" class="artist-tag">
-                                <span>{{ artist.username }}</span>
-                                <button type="button" @click="removeArtist(artist.id)" class="remove-tag-btn">×</button>
+                            <div v-for="artist in selectedArtists" :key="artist.id" class="artist-tag" @click="removeArtist(artist.id)">
+                                <span>{{ artist.name }}</span>
+                                <button type="button" class="remove-tag-btn">×</button>
                             </div>
                         </div>
                     </div>
@@ -311,7 +311,7 @@
 
                     <div class="field checkbox-field">
                         <label class="switch">
-                            <input type="checkbox" v-model="formData.public" :value="formData.public">
+                            <input type="checkbox" v-model="formData.explicit_content" :value="formData.explicit_content">
                             <span class="slider"></span>
                         </label>
                         <span>Нецензурная лексика</span>
@@ -370,6 +370,9 @@
         display: flex;
         gap: 20px;
         padding: 10px 0;
+        max-height: 70vh;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .upload-section {
@@ -426,7 +429,7 @@
         display: flex;
         gap: 15px;
         flex-wrap: wrap;
-        width: 400px;
+        width: 410px;
     }
     .genres-section .genres-buttons button{
         background-color: var(--secondary-color);
@@ -615,6 +618,7 @@
         padding: 4px 10px;
         border-radius: 15px;
         font-size: 13px;
+        cursor: pointer;
     }
 
     .remove-tag-btn {

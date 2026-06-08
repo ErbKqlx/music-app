@@ -27,11 +27,12 @@
         router.push('/playlist/' + id)
     }
 
-    function toArtist(){
-        router.push('/artist')
+    function toSong(id){
+        router.push('/song/' + id)
     }
 
     const userData = ref(null)
+    const songsData = ref(null)
     const savedPlaylists = ref([])
     const playlistCount = ref(0)
 
@@ -47,8 +48,14 @@
             const user = await http.get('/users/' + id, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
+
+            const songsHistory = await http.get('/songs/history', {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+            })
+
             userData.value = user.data
-            console.log(userData.value)
+            songsData.value = songsHistory.data
+            console.log(songsData.value)
 
             const playlists = await http.get(`/users/${id}/playlists`, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
@@ -109,7 +116,14 @@
                     История
                 </template>
                 <template #content>
-                    <div class="empty">
+                    <div v-if="songsData.data.length > 0" class="history-list">
+                        <Card @click="toSong(song.id)" v-for="song in songsData.data" :title=song.name description="Трек">
+                            <template #image>
+                                <Image :url="song.image"/>
+                            </template>
+                        </Card>
+                    </div>
+                    <div v-else class="empty">
                         Истории прослушанных треков нет
                     </div>
                 </template>
@@ -125,9 +139,8 @@
         overflow-y: scroll;
         border-radius: 10px;
 
-        .user-info{
-            display: flex;
-            flex-direction: column;
+        .info{
+            height: 1vh;
         }
 
         .empty{
@@ -142,7 +155,7 @@
             gap: 20px;
         }
 
-        .playlists-list{
+        .playlists-list, .history-list{
             display: flex;
             flex-wrap: wrap;
         }

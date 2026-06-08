@@ -76,6 +76,8 @@
                     localStorage.setItem('token', response.data.data.accessToken)
                     userStore.setUser(user)
 
+                    playlistStore.fetchPlaylists(user.id)
+
                     router.push('/profile/' + user.id)
                 }
                 

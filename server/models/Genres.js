@@ -18,7 +18,7 @@ export default function(sequelize, DataTypes) {
     indexes: [
       {
         name: "pk_genres_id",
-        unique: true,
+        unique: false,
         fields: [
           { name: "id" },
         ]

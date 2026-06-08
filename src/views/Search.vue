@@ -100,7 +100,7 @@
         border-radius: 10px;
         /* overflow-y: auto; */
         padding: 24px;
-        color: #ffffff;
+        color: var(--text-primary);
 
         background-color: var(--bg-tertiary);
         overflow-y: scroll;
@@ -198,7 +198,8 @@
     .item-name {
         font-size: 16px;
         font-weight: 600;
-        color: #ffffff;
+        color: var(--text-primary);
+
         text-decoration: none;
     }
 

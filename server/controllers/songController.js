@@ -89,9 +89,9 @@ class SongController{
         })
     }
 
-    static async createSong(req, res){
+    static async createSong(req, res) {
         try {
-            const { name, length, release_date, explicit_content, lyrics } = req.body;
+            const { name, length, release_date, explicit_content, lyrics, genres, artists } = req.body;
 
             const imageFile = req.files?.['image']?.[0];
             const songFile = req.files?.['song_url']?.[0];
@@ -103,15 +103,32 @@ class SongController{
                 name: name,
                 length: length ? parseInt(length, 10) : 0,
                 release_date: release_date || new Date(),
-                explicit_content: explicit_content === '1',
+                explicit_content: explicit_content === '1' || explicit_content === 'true',
                 lyrics: lyrics || '',
                 image: imagePath,
                 song_url: songPath
             });
 
-            // const userStoreId = req.body.id_user;
-            // const artist = await db.artist.findOne({ where: { id_user: userStoreId } });
-            // if (artist) { await newSong.addArtist(artist); }
+            if (genres) {
+                const genresIds = Array.isArray(genres) ? genres : [genres];
+                await newSong.setGenres(genresIds); 
+            }
+
+            let artistsIds = [];
+            if (artists) {
+                artistsIds = Array.isArray(artists) ? artists.map(Number) : [Number(artists)];
+            }
+
+            const currentArtist = await Artist.findOne({ where: { id_user: req.userId } });
+
+            if (currentArtist) {
+                const creatorArtistId = Number(currentArtist.id);
+                if (!artistsIds.includes(creatorArtistId)) {
+                    artistsIds.push(creatorArtistId);
+                }
+            }
+            
+            await newSong.setArtists(artistsIds);
 
             return res.status(201).json({
                 message: "Трек успешно создан",
@@ -327,12 +344,43 @@ class SongController{
             })
 
             return Response.success(res, "Популярные треки за неделю", popularSongs)
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+        }
+    }
 
-            // return res.status(200).json({
-            //     status: "success",
-            //     message: "Популярные треки за неделю",
-            //     data: popularSongs
-            // });
+    static async getSongsHistory(req, res){
+        try {
+            const songsHistory = await SongsHistories.findAll({
+                where: {
+                    id_user: req.userId
+                },
+                order: [
+                    ['listened_at', 'DESC']
+                ],
+                limit: 5,
+                include: ['song']
+            })
+
+            const uniqueSongsMap = new Map();
+
+            songsHistory.map(historyItem => {
+                    const song = historyItem.song;
+
+                    if (song && !uniqueSongsMap.has(song.id)){
+                        song.image = getFileUrl(song.image)
+                        uniqueSongsMap.set(song.id, song)
+                    }
+                    
+                    
+                    return song;
+                })
+                .filter(Boolean);
+
+            const songs = Array.from(uniqueSongsMap.values());
+
+            return Response.success(res, "История прослушанных треков", songs);
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Внутренняя ошибка сервера' });

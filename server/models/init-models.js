@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import _Albums from "./Albums.js";
+// import _Albums from "./Albums.js";
 import _Artists from "./Artists.js";
 import _Comments from "./Comments.js";
 import _Genres from "./Genres.js";
@@ -9,15 +9,16 @@ import _ReportTypes from "./ReportTypes.js";
 import _Reports from "./Reports.js";
 import _Roles from "./Roles.js";
 import _Songs from "./Songs.js";
-import _SongsAlbums from "./SongsAlbums.js";
+// import _SongsAlbums from "./SongsAlbums.js";
 import _SongsArtists from "./SongsArtists.js";
-import _SongsSubgenres from "./SongsSubgenres.js";
-import _Subgenres from "./Subgenres.js";
+// import _SongsSubgenres from "./SongsGenres.js";
+// import _Subgenres from "./Subgenres.js";
 import _Users from "./Users.js";
 import _SongsHistories from "./SongsHistories.js";
+import _SongsGenres from "./SongsGenres.js";
 
 function initModels(sequelize) {
-  var Albums = _Albums(sequelize, DataTypes);
+  // var Albums = _Albums(sequelize, DataTypes);
   var Artists = _Artists(sequelize, DataTypes);
   var Comments = _Comments(sequelize, DataTypes);
   var Genres = _Genres(sequelize, DataTypes);
@@ -27,17 +28,18 @@ function initModels(sequelize) {
   var Reports = _Reports(sequelize, DataTypes);
   var Roles = _Roles(sequelize, DataTypes);
   var Songs = _Songs(sequelize, DataTypes);
-  var SongsAlbums = _SongsAlbums(sequelize, DataTypes);
+  // var SongsAlbums = _SongsAlbums(sequelize, DataTypes);
   var SongsArtists = _SongsArtists(sequelize, DataTypes);
-  var SongsSubgenres = _SongsSubgenres(sequelize, DataTypes);
-  var Subgenres = _Subgenres(sequelize, DataTypes);
+  // var SongsSubgenres = _SongsSubgenres(sequelize, DataTypes);
+  var SongsGenres = _SongsGenres(sequelize, DataTypes)
+  // var Subgenres = _Subgenres(sequelize, DataTypes);
   var Users = _Users(sequelize, DataTypes);
   var SongsHistories = _SongsHistories(sequelize, DataTypes);
 
-  SongsAlbums.belongsTo(Albums, { as: "album", foreignKey: "id_album"});
-  Albums.hasMany(SongsAlbums, { as: "songsAlbums", foreignKey: "id_album"});
-  Albums.belongsTo(Artists, { as: "artist", foreignKey: "id_artist"});
-  Artists.hasMany(Albums, { as: "albums", foreignKey: "id_artist"});
+  // SongsAlbums.belongsTo(Albums, { as: "album", foreignKey: "id_album"});
+  // Albums.hasMany(SongsAlbums, { as: "songsAlbums", foreignKey: "id_album"});
+  // Albums.belongsTo(Artists, { as: "artist", foreignKey: "id_artist"});
+  // Artists.hasMany(Albums, { as: "albums", foreignKey: "id_artist"});
   // SongsArtists.belongsTo(Artists, { as: "artist", foreignKey: "id_artist"});
   // Artists.hasMany(SongsArtists, { as: "songsArtists", foreignKey: "id_artist"});
 
@@ -46,8 +48,8 @@ function initModels(sequelize) {
 
   Reports.belongsTo(Comments, { as: "comment", foreignKey: "id_comment"});
   Comments.hasMany(Reports, { as: "reports", foreignKey: "id_comment"});
-  Subgenres.belongsTo(Genres, { as: "genre", foreignKey: "id_genre"});
-  Genres.hasMany(Subgenres, { as: "subgenres", foreignKey: "id_genre"});
+  // Subgenres.belongsTo(Genres, { as: "genre", foreignKey: "id_genre"});
+  // Genres.hasMany(Subgenres, { as: "subgenres", foreignKey: "id_genre"});
   // PlaylistsSongs.belongsTo(Playlists, { as: "playlist", foreignKey: "id_playlist"});
   // Playlists.hasMany(PlaylistsSongs, { as: "playlistsSongs", foreignKey: "id_playlist"});
 
@@ -62,14 +64,14 @@ function initModels(sequelize) {
   Songs.hasMany(Comments, { as: "comments", foreignKey: "id_song"});
   // PlaylistsSongs.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
   // Songs.hasMany(PlaylistsSongs, { as: "playlistsSongs", foreignKey: "id_song"});
-  SongsAlbums.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
-  Songs.hasMany(SongsAlbums, { as: "songsAlbums", foreignKey: "id_song"});
+  // SongsAlbums.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
+  // Songs.hasMany(SongsAlbums, { as: "songsAlbums", foreignKey: "id_song"});
   // SongsArtists.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
   // Songs.hasMany(SongsArtists, { as: "songsArtists", foreignKey: "id_song"});
-  SongsSubgenres.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
-  Songs.hasMany(SongsSubgenres, { as: "songsSubgenres", foreignKey: "id_song"});
-  SongsSubgenres.belongsTo(Subgenres, { as: "subgenre", foreignKey: "id_subgenre"});
-  Subgenres.hasMany(SongsSubgenres, { as: "songsSubgenres", foreignKey: "id_subgenre"});
+  // SongsSubgenres.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
+  // Songs.hasMany(SongsSubgenres, { as: "songsSubgenres", foreignKey: "id_song"});
+  // SongsSubgenres.belongsTo(Subgenres, { as: "subgenre", foreignKey: "id_subgenre"});
+  // Subgenres.hasMany(SongsSubgenres, { as: "songsSubgenres", foreignKey: "id_subgenre"});
   Artists.belongsTo(Users, { as: "user", foreignKey: "id_user"});
   Users.hasMany(Artists, { as: "artists", foreignKey: "id_user"});
   Comments.belongsTo(Users, { as: "user", foreignKey: "id_user"});
@@ -85,8 +87,22 @@ function initModels(sequelize) {
   SongsHistories.belongsTo(Users, { as: "user", foreignKey: "id_user"});
   Users.hasMany(SongsHistories, { as: "histories", foreignKey: "id_user"});
 
+  Songs.belongsToMany(Genres, { 
+      through: SongsGenres,
+      foreignKey: 'id_song',
+      otherKey: 'id_genre',
+      as: 'genres'
+  });
+
+  Genres.belongsToMany(Songs, { 
+      through: SongsGenres, 
+      foreignKey: 'id_genre', 
+      otherKey: 'id_song', 
+      as: 'songs'
+  });
+
   return {
-    Albums,
+    // Albums,
     Artists,
     Comments,
     Genres,
@@ -96,10 +112,11 @@ function initModels(sequelize) {
     Reports,
     Roles,
     Songs,
-    SongsAlbums,
+    // SongsAlbums,
     SongsArtists,
-    SongsSubgenres,
-    Subgenres,
+    // SongsSubgenres,
+    SongsGenres,
+    // Subgenres,
     Users,
     SongsHistories,
   };

@@ -55,10 +55,11 @@ router.delete(
 
 router.get('/song/:id', authJwt.verifyToken, SongController.getOneSong)
 
-router.post('/song/:id/listen', SongController.trackListen)
+router.post('/song/:id/listen', authJwt.verifyToken, SongController.trackListen)
 
 router.get('/songs/new', SongController.getNewSongs)
 router.get('/songs/popular', SongController.getPopularSongs)
+router.get('/songs/history', authJwt.verifyToken, SongController.getSongsHistory)
 
 
 router.get('/search', [authJwt.verifyToken], SearchController.search)

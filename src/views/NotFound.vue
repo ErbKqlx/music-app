@@ -1,5 +1,6 @@
 <script setup>
-import { RouterLink } from 'vue-router';
+    import { RouterLink } from 'vue-router';
+    import { useUserStore } from '../stores/user';
 
     defineProps({
         code: String,
@@ -7,6 +8,8 @@ import { RouterLink } from 'vue-router';
     })
 
     const errorMessages = ['Эта пластинка потерялась...', 'Тишина... здесь нет музыки']
+
+    const userStore = useUserStore()
 </script>
 
 <template>
@@ -14,7 +17,7 @@ import { RouterLink } from 'vue-router';
         <div class="error-info">
             <span class="error-code">404</span>
             <span class="error-message">{{errorMessages[Math.floor(Math.random() * errorMessages.length)]}}</span>
-            <RouterLink to="/" class="additional-info">Вернуться на профиль</RouterLink>
+            <RouterLink :to="'/profile/' + userStore.currentUser.id" class="additional-info">Вернуться на профиль</RouterLink>
         </div>
     </div>
 </template>
