@@ -8,10 +8,13 @@
     import { useUserStore } from '@/stores/user'
     import router from '@/router/index.js';
     import ImageCropperModal from '@/components/Modals/ImageCropperModal.vue'
+    import { useToastStore } from '../../stores/toast'
 
 
     const modalStore = useModalStore()
     const userStore = useUserStore()
+    const toastStore = useToastStore()
+
 
     const fileInput = ref(null)
     const previewImage = ref(null)
@@ -89,6 +92,7 @@
                 })
                 
                 router.push(`/profile/${userStore.currentUser.id}`)
+                toastStore.show('Плейлист обновлен', 'success')
             }
             else{
                 await http.post('/playlist', data,
@@ -97,10 +101,13 @@
                 });
 
                 router.push(`/profile/${userStore.currentUser.id}`)
+                toastStore.show('Плейлист добавлен', 'success')
+
             }
         }
         catch (error){
             console.log('Ошибка при создании плейлиста ' + error)
+            toastStore.show('Ошибка при создании плейлиста', 'error')
         }
 
         modalStore.closeModal()

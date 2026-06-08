@@ -5,9 +5,11 @@
     import Button from '@/components/Input/Button.vue'
     import http from '@/http.js'
     import { useUserStore } from '@/stores/user'
+    import { useToastStore } from '../../stores/toast'
 
     const modalStore = useModalStore()
     const userStore = useUserStore()
+    const toastStore = useToastStore()
 
     const userPlaylists = ref([])
     const selectedPlaylistIds = ref([])
@@ -44,11 +46,13 @@
             })
 
             await Promise.all(requests)
+
+            toastStore.show('Трек добавлен в плейлист(ы)', 'success')
             
             modalStore.closeModal()
         } catch (error) {
             console.error('Ошибка при добавлении трека в плейлисты:', error)
-            alert(error.response?.data?.errorMessage || 'Произошла ошибка при добавлении')
+            toastStore.show('Ошибка при добавлении трека в плейлист', 'error')
         }
     }
 

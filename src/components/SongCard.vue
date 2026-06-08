@@ -11,6 +11,9 @@
     import { formatDate } from '../composables/formatDate';
     import { useUserStore } from '../stores/user';
     import http from '../http';
+    import { useToastStore } from '../stores/toast';
+    import { useModalStore } from '../stores/modal';
+    import { usePlaylistStore } from '../stores/playlist';
 
 
     const props = defineProps({
@@ -35,6 +38,9 @@
 
     const playerStore = usePlayerStore()
     const userStore = useUserStore()
+    const toastStore = useToastStore()
+    const modalStore = useModalStore()
+    const playlistStore = usePlaylistStore()
 
     function playSong(){
         if (playerStore.currentSong == props.song){
@@ -60,6 +66,12 @@
 
         options.push(
             { 
+                label: 'Добавить в плейлист', 
+                action: () => {
+                    modalStore.openModal('selectPlaylists', props.song)
+                }
+            },
+            { 
                 label: 'Добавить в очередь', 
                 action: () => {
                     playerStore.addToQueue([props.song])
@@ -81,9 +93,12 @@
                             )
 
                             emit('song-deleted', props.song.id)
+
+                            toastStore.show('Трек удален из плейлиста', 'success')
                         }
                         catch (error){
                             console.log('Ошибка при удалении трека из плейлиста ' + error)
+                            toastStore.show('Ошибка при удалении трека из плейлиста', 'error')
                         }
                     }, 
                     danger: true 

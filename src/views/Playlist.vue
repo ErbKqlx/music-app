@@ -18,6 +18,7 @@
     import { formatDate } from '../composables/formatDate';
     import { useUserStore } from '../stores/user';
     import { useModalStore } from '../stores/modal';
+    import { useToastStore } from '../stores/toast';
 
 
     const route = useRoute()
@@ -26,6 +27,7 @@
     const contextMenuStore = useContextMenuStore();
     const userStore = useUserStore()
     const modalStore = useModalStore()
+    const toastStore = useToastStore()
 
     const playlistData = ref(null)
     const playlistSongs = ref([])
@@ -69,22 +71,11 @@
             const playlist = await http.get('/playlist/' + id, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
-            // console.log(playlist.data)
 
             playlistData.value = playlist.data
-
-            // const songs = await http.get(`/playlist/${id}/songs`, {
-            //     headers: { Authorization: "Bearer " + localStorage.getItem('token')}
-            // })
-            // playlistSongs.value = songs.data
             console.log(playlistData.value)
-            // console.log(playlistData.value)
-            // console.log(userData.value)
         }
         catch (error){
-            // if (error.response.status == 401){
-            //     router.push('/')
-            // }
             if (error.response.status == 403){
                 router.push({name: 'NotFound'})
             }
@@ -95,6 +86,7 @@
             }
 
             console.log('Ошибка при загрузке плейлиста ' + error)
+            toastStore.show('Ошибка при загрузке плейлиста', 'error')
         }
     }
 
@@ -157,9 +149,13 @@
                             )
 
                             router.push('/')
+                            toastStore.show(`Плейлист (${playlistData.value?.data.name}) удален`, 'error')
+
                         }
                         catch (error){
                             console.log('Ошибка при удалении плейлиста ' + error)
+                            toastStore.show('Ошибка при удалении плейлиста', 'error')
+
                         }
                     }, 
                     danger: true 

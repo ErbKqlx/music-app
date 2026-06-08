@@ -132,15 +132,21 @@
                     await http.patch(`/song/${songId}`, data, {
                         headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                     })
-                    location.reload()
-                } else {
+                    router.push('/')
+                    toastStore.show('Трек обновлен', 'success')
+
+                } 
+                else {
                     const response = await http.post('/song', data, {
                         headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                     });
 
                     if (response.data?.data?.id){
+                        toastStore.show('Трек загружен', 'success')
+
                         router.push(`/song/${response.data.data.id}`)
-                    } else {
+                    } 
+                    else {
                         router.push('/')
                     }
                 }
@@ -161,6 +167,8 @@
             genresData.value = genres.data
         } catch (error){
             console.log('Ошибка при загрузке жанров ' + error)
+            toastStore.show('Ошибка при загрузке жанров', 'error')
+
         }
     }
 
