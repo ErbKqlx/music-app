@@ -5,7 +5,11 @@ const Genre = db.genre
 class GenreController{
     static async getGenres(req, res){
         try {
-            const genres = await Genre.findAll();
+            const genres = await Genre.findAll({
+                order: [
+                    ['name', 'ASC']
+                ]
+            });
 
             return res.status(200).json(genres)
         } catch (error) {

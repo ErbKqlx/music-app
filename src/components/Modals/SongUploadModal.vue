@@ -233,6 +233,8 @@
             }
         }
         fetchGenresData()
+        console.log(modalStore.modalData)
+
     })
 </script>
 

@@ -22,15 +22,6 @@ class SongController{
             console.log(err)
         })
 
-        // if (song.image) {
-        //     if (fs.existsSync(song.image)) {
-        //         song.image = `${host}/${song.image}`;
-        //     } else {
-        //         song.image = `${host}/uploads/default/placeholder.jpg`;
-        //     }
-        // } else {
-        //     song.image = `${host}/uploads/default/placeholder.jpg`;
-        // }
 
         song.image = getFileUrl(song.image)
 
@@ -43,7 +34,6 @@ class SongController{
         const artists = await song.getArtists()
         const artistsData = artists.map(artist => {
             artist.image = getFileUrl(artist.image, 'uploads/default/placeholder_avatar.jpg')
-            // artist.image = `${host}/${artist.image}`
 
             return {
                 id: artist.id,
@@ -53,26 +43,7 @@ class SongController{
             }
         })
 
-        // const songData = await Promise.all(
-        //     songs.map(async song => {
-        //         song.image = `http://localhost:8080/${song.image}`
-        //         const artists = await song.getArtists()
-            
-        //         const artistsData = artists.map(artist => {
-        //             return {
-        //                 id: artist.id,
-        //                 name: artist.name,
-        //             }
-        //         })
-        //         return {
-        //             id: song.id,
-        //             name: song.name,
-        //             length: song.length,
-        //             artists: artistsData,
-        //             image: song.image,
-        //         }
-        //     })
-        // )
+        const genresData = await song.getGenres()
 
         return res.status(200).json({
             data: {
@@ -85,6 +56,7 @@ class SongController{
                 release_date: song.release_date,
                 explicit_content: song.explicit_content,
                 lyrics: song.lyrics,
+                genres: genresData,
             }
         })
     }
@@ -152,7 +124,7 @@ class SongController{
     static async updateSong(req, res){
         try {
             const { id } = req.params;
-            const { name, length, release_date, explicit_content, lyrics } = req.body;
+            const { name, length, release_date, explicit_content, lyrics, genres, artists } = req.body;
 
             const song = await Song.findByPk(id);
             if (!song) {
@@ -184,6 +156,27 @@ class SongController{
             if (req.files?.['song_url']?.[0]) {
                 song.song_url = req.files['song_url'][0].path.replace(/\\/g, '/');
             }
+
+            if (genres) {
+                const genresIds = Array.isArray(genres) ? genres : [genres];
+                await song.setGenres(genresIds); 
+            }
+
+            let artistsIds = [];
+            if (artists) {
+                artistsIds = Array.isArray(artists) ? artists.map(Number) : [Number(artists)];
+            }
+
+            const currentArtist = await Artist.findOne({ where: { id_user: req.userId } });
+
+            if (currentArtist) {
+                const creatorArtistId = Number(currentArtist.id);
+                if (!artistsIds.includes(creatorArtistId)) {
+                    artistsIds.push(creatorArtistId);
+                }
+            }
+            
+            await song.setArtists(artistsIds);
 
             await song.save();
 
