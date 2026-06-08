@@ -4,7 +4,7 @@
 
 <template>
   <Teleport to="body">
-    <div class="modal-overlay" @click.self="$emit('close')">
+    <div class="modal-overlay" v-bind="$attrs" @click.self="$emit('close')">
       <div class="modal-content">
         <button class="close-button" @click="$emit('close')">✕</button>
 

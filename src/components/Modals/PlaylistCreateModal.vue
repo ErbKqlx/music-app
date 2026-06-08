@@ -7,6 +7,8 @@
     import http from '@/http.js'
     import { useUserStore } from '@/stores/user'
     import router from '@/router/index.js';
+    import ImageCropperModal from '@/components/Modals/ImageCropperModal.vue'
+
 
     const modalStore = useModalStore()
     const userStore = useUserStore()
@@ -14,6 +16,10 @@
     const fileInput = ref(null)
     const previewImage = ref(null)
     const isEdit = computed(() => !!modalStore.modalData);
+
+    const isCropping = ref(false)
+    const rawImageSrc = ref(null)
+    const currentFileType = ref('image/jpeg')
 
     const formData = reactive({
         name: modalStore.modalData?.name || '' ,
@@ -38,34 +44,42 @@
             return
         }
 
+        rawImageSrc.value = URL.createObjectURL(file)
+        currentFileType.value = file.type
+        isCropping.value = true
+    }
+
+    function handleCropConfirmed({ dataUrl, file }) {
+        previewImage.value = dataUrl
         formData.image = file
-        previewImage.value = URL.createObjectURL(file)
+        isCropping.value = false
+        
+        if (fileInput.value) fileInput.value.value = ''
+    }
+
+    function cancelCrop() {
+        isCropping.value = false
+        if (rawImageSrc.value) URL.revokeObjectURL(rawImageSrc.value)
+        if (fileInput.value) fileInput.value.value = ''
     }
 
     function triggerFileInput() {
-        fileInput.value.click()
-        console.log(modalStore.modalData?.image)
-        
+        if (!isCropping.value) {
+            fileInput.value.click()
+        }
     }
 
     async function handleSubmit() {
-        // !formData.name.trim()
-        if (formData.name == '') {
-            // return alert('Введите название плейлиста')
-        } 
-
         const data = new FormData()
         data.append('name', formData.name)
         data.append('public', formData.public ? 1 : 0)
         data.append('id_user', formData.id_user)
 
-        // if (form.image) formData.append('image', form.image)
         if (formData.image) {
             data.append('image', formData.image)
         }
 
         const playlistId = modalStore.modalData?.id
-        console.log(playlistId)
 
         try{
             if (isEdit.value){
@@ -74,11 +88,9 @@
                     headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                 })
                 
-                // router.push(`/playlist/${playlistId}`)
                 router.push(`/profile/${userStore.currentUser.id}`)
             }
             else{
-                // console.log(data.get('image'));
                 await http.post('/playlist', data,
                 {
                     headers: { Authorization: "Bearer " + localStorage.getItem('token')},
@@ -86,8 +98,6 @@
 
                 router.push(`/profile/${userStore.currentUser.id}`)
             }
-
-            // router.push('/')
         }
         catch (error){
             console.log('Ошибка при создании плейлиста ' + error)
@@ -155,6 +165,15 @@
             </div>
         </template>
     </Modal>
+
+    <ImageCropperModal 
+        v-if="isCropping"
+        class="cropper-modal"
+        :image-src="rawImageSrc"
+        :file-type="currentFileType"
+        @confirmed="handleCropConfirmed"
+        @cancel="cancelCrop"
+    />
 </template>
 
 <style scoped>
@@ -285,4 +304,9 @@
 
     input:checked + .slider { background-color: var(--accent-color, #5577ee); }
     input:checked + .slider:before { transform: translateX(20px); }
+
+    :deep(.cropper-modal.modal-overlay) {
+        z-index: 1100;
+        background: rgba(0, 0, 0, 0.85);
+    }
 </style>
