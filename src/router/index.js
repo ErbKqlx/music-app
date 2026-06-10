@@ -12,6 +12,7 @@ import Test from '@/views/Test.vue'
 import NotFound from '@/views/NotFound.vue'
 import VerifyEmail from '@/views/VerifyEmail.vue'
 import Search from '@/views/Search.vue'
+import Admin from '@/views/Admin.vue'
 
 const routes = [
     {
@@ -66,6 +67,11 @@ const routes = [
         path: '/search',
         component: Search,
         name: 'Search',
+    },
+    {
+        path: '/admin',
+        component: Admin,
+        name: 'Admin',
     },
     {
         path: "/:pathMatch(.*)*",

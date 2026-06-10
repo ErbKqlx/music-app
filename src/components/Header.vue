@@ -115,7 +115,7 @@
         </div>
         
         <div class="header-actions">
-            <!-- <Button @click="modalStore.openModal('song')">Загрузить трек</Button> -->
+            <RouterLink to="/admin" class="clickable" v-if="userStore.isAdmin">Панель администратора</RouterLink>
             
             <div v-if="userStore.currentUser" class="profile-container" @click.stop>
                 <div class="profile-trigger" @click="toggleProfileMenu">
@@ -207,7 +207,7 @@
         position: sticky;
         top: 0;
         z-index: 1000;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        /* border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
     }
 
     .header-actions {
@@ -286,6 +286,11 @@
         background-color: #4455cc;
         transform: translateY(-1px);
     } */
+
+    .admin-panel{
+        color: var(--text-primary);
+        cursor: pointer;
+    }
 
     .profile-container {
         position: relative;

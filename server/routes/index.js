@@ -64,7 +64,33 @@ router.get('/songs/history', authJwt.verifyToken, SongController.getSongsHistory
 
 router.get('/search', [authJwt.verifyToken], SearchController.search)
 
-router.get('/genres', [authJwt.verifyToken], GenreController.getGenres)
+router.get(
+    '/genres', 
+    [authJwt.verifyToken], 
+    GenreController.getGenres
+)
+
+router.post(
+    '/genres', 
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Администратор']),  
+    GenreController.addGenre
+)
+
+router.patch(
+    '/genres/:id', 
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Администратор']), 
+    GenreController.updateGenre
+)
+
+router.delete(
+    '/genres/:id', 
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Администратор']), 
+    GenreController.deleteGenre
+)
+
 
 router.post('/login', AuthController.login)
 router.post('/register', AuthController.register)

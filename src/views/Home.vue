@@ -23,13 +23,24 @@
 
     const newSongs = ref([])
     const popularSongs = ref([])
-    const featuredPlaylists = ref([])
+    const genres = ref([])
+    const selectedGenreId = ref(null)
     const isLoading = ref(true)
 
     const sortKey = ref('date-desc');
 
+    const filteredPopularSongs = computed(() => {
+        if (!selectedGenreId.value) return popularSongs.value;
+        return popularSongs.value.filter(song => song.id_genre === selectedGenreId.value);
+    })
+
+    const filteredNewSongs = computed(() => {
+        if (!selectedGenreId.value) return newSongs.value;
+        return newSongs.value.filter(song => song.id_genre === selectedGenreId.value);
+    })
+
     const sortedNewSongs = computed (() => {
-        const songs = [...newSongs.value];
+        const songs = [...filteredNewSongs.value];
         
         switch (sortKey.value) {
             case 'date-desc':
@@ -49,22 +60,30 @@
         try {
             isLoading.value = true
 
-            const [newSongsRes, popularSongsRes] = await Promise.all([
+            const [newSongsRes, popularSongsRes, genresRes] = await Promise.all([
                 http.get('/songs/new', {
                     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
                 }),
                 http.get('/songs/popular', {
                     headers: { Authorization: "Bearer " + localStorage.getItem('token') }
                 }),
+                http.get('/genres', { 
+                    headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+                })
             ])
             
             newSongs.value = newSongsRes.data.data
             popularSongs.value = popularSongsRes.data.data
+            genres.value = genresRes.data.data
         } catch (error) {
             console.log('Ошибка при загрузке данных главной страницы: ' + error)
         } finally {
             isLoading.value = false
         }
+    }
+
+    function selectGenre(genreId) {
+        selectedGenreId.value = genreId;
     }
 
     function startQueue(songs, startSong = null) {
@@ -111,6 +130,34 @@
 <template>
     <div class="home-info">
         <div class="info">
+            
+            <div class="section genres-section" v-if="genres.length > 0 && userStore.currentUser">
+                <div class="section-header">
+                    <div>
+                        <h2>Жанры</h2>
+                        <p class="section-subtitle">Выберите жанр для фильтрации треков</p>
+                    </div>
+                </div>
+                <div class="genres-list">
+                    <button 
+                        class="genre-badge" 
+                        :class="{ active: selectedGenreId === null }"
+                        @click="selectGenre(null)"
+                    >
+                        Все жанры
+                    </button>
+                    <button 
+                        v-for="genre in genres" 
+                        :key="genre.id" 
+                        class="genre-badge"
+                        :class="{ active: selectedGenreId === genre.id }"
+                        @click="selectGenre(genre.id)"
+                    >
+                        {{ genre.name }}
+                    </button>
+                </div>
+            </div>
+
             <div class="section">
                 <div class="section-header">
                     <div>
@@ -119,11 +166,11 @@
                     </div>
                 </div>
                 
-                <div class="popular-list" v-if="popularSongs.length > 0">
+                <div class="popular-list" v-if="filteredPopularSongs.length > 0">
                     <Card 
                         @click="toSong(song.id)" 
-                        v-for="(song, index) in popularSongs.slice(0, 12)" 
-                        :title=song.name 
+                        v-for="(song, index) in filteredPopularSongs.slice(0, 12)" 
+                        :title="song.name" 
                         description="Трек" 
                         :key="song.id">
 
@@ -133,18 +180,11 @@
                     </Card>
                 </div>
 
-                <!-- <SongsList v-if="popularSongs.length > 0">
-                    <SongCard 
-                        v-for="(song, index) in popularSongs.slice(0, 20)"
-                        :song="song"
-                        :index="index + 1"
-                        :key="song.id"
-                    />
-                </SongsList> -->
                 <div class="empty" v-else>
-                    Популярных треков пока нет
+                    В этом жанре популярных треков пока нет
                 </div>
             </div>
+
             <div class="section">
                 <div class="section-header">
                     <div>
@@ -175,7 +215,7 @@
                     />
                 </SongsList>
                 <div class="empty" v-else>
-                    Новых треков пока нет
+                    В этом жанре новых треков пока нет
                 </div>
             </div>
         </div>
@@ -196,6 +236,46 @@
 
         .section {
             margin-bottom: 40px;
+        }
+
+        .genres-section {
+            margin-bottom: 20px;
+        }
+
+        .genres-list {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .genre-badge {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary, #fff);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            &.active {
+                background-color: var(--text-primary, #fff);
+                color: var(--bg-primary, #000);
+                border-color: var(--text-primary, #fff);
+            }
         }
 
         .section-header {
@@ -267,31 +347,10 @@
             height: 16px;
         }
 
-        .round-button {
-            background-color: var(--text-primary);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .no-background {
-            background: transparent;
-            border: none;
-        }
-
-        .playlist-author {
-            font-size: 12px;
-            opacity: 0.7;
-            margin-top: 5px;
-        }
-
         .empty {
-            font-size: 24px;
+            font-size: 20px;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 20px;
             color: var(--text-secondary);
             padding: 40px;
         }
@@ -302,7 +361,7 @@
         }
 
         button:hover {
-            opacity: 0.8;
+            opacity: 0.9;
         }
     }
 </style>
