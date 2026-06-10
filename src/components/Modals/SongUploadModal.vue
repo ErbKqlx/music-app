@@ -215,7 +215,7 @@
             const genres = await http.get('/genres', {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
-            genresData.value = genres.data
+            genresData.value = genres.data.data
         } catch (error){
             console.log('Ошибка при загрузке жанров ' + error)
             toastStore.show('Ошибка при загрузке жанров', 'error')

@@ -33,6 +33,10 @@
             type: Boolean,
             default: false,
         },
+        playlist: {
+            type: Object,
+            default: null,
+        }
     })
 
     // console.log(props)
@@ -146,6 +150,8 @@
                 <div class="created">
                     <RouterLink :to="'/profile/' + id_user" class="additional-info clickable">{{ username }}</RouterLink>
                     <span class="additional-info">{{ created_at }}</span>
+                    <span class="additional-info" v-if="public_playlist">Открытый плейлист</span>
+                    <span class="additional-info" v-else>Закрытый плейлист</span>
                 </div>
             </div>
             <div class="actions">

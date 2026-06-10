@@ -13,6 +13,7 @@ import NotFound from '@/views/NotFound.vue'
 import VerifyEmail from '@/views/VerifyEmail.vue'
 import Search from '@/views/Search.vue'
 import Admin from '@/views/Admin.vue'
+import Settings from '@/views/Settings.vue'
 
 const routes = [
     {
@@ -72,6 +73,11 @@ const routes = [
         path: '/admin',
         component: Admin,
         name: 'Admin',
+    },
+    {
+        path: '/settings',
+        component: Settings,
+        name: 'Settings',
     },
     {
         path: "/:pathMatch(.*)*",

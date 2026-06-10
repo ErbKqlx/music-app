@@ -4,6 +4,8 @@ import { getFileUrl } from "../utils/fileHelper.js";
 import { deleteFile } from "../utils/filesystem.js";
 import Response from "../configs/response.js"
 import { col, fn, literal, Op } from "sequelize";
+import jwt from 'jsonwebtoken'
+import authConfig from "../configs/auth.config.js";
 
 
 // const Playlist = db.playlist
@@ -281,7 +283,19 @@ class SongController{
         try {
             const songId = req.params.id;
 
-            const userId = req.userId
+            let userId = null;
+
+            const token = req.headers["x-access-token"] || req.headers["authorization"];
+
+            if (token) {
+                const actualToken = token.startsWith("Bearer ") ? token.slice(7, token.length) : token;
+                try {
+                    const decoded = jwt.verify(actualToken, authConfig.secret);
+                    userId = decoded.id;
+                } catch (jwtError) {
+
+                }
+            }
 
             const song = await Song.findByPk(songId);
             if (!song) {

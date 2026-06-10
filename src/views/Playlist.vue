@@ -110,7 +110,7 @@
             },
         )
 
-        if (isOwner){
+        if (isOwner || userStore.isModerator){
             options.push(
                 { 
                     label: 'Редактировать информацию о плейлисте', 
@@ -169,7 +169,9 @@
             :title="playlistData?.data.name" 
             :id_user="playlistData?.data.user.id"
             :username="playlistData?.data.user.username" 
-            :created_at="formatDate(playlistData?.data.created_at)" >
+            :created_at="formatDate(playlistData?.data.created_at)" 
+            :public_playlist="playlistData?.data.public" >
+            
             <template #image>
                 <Image :url="playlistData?.data.image"/>
             </template>
@@ -179,7 +181,7 @@
             </template>
         </TitleCard>
         <div class="info">
-            <div class="list-controls">
+            <div class="list-controls" v-if="sortedSongs.length > 0">
                 <label for="sort-select" class="additional-info">Сортировка:</label>
                 <select id="sort-select" v-model="sortKey" class="sort-select">
                     <option value="default">По умолчанию</option>

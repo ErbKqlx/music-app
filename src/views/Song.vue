@@ -95,7 +95,7 @@
             },
         ];
 
-        if (isOwner && userStore.isArtist){
+        if (isOwner && userStore.isArtist || userStore.isAdmin){
             options.push(
                 { 
                     label: 'Редактировать информацию о треке', 
@@ -149,82 +149,52 @@
 </script>
 
 <template>
-    <!-- <Header></Header> -->
-    <!-- <Wrapper> -->
-        <div class="song-info">
-            <TitleCard 
-                :title="songData?.data.name" 
-                :created_at="formatDate(songData?.data.release_date)"
-                :explicit_content="songData?.data.explicit_content" >
-                <template #image>
-                    <Image :url="songData?.data.image"/>
+    <div class="song-info">
+        <TitleCard 
+            :title="songData?.data.name" 
+            :created_at="formatDate(songData?.data.release_date)"
+            :explicit_content="songData?.data.explicit_content" >
+            <template #image>
+                <Image :url="songData?.data.image"/>
+            </template>
+            <template #actions>
+                <Button @click="startSong(songData?.data)" class="play-button round-button"><Play color="var(--bg-primary)"/></Button>
+                <Button @click="handleLyricsClick">Посмотреть текст</Button>
+                <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal color="var(--text-primary)"/></Button>
+            </template>
+        </TitleCard>
+        <div class="info">
+            <Section>
+                <template #title>
+                    Исполнители
                 </template>
-                <template #actions>
-                    <Button @click="startSong(songData?.data)" class="play-button round-button"><Play color="var(--bg-primary)"/></Button>
-                    <Button @click="handleLyricsClick">Посмотреть текст</Button>
-                    <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal color="var(--text-primary)"/></Button>
-                </template>
-            </TitleCard>
-            <div class="info">
-                <!-- <Section>
-                    <template #title>
-                        Альбомы
-                    </template>
-                    <template #content>
-                        <div class="albums-list">
-                            <Card @click="toAlbum" v-for="i in 5" title="Альбом №1" description="Альбом">
-                                <template #image>
-                                    <Image/>
-                                </template>
-                            </Card>
-                        </div>
-                    </template>
-                </Section> -->
-                <Section>
-                    <template #title>
-                        Исполнители
-                    </template>
-                    <template #content>
-                        <div class="artists-list">
-                            <div class="artist-card" v-for="artist in songData?.data.artists" :key="artist.id">
-                                <div class="image">
-                                    <Image class="round-image" :url="artist.user[0].avatar"/>
-                                </div>
-                                <div class="info">
-                                    <div class="artist-name">{{ artist.name }}</div>
-                                    <div class="artist-bio additional-info">{{ artist.bio || 'Нет описания'}}</div>
-                                </div>
+                <template #content>
+                    <div class="artists-list">
+                        <div class="artist-card" v-for="artist in songData?.data.artists" :key="artist.id">
+                            <div class="image">
+                                <Image class="round-image" :url="artist.user[0].avatar"/>
+                            </div>
+                            <div class="info">
+                                <div class="artist-name">{{ artist.name }}</div>
+                                <div class="artist-bio additional-info">{{ artist.bio || 'Нет описания'}}</div>
                             </div>
                         </div>
-                    </template>
-                </Section>
-                <!-- <Section>
-                    <template #title>
-                        Текст
-                    </template>
-                    <template #content>
-                        <div class="lyrics-content">
-                            <pre>{{songData?.data.lyrics || 'Текст для этой песни пока не добавлен'}}</pre>
-                        </div>
-                    </template>
-                </Section> -->
-                <Section>
-                    <template #title>
-                        Комментарии
-                    </template>
-                    <template #content>
-                        <!-- <div class="comments-content">
-                            
-                        </div> -->
-                        <div class="empty">
-                            Комментариев пока нет
-                        </div>
-                    </template>
-                </Section>
-            </div>
+                    </div>
+                </template>
+            </Section>
+
+            <Section>
+                <template #title>
+                    Комментарии
+                </template>
+                <template #content>
+                    <div class="empty">
+                        Комментариев пока нет
+                    </div>
+                </template>
+            </Section>
         </div>
-    <!-- </Wrapper> -->
-    <!-- <PlayerBar/> -->
+    </div>
 </template>
 
 <style scoped>

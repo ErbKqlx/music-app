@@ -6,7 +6,6 @@
     import PlaylistCard from '@/components/PlaylistCard.vue';
     import ArtistCard from '@/components/ArtistCard.vue';
     import CardsList from '@/components/CardsList.vue';
-    // import Footer from '@/components/Footer.vue';
     import router from '@/router/index.js';
     import Image from '@/components/Image.vue';
     import Card from '@/components/Card.vue';
@@ -19,7 +18,6 @@
     import Section from '@/components/Section.vue';
     import { useUserStore } from '../stores/user';
     import { useModalStore } from '../stores/modal';
-    // import soundFile from './Korol_i_SHut_-_Lesnik_62571704.mp3'
 
     const route = useRoute()
 

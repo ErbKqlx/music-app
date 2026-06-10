@@ -24,7 +24,7 @@ router.get('/playlist/:id', [authJwt.verifyToken], PlaylistController.getOnePlay
 // router.get('/playlist/:id/songs', [authJwt.verifyToken], PlaylistController.getPlaylistSongs)
 router.post('/playlist', authJwt.verifyToken, uploadImage, PlaylistController.createPlaylist)
 router.patch('/playlist/:id', authJwt.verifyToken, uploadImage, PlaylistController.updatePlaylist)
-router.delete('/playlist/:id', [authJwt.verifyToken], PlaylistController.deletePlaylist)
+router.delete('/playlist/:id', authJwt.verifyToken, PlaylistController.deletePlaylist)
 
 router.delete('/playlist/:id_playlist/song/:id_song', [authJwt.verifyToken], PlaylistController.deleteSongFromPlaylist)
 router.post('/playlist/:id_playlist/song/:id_song', [authJwt.verifyToken], PlaylistController.addSongToPlaylist)
@@ -55,7 +55,7 @@ router.delete(
 
 router.get('/song/:id', authJwt.verifyToken, SongController.getOneSong)
 
-router.post('/song/:id/listen', authJwt.verifyToken, SongController.trackListen)
+router.post('/song/:id/listen', SongController.trackListen)
 
 router.get('/songs/new', SongController.getNewSongs)
 router.get('/songs/popular', SongController.getPopularSongs)
@@ -66,7 +66,6 @@ router.get('/search', [authJwt.verifyToken], SearchController.search)
 
 router.get(
     '/genres', 
-    [authJwt.verifyToken], 
     GenreController.getGenres
 )
 

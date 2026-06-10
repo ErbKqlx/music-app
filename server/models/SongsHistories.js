@@ -14,7 +14,7 @@ export default function(sequelize, DataTypes) {
     },
     id_user: {
       type: DataTypes.BIGINT,
-      allowNull: false,
+      allowNull: true,
       references: { model: 'users', key: 'id' }
     },
     listened_at: {
