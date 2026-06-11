@@ -423,6 +423,7 @@
         display: flex;
         flex-direction: column;
         align-items: baseline;
+        
     }
     .genres-section .genres-header{
         margin-bottom: 10px;

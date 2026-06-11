@@ -20,6 +20,8 @@
     import { useModalStore } from '../stores/modal';
     import { useToastStore } from '../stores/toast';
     import { usePlaylistStore } from '../stores/playlist';
+    import PlaySvg from '@/assets/svg/play.svg?component'
+    import PauseSvg from '@/assets/svg/pause.svg?component'
 
 
     const route = useRoute()
@@ -166,18 +168,54 @@
 <template>
     <div class="playlist-info">
         <TitleCard 
-            :title="playlistData?.data.name" 
-            :id_user="playlistData?.data.user.id"
-            :username="playlistData?.data.user.username" 
-            :created_at="formatDate(playlistData?.data.created_at)" 
-            :public_playlist="playlistData?.data.public" >
-            
+            type="playlist" 
+            :title="playlistData?.data.name"
+        >
             <template #image>
-                <Image :url="playlistData?.data.image"/>
+                <img :src="playlistData?.data.image" alt="Обложка">
             </template>
+
+            <template #metadata>
+                <div class="metadata-row">
+                    <div>
+                        Кем создан:
+                        <RouterLink :to="'/profile/' + playlistData?.data.user.id">
+                            {{ playlistData?.data.user.username }}
+                        </RouterLink>
+                    </div>
+                    
+                    <span class="separator">•</span>
+                    
+                    <span>{{ playlistData?.data.songs_count }}</span>
+                    <span class="separator">•</span>
+                    
+                    <span>{{ playlistData?.data.public ? 'Открытый' : 'Закрытый' }}</span>
+                    <span class="separator">•</span>
+                    <span>Дата создания: {{ formatDate(playlistData?.data.created_at) }}</span>
+
+                </div>
+            </template>
+
             <template #actions>
-                <Button @click="startPlaylist(sortedSongs[0])" class="play-button round-button"><Play color="var(--bg-primary)"/></Button>
-                <Button @click.stop="handleMiscClick" class="no-background round-button"><ThreeDotsHorizontal color="var(--text-primary)"/></Button>
+                <div class="playlist-action-group">
+                    <button 
+                        class="play-btn" 
+                        v-if="sortedSongs.length > 0" 
+                        @click="startPlaylist(sortedSongs[0])"
+                        :title="playerStore.isPlaying ? 'Пауза' : 'Слушать'"
+                    >
+                        <span class="play-icon" v-if="playerStore.isPlaying && sortedSongs.some(s => s.id === playerStore.currentSong?.id)">
+                            ❚❚
+                        </span>
+                        <span class="play-icon" v-else>
+                            ▶
+                        </span>
+                    </button>
+
+                    <button class="misc-playlist-btn" @click.stop="handleMiscClick" title="Больше опций">
+                        <ThreeDotsHorizontal width="28" height="28"/>
+                    </button>
+                </div>
             </template>
         </TitleCard>
         <div class="info">
@@ -220,9 +258,6 @@
             height: 1vh;
         }
 
-        button{
-            background-color: var(--text-primary);
-        }
         
         .list-controls {
             padding-left: 10px;
@@ -257,6 +292,93 @@
             text-align: center;
             margin-top: 50px;
             color: var(--text-secondary);
+        }
+    }
+
+    .playlist-action-group {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 8px;
+    }
+
+    .play-btn {
+        background-color: #5577ee;
+        color: white;
+        border: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, background-color 0.2s;
+        flex-shrink: 0;
+
+        &:hover {
+            transform: scale(1.05);
+            background-color: #6688ff;
+        }
+
+        &:active {
+            transform: scale(0.96);
+        }
+
+        .play-icon {
+            font-size: 14px;
+            margin-left: 2px;
+            line-height: 1;
+        }
+
+        &:has(span:contains("❚❚")) .play-icon {
+            margin-left: 0;
+            font-size: 16px;
+        }
+    }
+
+    .misc-playlist-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        cursor: pointer;
+        opacity: 0.6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+        border-radius: 50%;
+        transition: opacity 0.2s, background-color 0.2s, transform 0.2s;
+
+        :deep(svg) {
+            width: 22px !important;
+            height: 22px !important;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+        
+        &:active {
+            transform: scale(0.95);
+        }
+    }
+
+    .actions {
+        margin-top: 16px;
+    }
+
+    .metadata-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--text-primary);
+        
+        .separator {
+            opacity: 0.6;
+            user-select: none;
         }
     }
 </style>

@@ -19,127 +19,140 @@
     ])
     const availableRoles = ['Пользователь', 'Модератор', 'Исполнитель']
 
-    const itemsPerPage = 5
+    const itemsPerPage = 7
 
     const genresCurrentPage = ref(1)
     const usersCurrentPage = ref(1)
 
+    const genresSearchQuery = ref('')
+
     watch(currentTab, () => {
-    genresCurrentPage.value = 1
-    usersCurrentPage.value = 1
+        genresCurrentPage.value = 1
+        usersCurrentPage.value = 1
+        genresSearchQuery.value = ''
     })
 
-    const totalGenresPages = computed(() => Math.ceil(genres.value.length / itemsPerPage))
+    watch(genresSearchQuery, () => {
+        genresCurrentPage.value = 1
+    })
+
+    const filteredGenres = computed(() => {
+        if (!genresSearchQuery.value.trim()) return genres.value
+        const query = genresSearchQuery.value.toLowerCase().trim()
+        return genres.value.filter(genre => genre.name.toLowerCase().includes(query))
+    })
+
+    const totalGenresPages = computed(() => Math.ceil(filteredGenres.value.length / itemsPerPage))
     const paginatedGenres = computed(() => {
-    const start = (genresCurrentPage.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
-    return genres.value.slice(start, end)
+        const start = (genresCurrentPage.value - 1) * itemsPerPage
+        const end = start + itemsPerPage
+        return filteredGenres.value.slice(start, end)
     })
 
     const totalUsersPages = computed(() => Math.ceil(users.value.length / itemsPerPage))
     const paginatedUsers = computed(() => {
-    const start = (usersCurrentPage.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
-    return users.value.slice(start, end)
+        const start = (usersCurrentPage.value - 1) * itemsPerPage
+        const end = start + itemsPerPage
+        return users.value.slice(start, end)
     })
 
     const getAuthConfig = () => ({
-    headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+        headers: { Authorization: "Bearer " + localStorage.getItem('token') }
     })
 
     const fetchGenres = async () => {
-    try {
-        isLoading.value = true
-        const response = await http.get('/genres', getAuthConfig())
-        genres.value = response.data.data || response.data
-    } catch (error) {
-        console.error('Ошибка при загрузке жанров:', error)
-        // alert('Не удалось загрузить жанры: ' + (error.response?.data?.message || error.message))
-        toastStore.show('Не удалось загрузить жанры', 'error')
-    }
-    isLoading.value = false
+        try {
+            isLoading.value = true
+            const response = await http.get('/genres', getAuthConfig())
+            genres.value = response.data.data || response.data
+        } catch (error) {
+            console.error('Ошибка при загрузке жанров:', error)
+            // alert('Не удалось загрузить жанры: ' + (error.response?.data?.message || error.message))
+            toastStore.show('Не удалось загрузить жанры', 'error')
+        }
+        isLoading.value = false
     }
 
     const saveGenre = async () => {
-    if (!genreForm.value.name.trim()) return
+        if (!genreForm.value.name.trim()) return
 
-    try {
-        isLoading.value = true
-        const payload = { name: genreForm.value.name.trim() }
+        try {
+            isLoading.value = true
+            const payload = { name: genreForm.value.name.trim() }
 
-        if (isEditingGenre.value) {
-        const response = await http.patch(`/genres/${genreForm.value.id}`, payload, getAuthConfig())
-        
-        const index = genres.value.findIndex(g => g.id === genreForm.value.id)
-        if (index !== -1) {
-            genres.value[index] = response.data.data || response.data
+            if (isEditingGenre.value) {
+            const response = await http.patch(`/genres/${genreForm.value.id}`, payload, getAuthConfig())
+            
+            const index = genres.value.findIndex(g => g.id === genreForm.value.id)
+            if (index !== -1) {
+                genres.value[index] = response.data.data || response.data
+            }
+
+            toastStore.show(`Жанр обновлен (ID: ${genreForm.value.id})`, 'success')
+
+            } else {
+            const response = await http.post('/genres', payload, getAuthConfig())
+            const newGenre = response.data.data || response.data
+            
+            genres.value.push(newGenre)
+            genresCurrentPage.value = Math.ceil(genres.value.length / itemsPerPage)
+
+            toastStore.show(`Жанр добавлен`, 'success')
+            }
+            resetGenreForm()
+        } catch (error) {
+            console.error('Ошибка при сохранении жанра:', error)
+            // alert(error.response?.data?.message || 'Ошибка сервера при сохранении')
+            toastStore.show(`Ошибка при сохранении жанра: ${error.response.data.message}`, 'error')
+
         }
 
-        toastStore.show(`Жанр обновлен (ID: ${genreForm.value.id})`, 'success')
-
-        } else {
-        const response = await http.post('/genres', payload, getAuthConfig())
-        const newGenre = response.data.data || response.data
-        
-        genres.value.push(newGenre)
-        genresCurrentPage.value = Math.ceil(genres.value.length / itemsPerPage)
-
-        toastStore.show(`Жанр добавлен`, 'success')
-        }
-        resetGenreForm()
-    } catch (error) {
-        console.error('Ошибка при сохранении жанра:', error)
-        // alert(error.response?.data?.message || 'Ошибка сервера при сохранении')
-        toastStore.show(`Ошибка при сохранении жанра`, 'error')
-
-    } finally {
         isLoading.value = false
-    }
     }
 
     const deleteGenre = async (id) => {
-    try {
-        isLoading.value = true
-        const genre = await http.delete(`/genres/${id}`, getAuthConfig())
+        try {
+            isLoading.value = true
+            const genre = await http.delete(`/genres/${id}`, getAuthConfig())
 
-        genres.value = genres.value.filter(g => g.id !== id)
-        
-        if (genresCurrentPage.value > totalGenresPages.value && genresCurrentPage.value > 1) {
-        genresCurrentPage.value--
+            genres.value = genres.value.filter(g => g.id !== id)
+            
+            if (genresCurrentPage.value > totalGenresPages.value && genresCurrentPage.value > 1) {
+            genresCurrentPage.value--
+            }
+
+            toastStore.show(`Жанр удален (${genre.data.data.name})`, 'success')
+        } catch (error) {
+            console.error('Ошибка при удалении жанра:', error)
+            // alert(error.response?.data?.message || 'Не удалось удалить жанр')
+            toastStore.show('Ошибка при удалении жанра', 'error')
+
         }
 
-        toastStore.show(`Жанр удален (${genre.data.data.name})`, 'success')
-    } catch (error) {
-        console.error('Ошибка при удалении жанра:', error)
-        // alert(error.response?.data?.message || 'Не удалось удалить жанр')
-        toastStore.show('Ошибка при удалении жанра', 'error')
-
-    }
-
-    isLoading.value = false
+        isLoading.value = false
     }
 
     const editGenre = (genre) => {
-    genreForm.value = { ...genre }
-    isEditingGenre.value = true
+        genreForm.value = { ...genre }
+        isEditingGenre.value = true
     }
 
     const resetGenreForm = () => {
-    genreForm.value = { id: null, name: '' }
-    isEditingGenre.value = false
+        genreForm.value = { id: null, name: '' }
+        isEditingGenre.value = false
     }
 
     const updateUserRole = (userId, newRole) => {
-    const user = users.value.find(u => u.id === userId)
-    if (user) {
-        user.role = newRole
-        // alert(`Роль пользователя ${user.name} изменена на ${newRole}`)
-        toastStore.show(`Роль пользователя ${user.name} изменена на ${newRole}`, 'success')
-    }
+        const user = users.value.find(u => u.id === userId)
+        if (user) {
+            user.role = newRole
+            // alert(`Роль пользователя ${user.name} изменена на ${newRole}`)
+            toastStore.show(`Роль пользователя ${user.name} изменена на ${newRole}`, 'success')
+        }
     }
 
     onMounted(() => {
-    fetchGenres()
+        fetchGenres()
     })
 </script>
 
@@ -160,36 +173,35 @@
             <div v-if="currentTab === 'genres'" class="tab-content">
                 <h2>Жанры</h2>
 
-                <form @submit.prevent="saveGenre" class="genre-form">
-                    <input v-model="genreForm.name" type="text" placeholder="Название жанра" required />
-                    <button type="submit" class="btn-primary" :disabled="isLoading">
-                    {{ isEditingGenre ? 'Сохранить' : 'Добавить жанр' }}
-                    </button>
-                    <button v-if="isEditingGenre" type="button" @click="resetGenreForm" class="btn-secondary">
-                    Отмена
-                    </button>
-                </form>
+                <div class="genres-management-header">
+                    <form @submit.prevent="saveGenre" class="genre-form">
+                        <input v-model="genreForm.name" type="text" placeholder="Название жанра" required />
+                        <button type="submit" class="btn-primary" :disabled="isLoading">
+                            {{ isEditingGenre ? 'Сохранить' : 'Добавить жанр' }}
+                        </button>
+                        <button v-if="isEditingGenre" type="button" @click="resetGenreForm" class="btn-secondary">
+                            Отмена
+                        </button>
+                    </form>
 
-                <table class="admin-table" v-if="genres.length > 0">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Название</th>
-                        <th class="actions-th">Действия</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="genre in paginatedGenres" :key="genre.id">
-                        <td>{{ genre.id }}</td>
-                        <td>{{ genre.name }}</td>
-                        <td class="actions-td">
-                        <button @click="editGenre(genre)" class="btn-edit">Редактировать</button>
-                        <button @click="deleteGenre(genre.id)" class="btn-delete" :disabled="isLoading">Удалить</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div v-else class="no-data">Жанры не найдены. Добавьте первый жанр выше.</div>
+                    <div class="search-wrapper">
+                        <input 
+                            v-model="genresSearchQuery" 
+                            type="text" 
+                            placeholder="Поиск жанра..." 
+                            class="search-input"
+                        />
+                        <button 
+                            v-if="genresSearchQuery" 
+                            @click="genresSearchQuery = ''" 
+                            class="btn-clear-search"
+                            type="button"
+                            title="Очистить поиск"
+                        >
+                            &times;
+                        </button>
+                    </div>
+                </div>
 
                 <div v-if="totalGenresPages > 1" class="pagination">
                     <button :disabled="genresCurrentPage === 1" @click="genresCurrentPage--" class="btn-page">
@@ -207,6 +219,29 @@
                     <button :disabled="genresCurrentPage === totalGenresPages" @click="genresCurrentPage++" class="btn-page">
                     &raquo;
                     </button>
+                </div>
+
+                <table class="admin-table" v-if="filteredGenres.length > 0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th class="actions-th">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="genre in paginatedGenres" :key="genre.id">
+                            <td>{{ genre.id }}</td>
+                            <td>{{ genre.name }}</td>
+                            <td class="actions-td">
+                                <button @click="editGenre(genre)" class="btn-edit">Редактировать</button>
+                                <button @click="deleteGenre(genre.id)" class="btn-delete" :disabled="isLoading">Удалить</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div v-else class="no-data">
+                    {{ genres.value?.length === 0 ? 'Жанры не найдены. Добавьте первый жанр выше.' : 'По вашему запросу ничего не найдено.' }}
                 </div>
             </div>
 
@@ -278,7 +313,7 @@
         box-sizing: border-box;
 
         .info-content {
-            min-height: 200px; 
+            height: 1vh; 
         }
 
         .admin-nav {
@@ -398,6 +433,72 @@
             &:disabled {
                 opacity: 0.4;
                 cursor: not-allowed;
+            }
+        }
+    }
+
+    .genres-management-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .genre-form {
+        display: flex;
+        gap: 10px;
+        flex-grow: 1;
+
+        input {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: var(--bg-primary, #121214);
+            color: var(--text-primary);
+            flex-grow: 1;
+            max-width: 300px;
+        }
+    }
+
+    .search-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        min-width: 250px;
+
+        .search-input {
+            width: 100%;
+            padding: 8px 35px 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: var(--bg-primary, #121214);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+
+            &:focus {
+                border-color: var(--accent-color, #3f51b5);
+            }
+        }
+
+        .btn-clear-search {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            &:hover {
+                color: var(--text-primary);
             }
         }
     }

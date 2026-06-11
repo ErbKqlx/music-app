@@ -10,7 +10,7 @@
     import Image from '@/components/Image.vue';
     import Card from '@/components/Card.vue';
     import Wrapper from '@/components/Wrapper.vue';
-    import { onBeforeMount, onMounted, ref, watch } from 'vue';
+    import { onMounted, ref, watch, computed } from 'vue';
     import http from '../http';
     import { useRoute } from 'vue-router';
     import Button from '@/components/Input/Button.vue'
@@ -20,6 +20,15 @@
     import { useModalStore } from '../stores/modal';
 
     const route = useRoute()
+    const userStore = useUserStore()
+    const modalStore = useModalStore()
+
+    const userData = ref(null)
+    const songsData = ref(null)
+    const savedPlaylists = ref([])
+    const playlistCount = ref(0)
+
+    const isCurrentUser = computed(() => userStore.currentUser?.id === userData.value?.id)
 
     function toPlaylist(id){
         router.push('/playlist/' + id)
@@ -28,18 +37,6 @@
     function toSong(id){
         router.push('/song/' + id)
     }
-
-    const userData = ref(null)
-    const songsData = ref(null)
-    const savedPlaylists = ref([])
-    const playlistCount = ref(0)
-
-    const userStore = useUserStore()
-    const modalStore = useModalStore()
-
-    // onBeforeMount(async () => {
-        
-    // })
 
     async function fetchUserData(id){
         try{
@@ -53,13 +50,12 @@
 
             userData.value = user.data
             songsData.value = songsHistory.data
-            console.log(songsData.value)
 
             const playlists = await http.get(`/users/${id}/playlists`, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
             savedPlaylists.value = playlists.data
-            playlistCount.value = savedPlaylists.value.playlists.length
+            playlistCount.value = savedPlaylists.value.playlists?.length || 0
 
         }
         catch (error){
@@ -67,39 +63,68 @@
         }
     }
 
-    onMounted(async () => {
+    onMounted(() => {
         fetchUserData(route.params.id)
     })
 
     watch(() => route.params.id, (newId) => {
         fetchUserData(newId);
     });
-    
+
+    watch(() => userStore.currentUser, (newVal) => {
+        if (newVal && userData.value && newVal.id === userData.value.id) {
+            userData.value = { ...userData.value, ...newVal };
+        }
+    }, { deep: true });
 </script>
 
 <template>
-    <div class="profile-info">
-        <TitleCard :title = userData?.username>
+    <div class="profile-container" v-if="userData">
+        <TitleCard 
+            type="profile" 
+            :title="userData?.username"
+        >
             <template #image>
-                <Image :url="userData?.avatar" class="round-image"/>
+                <Image :url="userData?.avatar" alt="Аватар профиля"/>
             </template>
+
+            <template #metadata>
+                <div class="profile-metadata">
+                    <span>{{ userData?.email || 'Пользователь' }}</span>
+                    <span class="separator">•</span>
+                    <span>Открытых плейлистов: {{ playlistCount }}</span>
+                </div>
+            </template>
+
             <template #actions>
+                <div class="profile-actions" v-if="isCurrentUser">
+                    <button class="settings-btn" @click="modalStore.openModal('settings')" title="Настройки профиля">
+                        <Settings width="20" height="20" />
+                        <span>Редактировать профиль</span>
+                    </button>
+                </div>
             </template>
         </TitleCard>
-        <div class="info">
-            <Section v-if="true">
-                <template #title>
-                    Плейлисты
-                </template>
+
+        <div class="profile-content">
+            <Section>
+                <template #title>Плейлисты</template>
                 <template #content>
                     <div class="playlists-list" v-if="playlistCount > 0">
-                        <Card @click="toPlaylist(playlist.id)" v-for="playlist in savedPlaylists.playlists" :title=playlist.name description="Плейлист">
+                        <Card 
+                            @click="toPlaylist(playlist.id)" 
+                            v-for="playlist in savedPlaylists.playlists" 
+                            :key="playlist.id"
+                            :title="playlist.name" 
+                            description="Плейлист"
+                        >
                             <template #image>
                                 <Image :url="playlist.image"/>
                             </template>
                         </Card>
                     </div>
-                    <div class="empty" v-else-if="userStore.currentUser?.id == userData?.id">
+                    
+                    <div class="empty" v-else-if="isCurrentUser">
                         Вы не добавляли плейлисты
                         <Button @click="modalStore.openModal('playlist')">Добавить плейлист</Button>
                     </div>
@@ -109,13 +134,17 @@
                 </template>
             </Section>
 
-            <Section v-if="userStore.currentUser?.id == userData?.id">
-                <template #title>
-                    История
-                </template>
+            <Section v-if="isCurrentUser && songsData">
+                <template #title>История прослушиваний</template>
                 <template #content>
-                    <div v-if="songsData.data.length > 0" class="history-list">
-                        <Card @click="toSong(song.id)" v-for="song in songsData.data" :title=song.name description="Трек">
+                    <div v-if="songsData.data?.length > 0" class="history-list">
+                        <Card 
+                            @click="toSong(song.id)" 
+                            v-for="song in songsData.data" 
+                            :key="song.id"
+                            :title="song.name" 
+                            description="Трек"
+                        >
                             <template #image>
                                 <Image :url="song.image"/>
                             </template>
@@ -131,31 +160,77 @@
 </template>
 
 <style scoped>
-    .profile-info{
+    .profile-container {
         background-color: var(--bg-tertiary);
         flex-grow: 1;
-        overflow-y: scroll;
+        overflow-y: auto;
         border-radius: 10px;
+        padding-bottom: 24px;
 
-        .info{
+        .profile-content {
             height: 1vh;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            padding: 24px;
         }
 
-        .empty{
-            color: var(--text-secondary);
-            font-size: 24px;
-            text-align: center;
-            margin-top: 50px;
+        .profile-metadata {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
 
+            .separator {
+                opacity: 0.5;
+                user-select: none;
+            }
+        }
+
+        .profile-actions {
+            margin-top: 8px;
+
+            .settings-btn {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: var(--text-primary);
+                border: 1px solid var(--border-hover);
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background-color 0.2s, transform 0.1s;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                    transform: scale(1.02);
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
+            }
+        }
+
+        .empty {
+            color: var(--text-secondary);
+            font-size: 18px;
+            text-align: center;
+            margin-top: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
         }
 
-        .playlists-list, .history-list{
+        .playlists-list, .history-list {
             display: flex;
             flex-wrap: wrap;
+            gap: 16px;
         }
     }
 </style>

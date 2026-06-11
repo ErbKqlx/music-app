@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import mailer from "../configs/nodemailer.js";
 import jwt from 'jsonwebtoken'
 import authConfig from "../configs/auth.config.js";
+import { getFileUrl } from "../utils/fileHelper.js";
 
 const Role = db.role
 const User = db.user
@@ -88,6 +89,8 @@ class AuthController{
             })
 
             console.log(user)
+
+            user.avatar = getFileUrl(user.avatar, 'uploads/default/placeholder_avatar.jpg')
 
             return Response.success(res, 'Вы вошли в аккаунт', {
                 id: user.id,

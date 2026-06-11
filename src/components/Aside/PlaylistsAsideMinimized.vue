@@ -3,25 +3,19 @@
     import AddPlus from '@/assets/svg/AddPlus.svg?component'
     import Button from '@/components/Input/Button.vue?component'
     import router from '@/router/index.js'
-    import Image from '@/components/Image.vue'
-    import Form from '@/components/Form.vue'
-    import Input from '@/components/Input/Input.vue'
     import RightArrowSvg from '@/assets/svg/rightArrow.svg?component'
-    import { ref } from 'vue'
     import { useModalStore } from '../../stores/modal'
-
 
     const modalStore = useModalStore()
 
     const props = defineProps({
         playlists: {
-            
+            type: Array,
+            default: () => []
         },
     })
 
-    const emit = defineEmits(
-        ['resize']
-    )
+    const emit = defineEmits(['resize'])
 
     function resize(){
         emit('resize')
@@ -30,30 +24,30 @@
     function toPlaylist(playlist_id){
         router.push('/playlist/' + playlist_id)
     }
-
-    // const isModalOpen = ref(false)
 </script>
 
 <template>
-    <div class="playlists-aside">
+    <div class="playlists-aside-collapsed">
         <div class="aside-header">
-            <div>
-                <Button @click="resize" class="no-background round-button">
-                    <RightArrowSvg color="var(--text-secondary)"/>
-                </Button>
-                <!-- <span @click="resize" class="additional-info clickable">Развернуть</span> -->
-            </div>
+            <Button @click="resize" class="no-background round-button">
+                <RightArrowSvg color="var(--text-secondary)"/>
+            </Button>
         </div>
-        <div class="playlist-cards">
-            <PlaylistCard @click="toPlaylist(playlist.id)" 
+
+        <div class="playlist-cards scrollable-element" v-if="props.playlists.length > 0">
+            <PlaylistCard 
+                @click="toPlaylist(playlist.id)" 
                 :title="playlist.name" 
                 count="1" 
                 v-for="playlist in props.playlists" 
                 :key="playlist.id"
-                :image_url="playlist.image"/>
+                :image_url="playlist.image"
+                class="collapsed-card"
+            />
         </div>
+
         <div class="playlist-actions">
-            <Button class="round-button" @click="modalStore.openModal('playlist')">
+            <Button class="round-button btn-add-playlist" @click="modalStore.openModal('playlist')">
                 <AddPlus/>
             </Button>
         </div>
@@ -61,44 +55,105 @@
 </template>
 
 <style scoped>
-    .playlists-aside{
-        /* width: 7vw; */
-        /* background-color: rgb(20, 20, 20); */
-        /* max-width: 85px; */
+    .playlists-aside-collapsed {
+        width: 72px; 
+        min-width: 72px;
+        max-width: 72px;
+        
         height: 100%;
-        background-color: var(--bg-tertiary);
-        padding: 10px 10px;
-        border-radius: 10px;
+        max-height: calc(100vh - 150px); 
+        background-color: var(--bg-tertiary, #121214);
+        padding: 16px 8px;
+        border-radius: 12px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 16px;
+        box-sizing: border-box;
+        
+        flex-shrink: 0;
+        overflow: hidden;
 
-        .aside-header{
+        .aside-header {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 14px;
-            font-weight: bold;
-            /* margin-bottom: 10px; */
         }
 
-        .playlist-cards{
+        .playlist-cards {
             display: flex;
             flex-direction: column;
+            gap: 8px;
             flex-grow: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            align-items: center;
+
+            .collapsed-card {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                padding: 4px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+
+                &:hover {
+                    background-color: var(--bg-hover, rgba(255, 255, 255, 0.04));
+                }
+
+                :deep(.playlist-info) {
+                    display: none !important;
+                }
+                
+                :deep(img), :deep(.playlist-image) {
+                    width: 48px;
+                    height: 48px;
+                    object-fit: cover;
+                    border-radius: 6px;
+                    flex-shrink: 0;
+                }
+            }
         }
 
-        .playlist-cards :deep(.playlist-info){
-            display: none;
-        }
-
-        .playlist-actions{
+        .playlist-actions {
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* margin-bottom: 10px; */
-            padding-bottom: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+
+            .btn-add-playlist {
+                width: 48px;
+                height: 48px;
+                min-width: 48px;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.05) !important;
+                color: var(--text-primary, #fff) !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                transition: all 0.2s ease;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.1) !important;
+                    transform: scale(1.04);
+                }
+            }
+        }
+
+        .scrollable-element {
+            &::-webkit-scrollbar {
+                width: 4px;
+            }
+            &::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            &::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.08);
+                border-radius: 2px;
+            }
         }
     }
 </style>

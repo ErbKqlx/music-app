@@ -24,15 +24,10 @@
             type: Number
         },
         playlist: {
-            // type: [String, Number],
-            // required: true
+            
         }
-        // onPlay: {
-        //     type: Function
-        // }
-    })
 
-    // const highlighted = ref(false)
+    })
 
     const emit = defineEmits(['song-deleted'])
 
@@ -40,6 +35,7 @@
     const userStore = useUserStore()
     const toastStore = useToastStore()
     const modalStore = useModalStore()
+    const playlistStore = usePlaylistStore()
 
     function playSong(){
         if (playerStore.currentSong == props.song){
@@ -47,12 +43,10 @@
             console.log(playerStore.currentSong)
         }
         else{
-            // console.log(11111)
             console.log(props.song)
             playerStore.playSong(props.song)
         }
 
-        // highlighted.value = true
     }
 
     const contextMenuStore = useContextMenuStore();
@@ -61,7 +55,6 @@
         const isOwner = userStore.currentUser?.id === props.playlist?.user.id;
 
         const options = []
-        // console.log(event)
 
         options.push(
             { 
@@ -74,7 +67,6 @@
                 label: 'Добавить в очередь', 
                 action: () => {
                     playerStore.addToQueue([props.song])
-                    // console.log("Добавить в очередь") 
                 }
             },
         )
@@ -93,6 +85,10 @@
 
                             emit('song-deleted', props.song.id)
 
+                            if (userStore.currentUser?.id) {
+                                await playlistStore.fetchPlaylists(userStore.currentUser.id)
+                            }
+
                             toastStore.show('Трек удален из плейлиста', 'success')
                         }
                         catch (error){
@@ -110,7 +106,6 @@
     };
     
 
-    // console.log(props.song)
 </script>
 
 <template>
@@ -118,7 +113,8 @@
         <div class="index-container">
             <span class="index additional-info">{{ index }}</span>
             <div @click="playSong()" class="play-button clickable">
-                <PlaySvg width="100%" height="100%" color="var(--text-primary)"/>
+                <PauseSvg v-if="playerStore.currentSong?.id === song.id && playerStore.isPlaying" width="100%" height="100%" color="var(--text-primary)"/>
+                <PlaySvg v-else width="100%" height="100%" color="var(--text-primary)"/>
             </div>
         </div>
 

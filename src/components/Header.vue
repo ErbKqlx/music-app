@@ -26,6 +26,10 @@
         return 'U';
     });
 
+    const avatarUrl = computed(() => {
+        return userStore.currentUser?.avatar || null;
+    });
+
     const avatarColor = computed(() => {
         if (!userStore.currentUser?.username) return '#5577ee';
         const colors = ['#5577ee', '#ee55aa', '#55eeaa', '#eeaa55', '#aa55ee'];
@@ -119,8 +123,9 @@
             
             <div v-if="userStore.currentUser" class="profile-container" @click.stop>
                 <div class="profile-trigger" @click="toggleProfileMenu">
-                    <div class="avatar" :style="{ backgroundColor: avatarColor }">
-                        {{ userInitials }}
+                    <div class="avatar" :style="{ backgroundColor: avatarUrl ? 'transparent' : avatarColor }">
+                        <img v-if="avatarUrl" :src="avatarUrl" alt="Аватар" class="avatar-img">
+                        <span v-else>{{ userInitials }}</span>
                     </div>
                     <div class="user-info">
                         <span class="username">{{ userStore.currentUser.username }}</span>
@@ -133,8 +138,9 @@
                 <transition name="fade">
                     <div v-if="isProfileMenuOpen" class="profile-dropdown">
                         <div class="dropdown-header">
-                            <div class="avatar-large" :style="{ backgroundColor: avatarColor }">
-                                {{ userInitials }}
+                            <div class="avatar-large" :style="{ backgroundColor: avatarUrl ? 'transparent' : avatarColor }">
+                                <img v-if="avatarUrl" :src="avatarUrl" alt="Аватар" class="avatar-img">
+                                <span v-else>{{ userInitials }}</span>
                             </div>
                             <div class="dropdown-user-info">
                                 <div class="dropdown-username">{{ userStore.currentUser.username }}</div>
@@ -160,9 +166,9 @@
                         </div>
                         
 
-                        <div class="dropdown-item">
+                        <!-- <div class="dropdown-item">
                             <span>Настройки</span>
-                        </div>
+                        </div> -->
 
                         <div class="dropdown-item theme-toggle" @click="toggleTheme">
                             <!-- <span class="theme-icon">{{ themeIcon }}</span> -->
@@ -273,20 +279,6 @@
     a:hover {
         color: var(--accent-color);
     }
-
-    /* button {
-        background-color: #5577ee;
-        color: white;
-        font-size: 14px;
-        padding: 8px 16px;
-        border-radius: 20px;
-        transition: all 0.3s ease;
-    } */
-
-    /* button:hover {
-        background-color: #4455cc;
-        transform: translateY(-1px);
-    } */
 
     .admin-panel{
         color: var(--text-primary);
@@ -547,5 +539,13 @@
         .search {
             width: 40vw;
         }
+    }
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
     }
 </style>

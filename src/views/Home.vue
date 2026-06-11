@@ -135,12 +135,13 @@
                 <div class="section-header">
                     <div>
                         <h2>Жанры</h2>
-                        <p class="section-subtitle">Выберите жанр для фильтрации треков</p>
+                        <p class="section-subtitle">Выберите направление под ваше настроение</p>
                     </div>
                 </div>
+                
                 <div class="genres-list">
                     <button 
-                        class="genre-badge" 
+                        class="genre-chip" 
                         :class="{ active: selectedGenreId === null }"
                         @click="selectGenre(null)"
                     >
@@ -149,7 +150,7 @@
                     <button 
                         v-for="genre in genres" 
                         :key="genre.id" 
-                        class="genre-badge"
+                        class="genre-chip"
                         :class="{ active: selectedGenreId === genre.id }"
                         @click="selectGenre(genre.id)"
                     >
@@ -185,7 +186,7 @@
                 </div>
             </div>
 
-            <div class="section">
+            <div class="section new-section">
                 <div class="section-header">
                     <div>
                         <h2>Новые релизы</h2>
@@ -239,42 +240,56 @@
         }
 
         .genres-section {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+
+            .section-header{
+                padding-bottom: 10px;
+            }
         }
 
         .genres-list {
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
             padding: 0 20px;
-            overflow-x: auto;
-            white-space: nowrap;
-            &::-webkit-scrollbar {
-                display: none;
-            }
-            -ms-overflow-style: none;
-            scrollbar-width: none;
         }
 
-        .genre-badge {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary, #fff);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
+        .genre-chip {
+            background-color: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary, #b3b3b3);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13.5px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
 
             &:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-                border-color: rgba(255, 255, 255, 0.2);
+                background-color: rgba(255, 255, 255, 0.09);
+                color: var(--text-primary, #fff);
+            }
+
+            &:active {
+                transform: scale(0.97);
             }
 
             &.active {
                 background-color: var(--text-primary, #fff);
                 color: var(--bg-primary, #000);
                 border-color: var(--text-primary, #fff);
+                box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
+                font-weight: 700;
+                
+                &:hover {
+                    background-color: var(--text-primary, #fff);
+                    color: var(--bg-primary, #000);
+                    opacity: 0.95;
+                }
             }
         }
 
@@ -345,6 +360,10 @@
         .play-all-button svg {
             width: 16px;
             height: 16px;
+        }
+
+        .new-section{
+            padding-bottom: 10px;
         }
 
         .empty {

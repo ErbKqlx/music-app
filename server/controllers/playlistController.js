@@ -1,6 +1,6 @@
 // import Response from "../configs/response.js"
 // import User from "../models/User.js"
-import { Op } from "sequelize"
+import { Op, Sequelize } from "sequelize"
 import db from "../models/index.js"
 import Response from "../configs/response.js"
 import fs from 'fs';
@@ -31,21 +31,52 @@ class PlaylistController{
             accessCondition.push({ public: false });
         }
 
-        const playlists = await Playlist.findAll({ where: {
-            id_user: req.params.id,
-            [Op.or]: accessCondition,
-        },
-        order: [['updated_at', 'DESC']]}).catch((err) => {
-            console.log(err)
-        })
+        try {
+            const playlists = await Playlist.findAll({ 
+                where: {
+                    id_user: targetUserId,
+                    [Op.or]: accessCondition,
+                },
+                attributes: {
+                    include: [
+                        [
+                            Sequelize.literal(`(
+                                SELECT COUNT(*)
+                                FROM playlists_songs AS ps
+                                WHERE ps.id_playlist = "Playlists"."id"
+                            )`),
+                            'songs_count'
+                        ]
+                    ]
+                },
+                order: [['updated_at', 'DESC']]
+            })
 
-        playlists.forEach(function(playlist){
-            playlist.image = getFileUrl(playlist.image)
-        })
+            const getTrackWord = (count) => {
+                const num = Math.abs(count) % 100; 
+                const lastDigit = num % 10;
+                
+                if (num > 10 && num < 20) return 'треков';
+                if (lastDigit > 1 && lastDigit < 5) return 'трека';
+                if (lastDigit === 1) return 'трек';
+                return 'треков';
+            };
 
-        return res.status(200).json({
-            playlists
-        })
+            playlists.forEach(function(playlist){
+                playlist.image = getFileUrl(playlist.image)
+
+                const count = parseInt(playlist.getDataValue('songs_count')) || 0;
+                playlist.setDataValue('songs_count', `${count} ${getTrackWord(count)}`);
+            })
+
+            return res.status(200).json({
+                playlists
+            })
+
+        } catch(error){
+            console.log(error);
+            return res.status(500).json({ message: "Ошибка сервера" });
+        }
     }
 
     static async getOnePlaylist(req, res){

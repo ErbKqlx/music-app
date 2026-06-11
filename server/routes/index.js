@@ -11,6 +11,9 @@ import { upload } from "../configs/multer.js"
 import { uploadImage } from "../middlewares/uploadImage.js"
 import { uploadTrackFiles } from "../middlewares/uploadTrackFiles.js"
 import GenreController from "../controllers/genreController.js"
+import ArtistController from "../controllers/artistController.js"
+import CommentController from "../controllers/commentController.js"
+import { uploadAvatar } from "../middlewares/uploadAvatar.js"
 
 const router = express.Router()
 
@@ -18,6 +21,12 @@ const Song = db.song
 const Artist = db.artist
 
 router.get('/users/:id', [authJwt.verifyToken], UserController.getUserData)
+router.patch(
+    '/users/:id', 
+    authJwt.verifyToken, 
+    uploadAvatar,
+    UserController.updateUserData
+)
 
 router.get('/users/:id/playlists', [authJwt.verifyToken], PlaylistController.getPlaylists)
 router.get('/playlist/:id', [authJwt.verifyToken], PlaylistController.getOnePlaylist)
@@ -29,6 +38,11 @@ router.delete('/playlist/:id', authJwt.verifyToken, PlaylistController.deletePla
 router.delete('/playlist/:id_playlist/song/:id_song', [authJwt.verifyToken], PlaylistController.deleteSongFromPlaylist)
 router.post('/playlist/:id_playlist/song/:id_song', [authJwt.verifyToken], PlaylistController.addSongToPlaylist)
 
+router.get(
+    '/artists/:id', 
+    authJwt.verifyToken, 
+    ArtistController.getArtist
+)
 
 router.post(
     '/song', 
@@ -53,7 +67,23 @@ router.delete(
     SongController.deleteSong
 )
 
-router.get('/song/:id', authJwt.verifyToken, SongController.getOneSong)
+router.get(
+    '/song/:id', 
+    authJwt.verifyToken, 
+    SongController.getOneSong
+)
+
+router.get(
+    '/song/:id/comments',
+    authJwt.verifyToken, 
+    CommentController.getSongComments
+)
+
+router.post(
+    '/song/:id/comments',
+    authJwt.verifyToken, 
+    CommentController.addComment
+)
 
 router.post('/song/:id/listen', SongController.trackListen)
 
@@ -89,7 +119,6 @@ router.delete(
     authJwt.checkRole(['Администратор']), 
     GenreController.deleteGenre
 )
-
 
 router.post('/login', AuthController.login)
 router.post('/register', AuthController.register)

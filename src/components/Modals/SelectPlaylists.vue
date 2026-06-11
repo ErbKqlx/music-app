@@ -6,35 +6,39 @@
     import http from '@/http.js'
     import { useUserStore } from '@/stores/user'
     import { useToastStore } from '../../stores/toast'
+    import { usePlaylistStore } from '../../stores/playlist'
 
     const modalStore = useModalStore()
     const userStore = useUserStore()
     const toastStore = useToastStore()
+    const playlistStore = usePlaylistStore()
 
-    const userPlaylists = ref([])
+    const userPlaylists = computed(() => playlistStore.savedPlaylists)
     const selectedPlaylistIds = ref([])
     
     const isLoading = ref(false)
 
     const songId = computed(() => modalStore.modalData?.id)
 
-    async function fetchUserPlaylists() {
-        isLoading.value = true
-        try {
-            const response = await http.get(`/users/${userStore.currentUser.id}/playlists`, {
-                headers: { Authorization: "Bearer " + localStorage.getItem('token') }
-            })
-            
-            userPlaylists.value = response.data
-        } catch (error) {
-            console.error('Ошибка при загрузке плейлистов:', error)
+    async function loadPlaylists() {
+        if (userStore.currentUser?.id) {
+            isLoading.value = true
+
+            try {
+                await playlistStore.fetchPlaylists(userStore.currentUser.id)
+            } catch (error) {
+                console.error('Ошибка при загрузке плейлистов:', error)
+            }
+
+            isLoading.value = false
+
         }
-        isLoading.value = false
     }
 
     async function handleSubmit() {
         if (selectedPlaylistIds.value.length === 0) {
-            alert('Выберите хотя бы один плейлист')
+            // alert('Выберите хотя бы один плейлист')
+            toastStore.show('Выберите хотя бы один плейлист', 'error')
             return
         }
 
@@ -48,6 +52,8 @@
             await Promise.all(requests)
 
             toastStore.show('Трек добавлен в плейлист(ы)', 'success')
+
+            await playlistStore.fetchPlaylists(userStore.currentUser.id)
             
             modalStore.closeModal()
         } catch (error) {
@@ -57,9 +63,7 @@
     }
 
     onMounted(() => {
-        if (userStore.currentUser?.id) {
-            fetchUserPlaylists()
-        }
+        loadPlaylists()
     })
 </script>
 
@@ -73,7 +77,7 @@
         <template #body>
             <div v-if="isLoading" class="loading">Загрузка плейлистов...</div>
             
-            <div v-else-if="userPlaylists.length === 0" class="empty-state">
+            <div v-else-if="!userPlaylists || !userPlaylists.playlists || userPlaylists.playlists.length === 0" class="empty-state">
                 У вас еще нет созданных плейлистов.
             </div>
             
@@ -89,7 +93,12 @@
                         v-model="selectedPlaylistIds"
                         class="checkbox"
                     />
-                    <span class="playlist-name">{{ playlist.name }}</span>
+                    <span class="playlist-name">
+                        {{ playlist.name }} 
+                        <span v-if="playlist.songs_count" class="tracks-count">
+                            ({{ playlist.songs_count }})
+                        </span>
+                    </span>
                 </label>
             </div>
         </template>

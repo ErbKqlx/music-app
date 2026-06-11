@@ -11,11 +11,14 @@
         fileType: {
             type: String,
             default: 'image/jpeg'
+        },
+        isAvatar: {
+            type: Boolean,
+            default: false
         }
     })
 
     const emit = defineEmits(['confirmed', 'cancel'])
-
     const cropperRef = ref(null)
 
     function onCropperReady() {
@@ -48,7 +51,7 @@
 
                 if (blob) {
                     const extension = props.fileType.split('/')[1] || 'jpg'
-                    const fileName = `cover.${extension}`
+                    const fileName = props.isAvatar ? `avatar.${extension}` : `cover.${extension}`
                     const croppedFile = new File([blob], fileName, { type: props.fileType })
                     
                     emit('confirmed', { dataUrl, file: croppedFile })
@@ -64,11 +67,11 @@
 <template>
     <Modal @close="emit('cancel')">
         <template #header>
-            <h3 class="cropper-title">Редактирование обложки</h3>
+            <h3 class="cropper-title">{{ isAvatar ? 'Редактирование аватарки' : 'Редактирование обложки' }}</h3>
         </template>
 
         <template #body>
-            <div class="cropper-area">
+            <div class="cropper-area" :class="{ 'is-avatar': isAvatar }">
                 <cropper-area>
                     <cropper-canvas ref="cropperRef" background @canvas:ready="onCropperReady">
                         <cropper-image :src="imageSrc" alt="Редактирование" policy="cover"></cropper-image>
@@ -137,7 +140,7 @@
     }
 
     .btn-crop-confirm {
-        background-color: var(--accent-color);
+        background-color: var(--accent-color, #5577ee);
         color: white;
     }
 
@@ -153,6 +156,13 @@
             linear-gradient(to bottom, transparent 33.33%, var(--grid-line-color) 33.33%, var(--grid-line-color) calc(33.33% + 1px), transparent calc(33.33% + 1px), transparent 66.66%, var(--grid-line-color) 66.66%, var(--grid-line-color) calc(66.66% + 1px), transparent calc(66.66% + 1px)),
             linear-gradient(to right, transparent 33.33%, var(--grid-line-color) 33.33%, var(--grid-line-color) calc(33.33% + 1px), transparent calc(33.33% + 1px), transparent 66.66%, var(--grid-line-color) 66.66%, var(--grid-line-color) calc(66.66% + 1px), transparent calc(66.66% + 1px)) !important;
         filter: drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.8));
+    }
+
+    .is-avatar :deep(cropper-selection) {
+        border-radius: 50% !important;
+        background-image: none !important;
+        outline: 2px dashed rgba(255, 255, 255, 0.8);
+        outline-offset: -2px;
     }
 
     :deep(cropper-handle) {

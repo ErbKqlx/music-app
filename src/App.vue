@@ -6,7 +6,7 @@
     import PlaylistsAside from '@/components/Aside/PlaylistsAside.vue';
     import { useLyricsStore } from './stores/lyrics';
     import { useRoute } from 'vue-router';
-    import { computed } from 'vue';
+    import { computed, ref } from 'vue';
     import QueueList from './components/QueueList.vue';
     import { usePlayerStore } from './stores/player';
     import { useModalStore } from './stores/modal';
@@ -15,12 +15,18 @@
     import SelectPlaylists from './components/Modals/SelectPlaylists.vue';
     import { useUserStore } from './stores/user.js';
     import ToastContainer from '@/components/ToastContainer.vue'
+    import SettingsModal from '@/components/Modals/SettingsModal.vue'
 
     const lyricsStore = useLyricsStore()
     const playerStore = usePlayerStore()
     const modalStore = useModalStore()
     const userStore = useUserStore()
 
+    const isAsideCollapsed = ref(false)
+
+    function handleResize() {
+        isAsideCollapsed.value = !isAsideCollapsed.value
+    }
 
     const route = useRoute();
     
@@ -28,26 +34,29 @@
 </script>
 
 <template>
-  <template v-if="!hideLayout">
-    <Header></Header>
-    <div class="wrapper" :class="{ 'queue-open': playerStore.isQueueOpen }">
-      <PlaylistsAside v-if="userStore.currentUser"/>
-      <!-- <main class="main-content"> -->
-        <RouterView/>
-      <!-- </main> -->
-      <QueueList />
-      <PlaylistCreateModal v-if="modalStore.activeModal === 'playlist'" />
-      <SongUploadModal v-if="modalStore.activeModal === 'song'" />
-      <SelectPlaylists v-if="modalStore.activeModal === 'selectPlaylists'" />
-    </div>
-    <PlayerBar/>
-    <ToastContainer />
-  </template>
+    <template v-if="!hideLayout">
+        <Header></Header>
+        <div class="wrapper" :class="{ 'queue-open': playerStore.isQueueOpen }">
+            <PlaylistsAside v-if="userStore.currentUser" 
+                :is-collapsed="isAsideCollapsed"
+                @resize="handleResize"/>
+            <!-- <main class="main-content"> -->
+                <RouterView/>
+            <!-- </main> -->
+            <QueueList />
+            <PlaylistCreateModal v-if="modalStore.activeModal === 'playlist'" />
+            <SongUploadModal v-if="modalStore.activeModal === 'song'" />
+            <SelectPlaylists v-if="modalStore.activeModal === 'selectPlaylists'" />
+            <SettingsModal v-if="modalStore.activeModal === 'settings'" />
+        </div>
+        <PlayerBar/>
+        <ToastContainer />
+    </template>
 
-  <RouterView v-else/>
+    <RouterView v-else/>
 
-  <ContextMenu/>
-  <Lyrics/>
+    <ContextMenu/>
+    <Lyrics/>
 </template>
 
 <style scoped>

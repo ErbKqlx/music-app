@@ -10,10 +10,6 @@
     import { useFormErrors } from '@/composables/useFormErrors';
     import { usePlayerStore } from '../stores/player';
 
-    // function toProfile(){
-    //     router.push('/profile')
-    // }
-
     const playerStore = usePlayerStore()
 
     const { errors, setErrors, clearErrors, getErrors, hasErrors } = useFormErrors()
@@ -36,7 +32,7 @@
                 email: helpers.withMessage('Email введен некорректно', email),
             },
             password: { required: helpers.withMessage('Поле не может быть пустым', required), },
-            consent: { sameAs: helpers.withMessage('Вы должны отдать согласие', sameAs(true)), }
+            consent: { sameAs: helpers.withMessage('Вы должны дать согласие', sameAs(true)), }
         }
         
     }
@@ -50,14 +46,8 @@
 
         setErrors({})
 
-
-        // const emailCheck = helpers.withAsync(async value => {
-        //     const response = await http.get(`/check-email?email=${value}`)
-        // })
-
         $v.value.$touch()
 
-        // console.log($v.value.data.email.$errors)
 
         if (!$v.value.$invalid){
             try{
@@ -66,10 +56,6 @@
                 console.log(response.data)
             }
             catch (error) {
-                // console.log(error.response?.data)
-                // form.value.errors.email.push(error.response?.data?.message)
-                // console.log(form.value.errors.email)
-                // console.log('a')
                 console.log(error.response?.data)
                 if (error.response?.data?.errors){
                     
@@ -102,7 +88,6 @@
                         autocomplete="off"
                         :class="{'error-input': hasErrors('email')}">
                     <span class="error" v-for="error of $v.data.username.$errors" :key="error.$uid">{{ error.$message }}</span>
-                    <!-- <span class="error" v-for="error of form.errors.username" :key="error.$uid">{{ error.$message }}</span> -->
                 </div>
                 <div>
                     <label for="email">Email <span style="color:red;">*</span></label>
@@ -120,12 +105,6 @@
                     <div class="error" v-for="(error, index) in getErrors('email')" :key="index">
                         {{ error }}
                     </div>
-
-                    <!-- <div class="error" v-for="(error, index) in getErrors('general')" :key="index">
-                        {{ error }}
-                    </div> -->
-                    <!-- <span class="error" v-for="error of $v.data.email.$errors" :key="error.$uid">{{ error.$message }}</span>
-                    <span class="error" v-for="error of form.errors.email" :key="error.$uid">{{ error.$message }}</span> -->
                 </div>
                 <div>
                     <label for="password">Пароль <span style="color:red;">*</span></label>
@@ -137,7 +116,6 @@
                         @input="clearErrors('password')" 
                         :class="{'error-input': hasErrors('password')}"
                         autocomplete="off">
-                    <!-- <span class="requirements">Требования к паролю...</span> -->
                     <p class="requirements">Пароль должен содержать хотя бы одну букву<br>Пароль должен содержать не менее 6 символов</p> 
                     <div class="error" v-for="error of $v.data.password.$errors" :key="error.$uid">
                         {{ error.$message }}
@@ -145,10 +123,6 @@
                     <div class="error" v-for="(error, index) in getErrors('password')" :key="index">
                         {{ error }}
                     </div>
-
-
-                    <!-- <span class="error" v-for="error of $v.data.password.$errors" :key="error.$uid">{{ error.$message }}</span> -->
-                    <!-- <span class="error" v-for="error of form.errors.password" :key="error.$uid">{{ error.$message }}</span> -->
                 </div>
                 <div>
                     <div class="consent-wrapper">
