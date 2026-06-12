@@ -128,7 +128,7 @@
                 <RouterLink to="/register">Зарегистрироваться</RouterLink>
             </div>
             <SubmitButton :disabled="form.isSending" :class="{'disabled': form.isSending}" value="Войти в аккаунт"/>
-            <RouterLink class="password-recovery" to="/password-recovery">Забыли пароль?</RouterLink>
+            <!-- <RouterLink class="password-recovery" to="/password-recovery">Забыли пароль?</RouterLink> -->
         </form>
     </div>
 </template>

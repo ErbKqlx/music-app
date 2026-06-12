@@ -48,6 +48,7 @@ db.song = models.Songs
 db.artist = models.Artists
 db.genre = models.Genres
 db.songs_histories = models.SongsHistories
+db.comment = models.Comments
 
 // db.role.belongsToMany(db.user, { through: })
 

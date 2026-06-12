@@ -56,13 +56,18 @@
 
         const options = []
 
+        if (userStore.isAuthenticated){
+            options.push(
+                { 
+                    label: 'Добавить в плейлист', 
+                    action: () => {
+                        modalStore.openModal('selectPlaylists', props.song)
+                    }
+                },
+            )
+        }
+
         options.push(
-            { 
-                label: 'Добавить в плейлист', 
-                action: () => {
-                    modalStore.openModal('selectPlaylists', props.song)
-                }
-            },
             { 
                 label: 'Добавить в очередь', 
                 action: () => {
@@ -71,7 +76,7 @@
             },
         )
 
-        if (isOwner){
+        if (isOwner && userStore.isAuthenticated){
             options.push(
                 {
                     label: 'Удалить из плейлиста', 

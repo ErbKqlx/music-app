@@ -109,6 +109,12 @@ router.post(
     CommentController.addComment
 )
 
+router.delete(
+    '/comments/:id',
+    authJwt.verifyToken, 
+    CommentController.deleteComment
+)
+
 router.post('/song/:id/listen', SongController.trackListen)
 
 router.get('/songs/new', SongController.getNewSongs)

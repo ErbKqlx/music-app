@@ -190,7 +190,7 @@
                 <div class="section-header">
                     <div>
                         <h2>Новые релизы</h2>
-                        <p class="section-subtitle">Свежие треки, добавленные недавно</p>
+                        <p class="section-subtitle">Свежие треки, вышедшие недавно</p>
                     </div>
                     <div v-if="userStore.currentUser" class="list-controls">
                         <label for="sort-select" class="additional-info">Сортировка:</label>

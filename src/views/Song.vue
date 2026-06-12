@@ -7,7 +7,6 @@
     import Image from '@/components/Image.vue'
     import Card from '@/components/Card.vue'
     import Wrapper from '@/components/Wrapper.vue'
-    // import Lyrics from '@/components/Lyrics.vue'
     import { onMounted, ref, watch } from 'vue'
     import { useRoute } from 'vue-router'
     import http from '../http'
@@ -33,23 +32,22 @@
     const toastStore = useToastStore()
 
     const songData = ref(null)
+    const comments = ref([])
+    const newCommentText = ref('')
+    const isCommentsLoading = ref(false)
 
     function toArtist(id){
         router.push('/artist/' + id)
     }
 
     async function fetchSongData(id_song) {
-        try{
+        try {
             const song = await http.get('/song/' + id_song, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
-
             songData.value = song.data
-            console.log(songData.value)
-
-        }
-        catch (error){
-            console.log('Ошибка при загрузке трека ' + error)
+        } catch (error) {
+            console.error('Ошибка при загрузке трека ' + error)
             toastStore.show('Ошибка при загрузке трека', 'error')
         }
     }
@@ -59,33 +57,24 @@
         playerStore.setQueue([song])
         
         if (playerStore.currentSong == song){
-            playerStore.isPlaying? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
-            // console.log(playerStore.currentSong)
-        }
-        else{
+            playerStore.isPlaying ? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong)
+        } else {
             playerStore.playSong(song)
         }
     }
 
     function handleMiscClick(event){
         const isOwner = userStore.currentUser?.id && 
-            songData.value.data.artists?.some(artist => Number(artist.id_user) === Number(userStore.currentUser.id));
+            songData.value?.data?.artists?.some(artist => Number(artist.id_user) === Number(userStore.currentUser.id));
 
-        // console.log(songData.value.data)
-        // console.log(event)
         const options = [
             { 
                 label: 'Добавить в плейлист', 
-                action: () => {
-                    modalStore.openModal('selectPlaylists', songData.value.data)
-                }
+                action: () => modalStore.openModal('selectPlaylists', songData.value.data)
             },
             { 
                 label: 'Добавить в очередь', 
-                action: () => {
-                    playerStore.addToQueue([songData.value.data])
-                    // console.log("Добавить в очередь") 
-                }
+                action: () => playerStore.addToQueue([songData.value.data])
             },
         ];
 
@@ -93,27 +82,20 @@
             options.push(
                 { 
                     label: 'Редактировать информацию о треке', 
-                    action: () => {
-                        modalStore.openModal('song', songData?.value.data)
-                        // console.log("Редактировать информацию о треке") 
-                    }
+                    action: () => modalStore.openModal('song', songData?.value.data)
                 },
                 { 
                     label: 'Удалить трек',
                     action: async () => {
-                        try{
-                            await http.delete(`/song/${songData?.value.data.id}`, 
-                                {
-                                    headers: { Authorization: "Bearer " + localStorage.getItem('token')}
-                                }
-                            )
-
+                        if (!confirm('Удалить этот трек?')) return
+                        try {
+                            await http.delete(`/song/${songData?.value.data.id}`, {
+                                headers: { Authorization: "Bearer " + localStorage.getItem('token')}
+                            })
                             router.push('/')
-                        }
-                        catch (error){
-                            console.log('Ошибка при удалении трека ' + error)
+                        } catch (error) {
+                            console.error('Ошибка при удалении трека ' + error)
                             toastStore.show('Ошибка при удалении трека', 'error')
-                            
                         }
                     }, 
                     danger: true,
@@ -124,33 +106,27 @@
     }
 
     function handleLyricsClick() {
-        // lyricsStore.toggleLyrics()
         if (!lyricsStore.isOpen){
             lyricsStore.openLyrics(songData.value.data.lyrics, songData.value.data.artists, songData.value.data.name)
-        }
-        else{
+        } else {
             lyricsStore.closeLyrics()
         }
-        
     }
 
-    const comments = ref([])
-    const newCommentText = ref('')
-    const isCommentsLoading = ref(false)
-
     async function fetchComments(id_song) {
+        if (!id_song) return
         try {
             isCommentsLoading.value = true
             const response = await http.get(`/song/${id_song}/comments`)
-            comments.value = response.data.comments || response.data
+
+            comments.value = response.data.data
+            console.log(response.data)
         } catch (error) {
             console.error('Ошибка при загрузке комментариев:', error)
             toastStore.show('Ошибка при загрузке комментариев', 'error')
-            
-            
+        } finally {
+            isCommentsLoading.value = false
         }
-
-        isCommentsLoading.value = false
     }
 
     async function sendComment() {
@@ -162,9 +138,14 @@
                 headers: { Authorization: "Bearer " + localStorage.getItem('token') }
             })
 
-            const freshComment = response.data.comment || response.data
-            comments.value.unshift(freshComment) 
-            newCommentText.value = ''
+            const freshComment = response.data.data
+
+            if (freshComment) {
+                comments.value.unshift(freshComment) 
+                newCommentText.value = ''
+            } else {
+                console.error('Структура ответа не совпадает:', response.data)
+            }
         } catch (error) {
             console.error('Ошибка при отправке комментария:', error)
             toastStore.show('Ошибка при отправке комментария', 'error')
@@ -172,7 +153,7 @@
     }
 
     async function deleteComment(commentId) {
-        if (!confirm('Вы уверены, что хотите удалить этот комментарий?')) return
+        // if (!confirm('Вы уверены, что хотите удалить этот комментарий?')) return
 
         try {
             await http.delete(`/comments/${commentId}`, {
@@ -182,35 +163,28 @@
         } catch (error) {
             console.error('Ошибка при удалении комментария:', error)
             toastStore.show('Ошибка при удалении комментария', 'error')
-            
         }
     }
 
     function canDeleteComment(comment) {
         if (!userStore.currentUser) return false;
-        
         if (userStore.isAdmin || userStore.isModerator) return true;
-        
         return Number(userStore.currentUser.id) === Number(comment.id_user);
     }
 
     watch(() => route.params.id, (newId) => {
-        fetchSongData(newId);
-        fetchComments(newId);
+        if (newId) {
+            fetchSongData(newId);
+            fetchComments(newId);
+        }
     });
 
-    onMounted(async () => {
-        fetchSongData(route.params.id)
-        fetchComments(route.params.id)
-    })
-
-
-    watch(() => route.params.id, (newId) => {
-        fetchSongData(newId);
-    });
-
-    onMounted(async () => {
-        fetchSongData(route.params.id)
+    onMounted(() => {
+        const id = route.params.id
+        if (id) {
+            fetchSongData(id)
+            fetchComments(id)
+        }
     })
 </script>
 
@@ -321,11 +295,11 @@
                         <div v-else-if="comments.length > 0" class="comments-list">
                             <div class="comment-item" v-for="comment in comments" :key="comment.id">
                                 <div class="comment-avatar">
-                                    <Image class="round-image" :url="comment.user?.avatar || comment.user_avatar" />
+                                    <Image class="round-image" :url="comment.user?.avatar" />
                                 </div>
                                 <div class="comment-body">
                                     <div class="comment-header">
-                                        <span class="comment-author">{{ comment.user?.name || comment.user_name || 'Пользователь' }}</span>
+                                        <span class="comment-author">{{ comment.user?.username }}</span>
                                         <span class="comment-date additional-info">{{ formatDate(comment.created_at) }}</span>
                                     </div>
                                     <div class="comment-text">

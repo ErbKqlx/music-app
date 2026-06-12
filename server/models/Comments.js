@@ -26,11 +26,19 @@ export default function(sequelize, DataTypes) {
         model: 'songs',
         key: 'id'
       }
-    }
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
   }, {
     tableName: 'comments',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "pk_comments_id",
