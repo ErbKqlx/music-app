@@ -5,6 +5,7 @@
     import SubmitButton from '@/components/Input/SubmitButton.vue';
     import { useUserStore } from '@/stores/user';
     import { useFormErrors } from '@/composables/useFormErrors';
+    import { usePlaylistStore } from '../stores/playlist';
 
     const route = useRoute();
     const router = useRouter();
@@ -14,6 +15,8 @@
     const email = ref(route.query.email || '');
 
     const userStore = useUserStore()
+    const playlistStore = usePlaylistStore()
+
     const { errors, setErrors, clearErrors, getErrors, hasErrors } = useFormErrors()
     
     async function verifyCode() {
@@ -35,6 +38,8 @@
             
             localStorage.setItem('token', response.data.accessToken);
             userStore.setUser(response.data.user)
+
+            playlistStore.fetchPlaylists(response.data.user.id)
 
             router.push(`/profile/${response.data.user.id}`);
         } 

@@ -7,8 +7,25 @@ import { getFileUrl } from "../utils/fileHelper.js"
 import { deleteFile } from "../utils/filesystem.js"
 
 const User = db.user
+const Role = db.role
 
 class UserController{
+    static async getUsers(req, res){
+        try {
+            const users = await User.findAll({
+                order: [
+                    ['username', 'ASC']
+                ]
+            });
+
+            return Response.success(res, "Вывод всех пользователей", users)
+            // return res.status(200).json(genres)
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Ошибка сервера ' + error);
+        }
+    }
+
     static async getUserData(req, res){
         // return Response.success(res, 'Профиль')
         const userId = req.params.id
@@ -26,6 +43,7 @@ class UserController{
             email: user.email,
             avatar: user.avatar,
             id_role: user.id_role,
+            role_name: user.role?.name,
             registration_date: user.registration_date,
         })
     }
@@ -45,7 +63,14 @@ class UserController{
                 return res.status(400).json({ errorMessage: 'Имя пользователя не может быть пустым' });
             }
 
-            const user = await User.findOne({ where: { id: targetUserId } });
+            const user = await User.findOne({ 
+                where: { id: targetUserId },
+                include: [{
+                    model: Role,
+                    as: 'role',
+                    attributes: ['name']
+                }]
+            });
             if (!user) {
                 return res.status(404).json({ errorMessage: 'Пользователь не найден' });
             }
@@ -72,6 +97,7 @@ class UserController{
                     role_name: user.role_name,
                     email: user.email,
                     id_role: user.id_role,
+                    role_name: user.role?.name,
                     registration_date: user.registration_date,
                 }
             });
@@ -79,6 +105,39 @@ class UserController{
         } catch (error) {
             console.error('Критическая ошибка в updateUserData:', error);
             return res.status(500).json({ errorMessage: 'Внутренняя ошибка сервера при обновлении профиля' });
+        }
+    }
+
+    static async updateUserRole(req, res) {
+        try {
+            const { id } = req.params;
+            const { id_role } = req.body;
+
+            if (!id_role) {
+                return Response.badRequest(res, "ID роли не указан");
+            }
+
+            const user = await User.findByPk(id);
+            if (!user) {
+                return Response.notFound(res, "Пользователь не найден");
+            }
+
+            if (Number(id_role) === 1) {
+                return Response.forbidden(res, "Нельзя назначить роль Администратора");
+            }
+
+            user.id_role = id_role;
+            await user.save();
+
+            const updatedUser = user.toJSON();
+            delete updatedUser.password;
+
+            return Response.success(res, "Роль пользователя успешно изменена", updatedUser);
+
+        } catch (error) {
+            console.error("Ошибка в updateUserRole:", error);
+            // Используем 500 статус для ошибок сервера
+            return res.status(500).json({ message: 'Ошибка сервера при обновлении роли', error: error.message });
         }
     }
 }

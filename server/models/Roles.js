@@ -14,7 +14,7 @@ export default function(sequelize, DataTypes) {
   }, {
     tableName: 'roles',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "pk_roles_id",

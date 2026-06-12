@@ -27,6 +27,7 @@
 <style scoped>
     .songs-list-container {
         padding: 0 10px;
+        padding-bottom: 10px;
     }
 
     .songs-list-header {

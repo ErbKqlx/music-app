@@ -204,10 +204,7 @@
                         @click="startPlaylist(sortedSongs[0])"
                         :title="playerStore.isPlaying ? 'Пауза' : 'Слушать'"
                     >
-                        <span class="play-icon" v-if="playerStore.isPlaying && sortedSongs.some(s => s.id === playerStore.currentSong?.id)">
-                            ❚❚
-                        </span>
-                        <span class="play-icon" v-else>
+                        <span class="play-icon">
                             ▶
                         </span>
                     </button>

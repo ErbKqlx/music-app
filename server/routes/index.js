@@ -14,18 +14,42 @@ import GenreController from "../controllers/genreController.js"
 import ArtistController from "../controllers/artistController.js"
 import CommentController from "../controllers/commentController.js"
 import { uploadAvatar } from "../middlewares/uploadAvatar.js"
+import RoleController from "../controllers/roleController.js"
 
 const router = express.Router()
 
 const Song = db.song
 const Artist = db.artist
 
+router.get(
+    '/roles',
+    authJwt.verifyToken,
+    authJwt.checkRole(['Администратор']),
+    RoleController.getRoles
+)
+
+router.get(
+    '/users', 
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Модератор', 'Администратор']), 
+    UserController.getUsers
+)
+
 router.get('/users/:id', [authJwt.verifyToken], UserController.getUserData)
+
 router.patch(
     '/users/:id', 
     authJwt.verifyToken, 
     uploadAvatar,
     UserController.updateUserData
+)
+
+router.patch(
+    '/users/:id/role', 
+    authJwt.verifyToken,
+    authJwt.checkRole(['Администратор']), 
+    
+    UserController.updateUserRole
 )
 
 router.get('/users/:id/playlists', [authJwt.verifyToken], PlaylistController.getPlaylists)
@@ -55,7 +79,7 @@ router.post(
 router.patch(
     '/song/:id', 
     authJwt.verifyToken, 
-    authJwt.checkRole(['Исполнитель', 'Администратор']), 
+    authJwt.checkRole(['Исполнитель', 'Модератор', 'Администратор']), 
     uploadTrackFiles, 
     SongController.updateSong
 )

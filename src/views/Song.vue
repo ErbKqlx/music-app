@@ -89,7 +89,7 @@
             },
         ];
 
-        if (isOwner && userStore.isArtist || userStore.isAdmin){
+        if (isOwner || userStore.isModerator){
             options.push(
                 { 
                     label: 'Редактировать информацию о треке', 
@@ -237,6 +237,27 @@
                     <span>{{ formatDate(songData?.data.release_date) }}</span>
                 </div>
             </template>
+
+            <template #actions>
+                <div class="song-action-group">
+                    <button 
+                        class="play-btn" 
+                        @click="startSong(songData?.data)"
+                        :title="playerStore.isPlaying && playerStore.currentSong?.id === songData?.data.id ? 'Пауза' : 'Слушать'"
+                    >
+                        <span class="play-icon" v-if="playerStore.isPlaying && playerStore.currentSong?.id === songData?.data.id">
+                            ❚❚
+                        </span>
+                        <span class="play-icon" v-else>
+                            ▶
+                        </span>
+                    </button>
+
+                    <button class="misc-song-btn" @click.stop="handleMiscClick" title="Больше опций">
+                        <ThreeDotsHorizontal width="28" height="28"/>
+                    </button>
+                </div>
+            </template>
         </TitleCard>
         <div class="info">
             <Section>
@@ -332,11 +353,6 @@
         border-radius: 10px;
         overflow-y: scroll;
         padding-bottom: 10px;
-
-        button{
-            background-color: var(--text-primary);
-            color: var(--bg-primary);
-        }
 
         .song-actions{
             display: flex;
@@ -596,6 +612,76 @@
             text-align: center;
             margin-top: 50px;
             color: var(--text-secondary);
+        }
+    }
+
+    .song-action-group {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 8px;
+    }
+
+    .play-btn {
+        background-color: #5577ee;
+        color: white;
+        border: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, background-color 0.2s;
+        flex-shrink: 0;
+
+        &:hover {
+            transform: scale(1.05);
+            background-color: #6688ff;
+        }
+
+        &:active {
+            transform: scale(0.96);
+        }
+
+        .play-icon {
+            font-size: 14px;
+            margin-left: 2px;
+            line-height: 1;
+        }
+
+        &:has(span:contains("❚❚")) .play-icon {
+            margin-left: 0;
+            font-size: 16px;
+        }
+    }
+
+    .misc-song-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        cursor: pointer;
+        opacity: 0.6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+        border-radius: 50%;
+        transition: opacity 0.2s, background-color 0.2s, transform 0.2s;
+
+        :deep(svg) {
+            width: 22px !important;
+            height: 22px !important;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+        
+        &:active {
+            transform: scale(0.95);
         }
     }
 

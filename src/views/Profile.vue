@@ -92,7 +92,7 @@
                 <div class="profile-metadata">
                     <span>{{ userData?.email || 'Пользователь' }}</span>
                     <span class="separator">•</span>
-                    <span>Открытых плейлистов: {{ playlistCount }}</span>
+                    <span>Плейлистов: {{ playlistCount }}</span>
                 </div>
             </template>
 
@@ -231,6 +231,10 @@
             display: flex;
             flex-wrap: wrap;
             gap: 16px;
+        }
+
+        .history-list{
+            padding-bottom: 10px;
         }
     }
 </style>

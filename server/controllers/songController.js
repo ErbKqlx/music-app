@@ -144,7 +144,7 @@ class SongController{
                 return res.status(404).json({ errorMessage: 'Трек не найден' });
             }
 
-            if (req.userRole !== 'Администратор') {
+            if (req.userRole !== 'Администратор' && req.userRole !== 'Модератор') {
                 const artists = await song.getArtists();
                 
                 const isOwner = artists.some(artist => Number(artist.id_user) === Number(req.userId));

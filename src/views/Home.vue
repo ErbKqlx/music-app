@@ -318,6 +318,7 @@
             padding: 0 10px;
             flex-wrap: wrap;
             justify-content: flex-start;
+            gap: 20px;
         }
 
         .list-controls {
