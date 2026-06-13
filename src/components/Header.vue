@@ -51,6 +51,15 @@
         }
     }
 
+    function toComments(){
+        isProfileMenuOpen.value = false;
+        if (userStore.currentUser) {
+            router.push('/my-comments');
+        } else {
+            router.push('/');
+        }
+    }
+
     function openModal() {
         isProfileMenuOpen.value = false;
         modalStore.openModal('song')
@@ -166,9 +175,9 @@
                         </div>
                         
 
-                        <!-- <div class="dropdown-item">
-                            <span>Настройки</span>
-                        </div> -->
+                        <div class="dropdown-item" @click="toComments">
+                            <span>Мои комментарии</span>
+                        </div>
 
                         <div class="dropdown-item theme-toggle" @click="toggleTheme">
                             <!-- <span class="theme-icon">{{ themeIcon }}</span> -->

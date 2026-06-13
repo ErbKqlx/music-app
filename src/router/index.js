@@ -15,6 +15,7 @@ import Search from '@/views/Search.vue'
 import Admin from '@/views/Admin.vue'
 import Settings from '@/views/Settings.vue'
 import Genre from '@/views/Genre.vue'
+import MyComments from '@/views/MyComments.vue'
 
 const routes = [
     {
@@ -84,6 +85,11 @@ const routes = [
         path: '/genre/:id',
         component: Genre,
         name: 'Genre',
+    },
+    {
+        path: '/my-comments',
+        name: 'MyComments',
+        component: MyComments,
     },
     {
         path: "/:pathMatch(.*)*",

@@ -155,6 +155,12 @@ router.delete(
     ReportTypeController.deleteReportType
 )
 
+router.get(
+    '/comments/my',
+    authJwt.verifyToken, 
+    CommentController.getUserComments
+)
+
 router.post('/song/:id/listen', SongController.trackListen)
 
 router.get('/songs/new', SongController.getNewSongs)

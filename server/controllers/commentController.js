@@ -4,9 +4,60 @@ import { getFileUrl } from "../utils/fileHelper.js";
 
 const Comment = db.comment;
 const User = db.user;
+const Song = db.song;
+const Artist = db.artist;
 
 class CommentController {
-    
+    static async getUserComments(req, res) {
+        try {
+            const id_user = req.userId;
+
+            const comments = await Comment.findAll({
+                where: { id_user: id_user },
+                include: [
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['id', 'username', 'avatar']
+                    },
+                    {
+                        model: Song,
+                        as: 'song',
+                        attributes: ['id', 'name', 'image'],
+                        include: [
+                            {
+                                model: Artist,
+                                as: 'artists',
+                                attributes: ['id', 'name'],
+                                through: { attributes: [] }
+                            }
+                        ]
+                    }
+                ],
+                order: [['created_at', 'DESC']]
+            });
+
+            const formattedComments = comments.map(comment => {
+                const commentJson = comment.toJSON();
+                
+                if (commentJson.user) {
+                    commentJson.user.avatar = getFileUrl(commentJson.user.avatar, 'uploads/default/placeholder_avatar.jpg');
+                }
+
+                if (commentJson.song && commentJson.song.image) {
+                    commentJson.song.image = getFileUrl(commentJson.song.image, 'uploads/default/placeholder.webp'); 
+                }
+
+                return commentJson;
+            });
+
+            return Response.success(res, "Ваши комментарии успешно получены", formattedComments);
+        } catch (error) {
+            console.error('Ошибка в getUserComments:', error);
+            return res.status(500).json({ message: "Ошибка сервера при получении ваших комментариев", error: error.message });
+        }
+    }
+
     static async getSongComments(req, res) {
         try {
             const { id } = req.params;
