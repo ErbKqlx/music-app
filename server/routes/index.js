@@ -109,6 +109,12 @@ router.post(
     CommentController.addComment
 )
 
+router.patch(
+    '/comments/:id',
+    authJwt.verifyToken, 
+    CommentController.updateComment
+)
+
 router.delete(
     '/comments/:id',
     authJwt.verifyToken, 

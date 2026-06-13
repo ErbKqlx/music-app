@@ -110,7 +110,7 @@ class CommentController {
         try {
             const { id } = req.params;
             const { text } = req.body;
-            const currentUserId = req.userId;
+            const id_user = req.userId;
 
             if (!text || !text.trim()) {
                 return res.status(400).json({ message: "Текст комментария не может быть пустым" });
@@ -122,18 +122,24 @@ class CommentController {
                 return res.status(404).json({ message: "Комментарий не найден" });
             }
 
-            if (Number(comment.id_user) !== Number(currentUserId)) {
+            if (Number(comment.id_user) !== Number(id_user)) {
                 return res.status(403).json({ message: "Вы можете редактировать только свои комментарии" });
             }
 
             comment.text = text.trim();
+            comment.updated_at = Date.now()
             await comment.save();
 
             const updatedComment = await Comment.findByPk(id, {
                 include: [{ model: User, as: 'user', attributes: ['id', 'username', 'avatar'] }]
             });
 
-            return Response.success(res, "Комментарий изменен", { comment: updatedComment });
+            const commentJson = updatedComment.toJSON();
+            if (commentJson.user) {
+                commentJson.user.avatar = getFileUrl(commentJson.user.avatar, 'uploads/default/placeholder_avatar.jpg');
+            }
+
+            return Response.success(res, "Комментарий изменен", commentJson );
         } catch (error) {
             console.error('Ошибка в updateComment:', error);
             return res.status(500).json({ message: "Ошибка сервера при обновлении комментария", error: error.message });

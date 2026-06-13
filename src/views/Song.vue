@@ -35,6 +35,8 @@
     const comments = ref([])
     const newCommentText = ref('')
     const isCommentsLoading = ref(false)
+    const editingCommentId = ref(null)
+    const editingCommentText = ref('')
 
     function toArtist(id){
         router.push('/artist/' + id)
@@ -172,6 +174,55 @@
         return Number(userStore.currentUser.id) === Number(comment.id_user);
     }
 
+    function startEditComment(comment) {
+        editingCommentId.value = comment.id
+        editingCommentText.value = comment.text
+    }
+
+    function cancelEditComment() {
+        editingCommentId.value = null
+        editingCommentText.value = ''
+    }
+
+    async function saveUpdatedComment(commentId) {
+        if (!editingCommentText.value.trim()) return
+
+        try {
+            const payload = { text: editingCommentText.value.trim() }
+
+            const response = await http.patch(`/comments/${commentId}`, payload, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+            })
+
+            const updatedComment = response.data.data
+
+            if (updatedComment) {
+                const index = comments.value.findIndex(c => c.id === commentId)
+                if (index !== -1) {
+                    comments.value[index] = updatedComment
+                }
+                cancelEditComment()
+            }
+        } catch (error) {
+            console.error('Ошибка при обновлении комментария:', error)
+            toastStore.show('Ошибка при изменении комментария', 'error')
+        }
+    }
+
+    function canEditComment(comment) {
+        if (!userStore.currentUser) return false
+        return Number(userStore.currentUser.id) === Number(comment.id_user)
+    }
+
+    function isCommentEdited(comment) {
+        if (!comment.created_at || !comment.updated_at) return false
+        
+        const created = new Date(comment.created_at).getTime()
+        const updated = new Date(comment.updated_at).getTime()
+        
+        return (updated - created) > 1000
+    }
+
     watch(() => route.params.id, (newId) => {
         if (newId) {
             fetchSongData(newId);
@@ -294,20 +345,70 @@
 
                         <div v-else-if="comments.length > 0" class="comments-list">
                             <div class="comment-item" v-for="comment in comments" :key="comment.id">
-                                <div class="comment-avatar">
+                                <RouterLink 
+                                    v-if="comment.user?.id" 
+                                    :to="'/profile/' + comment.user.id" 
+                                    class="comment-avatar-link"
+                                >
+                                    <div class="comment-avatar">
+                                        <Image class="round-image" :url="comment.user?.avatar" />
+                                    </div>
+                                </RouterLink>
+                                <div v-else class="comment-avatar">
                                     <Image class="round-image" :url="comment.user?.avatar" />
                                 </div>
                                 <div class="comment-body">
                                     <div class="comment-header">
-                                        <span class="comment-author">{{ comment.user?.username }}</span>
-                                        <span class="comment-date additional-info">{{ formatDate(comment.created_at) }}</span>
+                                        <RouterLink 
+                                            v-if="comment.user?.id" 
+                                            :to="'/profile/' + comment.user.id" 
+                                            class="comment-author-link"
+                                        >
+                                            <span class="comment-author">{{ comment.user?.username }}</span>
+                                        </RouterLink>
+                                        <span v-else class="comment-author">{{ comment.user?.username || 'Удалённый пользователь' }}</span>
+
+                                        <span class="comment-date additional-info">
+                                            {{ formatDate(comment.created_at, true) }}
+                                            <span v-if="isCommentEdited(comment)" class="comment-edited" title="Комментарий был отредактирован">
+                                                (изменено)
+                                            </span>
+                                        </span>
                                     </div>
-                                    <div class="comment-text">
+                                    
+                                    <div v-if="editingCommentId === comment.id" class="edit-comment-form">
+                                        <textarea 
+                                            v-model="editingCommentText" 
+                                            rows="2" 
+                                            required
+                                        ></textarea>
+                                        <div class="edit-actions">
+                                            <button @click="saveUpdatedComment(comment.id)" class="btn-save">Сохранить</button>
+                                            <button @click="cancelEditComment" class="btn-cancel">Отмена</button>
+                                        </div>
+                                    </div>
+
+                                    <div v-else class="comment-text">
                                         {{ comment.text }}
                                     </div>
                                 </div>
-                                <div v-if="canDeleteComment(comment)" class="comment-actions">
-                                    <button @click="deleteComment(comment.id)" class="btn-delete-comment">Удалить</button>
+                                
+                                <div class="comment-actions">
+                                    <button 
+                                        v-if="canEditComment(comment) && editingCommentId !== comment.id" 
+                                        @click="startEditComment(comment)" 
+                                        class="btn-edit-comment"
+                                    >
+                                        Редактировать
+                                    </button>
+                                    
+                                    <button 
+                                        v-if="canDeleteComment(comment)" 
+                                        @click="deleteComment(comment.id)" 
+                                        class="btn-delete-comment"
+                                    >
+                                        Удалить
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -504,7 +605,8 @@
             .comment-item {
                 display: flex;
                 gap: 15px;
-                background-color: rgba(255, 255, 255, 0.02);
+                /* background-color: rgba(255, 255, 255, 0.02); */
+                background-color: var(--bg-hover);
                 padding: 15px;
                 border-radius: 8px;
                 align-items: flex-start;
@@ -674,5 +776,114 @@
 
     .artist-link:not(:last-child)::after {
         content: ", ";
+    }
+
+    .edit-comment-form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+        margin-top: 5px;
+
+        textarea {
+            width: 100%;
+            background-color: var(--bg-primary, #121214);
+            color: var(--text-primary, #fff);
+            border: 1px solid var(--accent-color, #4caf50);
+            border-radius: 6px;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+            
+            &:focus {
+                outline: none;
+            }
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+
+            button {
+                border: none;
+                padding: 6px 12px;
+                font-size: 12px;
+                border-radius: 14px;
+                cursor: pointer;
+                transition: opacity 0.2s;
+
+                &:hover {
+                    opacity: 0.9;
+                }
+            }
+
+            .btn-save {
+                background-color: var(--accent-color, #4caf50);
+                color: white;
+            }
+
+            .btn-cancel {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: var(--text-primary);
+            }
+        }
+    }
+
+    .btn-edit-comment {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 12px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        opacity: 0.7;
+        transition: opacity 0.2s, background-color 0.2s;
+
+        &:hover {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+    }
+
+    .comment-item {
+        .comment-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-end;
+            margin-left: auto;
+        }
+    }
+
+    .comment-edited {
+        font-size: 11px;
+        opacity: 0.5;
+        margin-left: 5px;
+        font-style: italic;
+    }
+
+    .comment-author-link {
+        text-decoration: none;
+        color: inherit;
+
+        &:hover .comment-author {
+            color: var(--accent-color, #4caf50);
+            text-decoration: underline;
+        }
+    }
+
+    .comment-avatar-link {
+        text-decoration: none;
+        display: inline-block;
+        transition: transform 0.2s ease;
+
+        &:hover {
+            transform: scale(1.05);
+        }
     }
 </style>
