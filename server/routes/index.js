@@ -109,6 +109,12 @@ router.post(
     CommentController.addComment
 )
 
+router.get(
+    '/songs',
+    authJwt.verifyToken, 
+    SongController.getSongs
+)
+
 router.patch(
     '/comments/:id',
     authJwt.verifyToken, 
@@ -129,6 +135,11 @@ router.get('/songs/history', authJwt.verifyToken, SongController.getSongsHistory
 
 
 router.get('/search', [authJwt.verifyToken], SearchController.search)
+
+router.get(
+    '/genres/:id', 
+    GenreController.getOneGenre
+)
 
 router.get(
     '/genres', 

@@ -31,7 +31,7 @@
 
     const filteredPopularSongs = computed(() => {
         if (!selectedGenreId.value) return popularSongs.value;
-        return popularSongs.value.filter(song => song.id_genre === selectedGenreId.value);
+        return popularSongs.value.filter(song => Number(song.id_genre) === Number(selectedGenreId.value));
     })
 
     const filteredNewSongs = computed(() => {
@@ -83,7 +83,11 @@
     }
 
     function selectGenre(genreId) {
-        selectedGenreId.value = genreId;
+        if (genreId === null) {
+            selectedGenreId.value = null;
+        } else {
+            router.push(`/genre/${genreId}`);
+        }
     }
 
     function startQueue(songs, startSong = null) {
@@ -170,7 +174,7 @@
                 <div class="popular-list" v-if="filteredPopularSongs.length > 0">
                     <Card 
                         @click="toSong(song.id)" 
-                        v-for="(song, index) in filteredPopularSongs.slice(0, 12)" 
+                        v-for="song in filteredPopularSongs.slice(0, 12)" 
                         :title="song.name" 
                         description="Трек" 
                         :key="song.id">
@@ -200,7 +204,7 @@
                             <option value="length-desc">Длительность (по убыванию)</option>
                             <option value="length-asc">Длительность (по возрастанию)</option>
                         </select>
-                        <Button @click="startQueue(sortedNewSongs)" class="play-all-button">
+                        <Button @click="startQueue(sortedNewSongs.slice(0, 15))" class="play-all-button">
                             <Play color="var(--bg-primary)"/>
                             <span>Слушать всё</span>
                         </Button>

@@ -14,6 +14,7 @@ import VerifyEmail from '@/views/VerifyEmail.vue'
 import Search from '@/views/Search.vue'
 import Admin from '@/views/Admin.vue'
 import Settings from '@/views/Settings.vue'
+import Genre from '@/views/Genre.vue'
 
 const routes = [
     {
@@ -78,6 +79,11 @@ const routes = [
         path: '/settings',
         component: Settings,
         name: 'Settings',
+    },
+    {
+        path: '/genre/:id',
+        component: Genre,
+        name: 'Genre',
     },
     {
         path: "/:pathMatch(.*)*",

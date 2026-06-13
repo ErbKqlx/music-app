@@ -4,6 +4,26 @@ import db from "../models/index.js";
 const Genre = db.genre
 
 class GenreController{
+    static async getOneGenre(req, res) {
+        try {
+            const { id } = req.params;
+
+            const genre = await db.genre.findByPk(id, {
+                attributes: ['id', 'name']
+            });
+
+            if (!genre) {
+                return res.status(404).json({ errorMessage: 'Жанр не найден' });
+            }
+
+            return Response.success(res, "Данные жанра успешно получены", genre)
+
+        } catch (error) {
+            console.error('Ошибка при получении одного жанра:', error);
+            return res.status(500).json({ errorMessage: 'Внутренняя ошибка сервера при получении жанра' });
+        }
+    }
+
     static async getGenres(req, res){
         try {
             const genres = await Genre.findAll({

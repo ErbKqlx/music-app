@@ -13,10 +13,69 @@ import authConfig from "../configs/auth.config.js";
 const Song = db.song
 const Artist = db.artist
 const SongsHistories = db.songs_histories
+const Genre = db.genre
 
 const host = 'http://localhost:8080'
 
 class SongController{
+    static async getSongs(req, res) {
+        try {
+            const { id_genre, page, limit } = req.query;
+
+            const p = parseInt(page, 10) || 1;
+            const l = parseInt(limit, 10) || 20;
+            const offset = (p - 1) * l;
+
+            const whereCondition = {};
+            
+            if (id_genre) {
+                whereCondition['$genres.id$'] = id_genre; 
+            }
+
+            const { count, rows: songs } = await Song.findAndCountAll({
+                where: whereCondition,
+                attributes: ['id', 'name', 'length', 'release_date', 'explicit_content', 'image', 'song_url'],
+                include: [
+                    {
+                        model: Artist,
+                        as: 'artists',
+                        through: { attributes: [] },
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: db.genre,
+                        as: 'genres',
+                        attributes: [],
+                        through: { attributes: [] },
+                        required: true
+                    }
+                ],
+                order: [
+                    ['release_date', 'DESC'],
+                    ['id', 'DESC']
+                ],
+                limit: l,
+                offset: offset,
+                subQuery: false 
+            });
+
+            songs.forEach(song => {
+                song.image = getFileUrl(song.image);
+                song.song_url = getFileUrl(song.song_url);
+            });
+
+            return Response.success(res, "Список треков получен", {
+                songs,
+                totalCount: count,
+                totalPages: Math.ceil(count / l),
+                currentPage: p
+            });
+        } catch (error) {
+            console.error('Ошибка при получении списка треков:', error);
+            return res.status(500).json({ errorMessage: 'Внутренняя ошибка сервера' });
+        }
+    }
+
     static async getOneSong(req, res){
         const song = await Song.findOne({ where: {
             id: req.params.id
@@ -318,12 +377,13 @@ class SongController{
         }
     }
 
-    static async getPopularSongs(req, res){
+    static async getPopularSongs(req, res) {
         try {
+            const { id_genre } = req.query;
+
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-            const dateString = oneWeekAgo.toISOString()
+            const dateString = oneWeekAgo.toISOString();
 
             const listensCountSubquery = `(
                 SELECT COUNT(*)
@@ -331,6 +391,17 @@ class SongController{
                 WHERE history.id_song = "Songs"."id"
                 AND history.listened_at >= '${dateString}'
             )`;
+
+            const whereCondition = literal(`${listensCountSubquery} > 0`);
+
+            const whereClause = id_genre 
+                ? {
+                    [Op.and]: [
+                        whereCondition,
+                        { '$genres.id$': id_genre }
+                    ]
+                }
+                : whereCondition;
 
             const popularSongs = await Song.findAll({
                 attributes: [
@@ -340,30 +411,38 @@ class SongController{
                         'weekly_listens_count'
                     ]
                 ],
-                where: literal(`${listensCountSubquery} > 0`),
+                where: whereClause,
                 include: [
                     {
                         model: Artist,
                         as: 'artists',
                         through: { attributes: [] },
                         attributes: ['id', 'name']
+                    },
+                    {
+                        model: db.genre,
+                        as: 'genres',
+                        attributes: [], 
+                        through: { attributes: [] },
+                        required: id_genre ? true : false
                     }
                 ],
                 order: [
                     [literal('weekly_listens_count'), 'DESC'],
                     ['id', 'DESC']
                 ],
-                limit: 20
+                limit: 20,
+                subQuery: false
             });
 
-            popularSongs.map(song => {
-                song.image = getFileUrl(song.image)
-                song.song_url = getFileUrl(song.song_url)
-            })
+            popularSongs.forEach(song => {
+                song.image = getFileUrl(song.image);
+                song.song_url = getFileUrl(song.song_url);
+            });
 
-            return Response.success(res, "Популярные треки за неделю", popularSongs)
+            return Response.success(res, "Популярные треки за неделю", popularSongs);
         } catch (error) {
-            console.error(error);
+            console.error('Ошибка в getPopularSongs:', error);
             return res.status(500).json({ message: 'Внутренняя ошибка сервера' });
         }
     }
