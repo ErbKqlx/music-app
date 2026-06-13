@@ -14,7 +14,7 @@ export default function(sequelize, DataTypes) {
   }, {
     tableName: 'report_types',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "pk_report_types_id",

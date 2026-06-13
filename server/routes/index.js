@@ -15,6 +15,7 @@ import ArtistController from "../controllers/artistController.js"
 import CommentController from "../controllers/commentController.js"
 import { uploadAvatar } from "../middlewares/uploadAvatar.js"
 import RoleController from "../controllers/roleController.js"
+import ReportTypeController from "../controllers/reportTypeController.js"
 
 const router = express.Router()
 
@@ -125,6 +126,33 @@ router.delete(
     '/comments/:id',
     authJwt.verifyToken, 
     CommentController.deleteComment
+)
+
+router.get(
+    '/report-types',
+    authJwt.verifyToken, 
+    ReportTypeController.getReportTypes
+)
+
+router.post(
+    '/report-types',
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Администратор']),
+    ReportTypeController.addReportType
+)
+
+router.patch(
+    '/report-types/:id',
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Администратор']),
+    ReportTypeController.updateReportType
+)
+
+router.delete(
+    '/report-types/:id',
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Администратор']),
+    ReportTypeController.deleteReportType
 )
 
 router.post('/song/:id/listen', SongController.trackListen)

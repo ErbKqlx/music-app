@@ -34,11 +34,19 @@ export default function(sequelize, DataTypes) {
     text: {
       type: DataTypes.TEXT,
       allowNull: false
-    }
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
   }, {
     tableName: 'reports',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "pk_reports_id",

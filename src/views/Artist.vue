@@ -68,10 +68,6 @@
     <div v-else-if="artist" class="artist-page">
         <div class="artist-hero" :style="{ backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.1), var(--bg-tertiary)), url(${artist.banner || artist.image})` }">
             <div class="hero-content">
-                <span class="verified-badge">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                    Подтвержденный исполнитель
-                </span>
                 <h1 class="artist-name">{{ artist.name }}</h1>
                 <p class="listeners-count" v-if="artist.listeners">
                     {{ artist.listeners.toLocaleString() }} слушателей за месяц

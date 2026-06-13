@@ -5,41 +5,46 @@
     import { formatDate } from '@/composables/formatDate';
     import { useUserStore } from '../stores/user';
 
-
     const toastStore = useToastStore()
     const userStore = useUserStore()
 
     const currentTab = ref('genres')
     const isLoading = ref(false)
 
+    const itemsPerPage = 7
+
     const genres = ref([])
     const genreForm = ref({ id: null, name: '' })
     const isEditingGenre = ref(false)
+    const genresCurrentPage = ref(1)
+    const genresSearchQuery = ref('')
 
     const users = ref([])
     const availableRoles = ref([])
-
-    const itemsPerPage = 7
-
-    const genresCurrentPage = ref(1)
     const usersCurrentPage = ref(1)
-
-    const genresSearchQuery = ref('')
     const usersSearchQuery = ref('')
+
+    const reportTypes = ref([])
+    const reportTypeForm = ref({ id: null, name: '' })
+    const isEditingReportType = ref(false)
+    const reportTypesCurrentPage = ref(1)
+    const reportTypesSearchQuery = ref('')
 
     watch(currentTab, () => {
         genresCurrentPage.value = 1
         usersCurrentPage.value = 1
+        reportTypesCurrentPage.value = 1
         genresSearchQuery.value = ''
         usersSearchQuery.value = ''
+        reportTypesSearchQuery.value = ''
     })
 
-    watch(genresSearchQuery, () => {
-        genresCurrentPage.value = 1
-    })
+    watch(genresSearchQuery, () => genresCurrentPage.value = 1)
+    watch(usersSearchQuery, () => usersCurrentPage.value = 1)
+    watch(reportTypesSearchQuery, () => reportTypesCurrentPage.value = 1)
 
-    watch(usersSearchQuery, () => {
-        usersCurrentPage.value = 1
+    const getAuthConfig = () => ({
+        headers: { Authorization: "Bearer " + localStorage.getItem('token') }
     })
 
     const filteredGenres = computed(() => {
@@ -51,13 +56,10 @@
     const filteredUsers = computed(() => {
         const currentUserId = userStore.currentUser?.id
         let result = users.value
-
         if (currentUserId) {
             result = result.filter(user => String(user.id) !== String(currentUserId))
         }
-
         if (!usersSearchQuery.value.trim()) return result
-
         const query = usersSearchQuery.value.toLowerCase().trim()
         return result.filter(user => 
             (user.username && user.username.toLowerCase().includes(query)) ||
@@ -65,22 +67,28 @@
         )
     })
 
+    const filteredReportTypes = computed(() => {
+        if (!reportTypesSearchQuery.value.trim()) return reportTypes.value
+        const query = reportTypesSearchQuery.value.toLowerCase().trim()
+        return reportTypes.value.filter(type => type.name.toLowerCase().includes(query))
+    })
+
     const totalGenresPages = computed(() => Math.ceil(filteredGenres.value.length / itemsPerPage))
     const paginatedGenres = computed(() => {
         const start = (genresCurrentPage.value - 1) * itemsPerPage
-        const end = start + itemsPerPage
-        return filteredGenres.value.slice(start, end)
+        return filteredGenres.value.slice(start, start + itemsPerPage)
     })
 
     const totalUsersPages = computed(() => Math.ceil(filteredUsers.value.length / itemsPerPage))
     const paginatedUsers = computed(() => {
         const start = (usersCurrentPage.value - 1) * itemsPerPage
-        const end = start + itemsPerPage
-        return filteredUsers.value.slice(start, end)
+        return filteredUsers.value.slice(start, start + itemsPerPage)
     })
 
-    const getAuthConfig = () => ({
-        headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+    const totalReportTypesPages = computed(() => Math.ceil(filteredReportTypes.value.length / itemsPerPage))
+    const paginatedReportTypes = computed(() => {
+        const start = (reportTypesCurrentPage.value - 1) * itemsPerPage
+        return filteredReportTypes.value.slice(start, start + itemsPerPage)
     })
 
     const fetchGenres = async () => {
@@ -90,10 +98,8 @@
             genres.value = response.data.data || response.data
         } catch (error) {
             console.error('Ошибка при загрузке жанров:', error)
-            // alert('Не удалось загрузить жанры: ' + (error.response?.data?.message || error.message))
             toastStore.show('Не удалось загрузить жанры', 'error')
-        }
-        isLoading.value = false
+        } finally { isLoading.value = false }
     }
 
     const fetchUsers = async () => {
@@ -103,120 +109,124 @@
             users.value = response.data.data || response.data
         } catch (error) {
             console.error('Ошибка при загрузке пользователей:', error)
-            // alert('Не удалось загрузить жанры: ' + (error.response?.data?.message || error.message))
             toastStore.show('Не удалось загрузить пользователей', 'error')
-        }
-        isLoading.value = false
+        } finally { isLoading.value = false }
     }
 
     const fetchRoles = async () => {
         try {
             const response = await http.get('/roles', getAuthConfig())
             availableRoles.value = response.data.data
-
-            console.log('Загруженные роли:', availableRoles.value)
         } catch (error) {
             console.error('Ошибка при загрузке ролей:', error)
             toastStore.show('Не удалось загрузить список ролей', 'error')
         }
     }
 
+    const fetchReportTypes = async () => {
+        try {
+            isLoading.value = true
+            const response = await http.get('/report-types', getAuthConfig())
+            reportTypes.value = response.data.data || response.data
+        } catch (error) {
+            console.error('Ошибка при загрузке типов жалоб:', error)
+            toastStore.show('Не удалось загрузить типы жалоб', 'error')
+        } finally { isLoading.value = false }
+    }
+
     const saveGenre = async () => {
         if (!genreForm.value.name.trim()) return
-
         try {
             isLoading.value = true
             const payload = { name: genreForm.value.name.trim() }
-
             if (isEditingGenre.value) {
-            const response = await http.patch(`/genres/${genreForm.value.id}`, payload, getAuthConfig())
-            
-            const index = genres.value.findIndex(g => g.id === genreForm.value.id)
-            if (index !== -1) {
-                genres.value[index] = response.data.data || response.data
-            }
-
-            toastStore.show(`Жанр обновлен (ID: ${genreForm.value.id})`, 'success')
-
+                const response = await http.patch(`/genres/${genreForm.value.id}`, payload, getAuthConfig())
+                const index = genres.value.findIndex(g => g.id === genreForm.value.id)
+                if (index !== -1) genres.value[index] = response.data.data || response.data
+                toastStore.show(`Жанр обновлен`, 'success')
             } else {
-            const response = await http.post('/genres', payload, getAuthConfig())
-            const newGenre = response.data.data || response.data
-            
-            genres.value.push(newGenre)
-            genresCurrentPage.value = Math.ceil(genres.value.length / itemsPerPage)
-
-            toastStore.show(`Жанр добавлен`, 'success')
+                const response = await http.post('/genres', payload, getAuthConfig())
+                genres.value.push(response.data.data || response.data)
+                genresCurrentPage.value = Math.ceil(genres.value.length / itemsPerPage)
+                toastStore.show(`Жанр добавлен`, 'success')
             }
             resetGenreForm()
         } catch (error) {
-            console.error('Ошибка при сохранении жанра:', error)
-            // alert(error.response?.data?.message || 'Ошибка сервера при сохранении')
-            toastStore.show(`Ошибка при сохранении жанра: ${error.response.data.message}`, 'error')
-
-        }
-
-        isLoading.value = false
+            toastStore.show(`Ошибка сохранения жанра: ${error.response?.data?.message || error.message}`, 'error')
+        } finally { isLoading.value = false }
     }
 
     const deleteGenre = async (id) => {
         try {
             isLoading.value = true
-            const genre = await http.delete(`/genres/${id}`, getAuthConfig())
-
+            const res = await http.delete(`/genres/${id}`, getAuthConfig())
             genres.value = genres.value.filter(g => g.id !== id)
-            
-            if (genresCurrentPage.value > totalGenresPages.value && genresCurrentPage.value > 1) {
-            genresCurrentPage.value--
-            }
-
-            toastStore.show(`Жанр удален (${genre.data.data.name})`, 'success')
+            if (genresCurrentPage.value > totalGenresPages.value && genresCurrentPage.value > 1) genresCurrentPage.value--
+            toastStore.show(`Жанр удален`, 'success')
         } catch (error) {
-            console.error('Ошибка при удалении жанра:', error)
-            // alert(error.response?.data?.message || 'Не удалось удалить жанр')
             toastStore.show('Ошибка при удалении жанра', 'error')
-
-        }
-
-        isLoading.value = false
+        } standalone: { isLoading.value = false }
     }
 
-    const editGenre = (genre) => {
-        genreForm.value = { ...genre }
-        isEditingGenre.value = true
+    const editGenre = (genre) => { genreForm.value = { ...genre }; isEditingGenre.value = true }
+    const resetGenreForm = () => { genreForm.value = { id: null, name: '' }; isEditingGenre.value = false }
+
+    const saveReportType = async () => {
+        if (!reportTypeForm.value.name.trim()) return
+        try {
+            isLoading.value = true
+            const payload = { name: reportTypeForm.value.name.trim() }
+            if (isEditingReportType.value) {
+                const response = await http.patch(`/report-types/${reportTypeForm.value.id}`, payload, getAuthConfig())
+                const index = reportTypes.value.findIndex(r => r.id === reportTypeForm.value.id)
+                if (index !== -1) reportTypes.value[index] = response.data.data || response.data
+                toastStore.show(`Тип жалобы обновлен`, 'success')
+            } else {
+                const response = await http.post('/report-types', payload, getAuthConfig())
+                reportTypes.value.push(response.data.data || response.data)
+                reportTypesCurrentPage.value = Math.ceil(reportTypes.value.length / itemsPerPage)
+                toastStore.show(`Тип жалобы добавлен`, 'success')
+            }
+            resetReportTypeForm()
+        } catch (error) {
+            toastStore.show(`Ошибка сохранения: ${error.response?.data?.message || error.message}`, 'error')
+        } finally { isLoading.value = false }
     }
 
-    const resetGenreForm = () => {
-        genreForm.value = { id: null, name: '' }
-        isEditingGenre.value = false
+    const deleteReportType = async (id) => {
+        try {
+            isLoading.value = true
+            await http.delete(`/report-types/${id}`, getAuthConfig())
+            reportTypes.value = reportTypes.value.filter(r => r.id !== id)
+            if (reportTypesCurrentPage.value > totalReportTypesPages.value && reportTypesCurrentPage.value > 1) reportTypesCurrentPage.value--
+            toastStore.show(`Тип жалобы удален`, 'success')
+        } catch (error) {
+            toastStore.show(error.response?.data?.message || 'Ошибка при удалении типа жалобы', 'error')
+        } finally { isLoading.value = false }
     }
+
+    const editReportType = (type) => { reportTypeForm.value = { ...type }; isEditingReportType.value = true }
+    const resetReportTypeForm = () => { reportTypeForm.value = { id: null, name: '' }; isEditingReportType.value = false }
 
     const updateUserRole = async (userId, newRoleId) => {
         const user = users.value.find(u => u.id === userId)
         if (!user) return
-
         try {
             isLoading.value = true
-
             await http.patch(`/users/${userId}/role`, { id_role: newRoleId }, getAuthConfig())
-            
             const roleName = availableRoles.value.find(r => r.id === newRoleId)?.name || 'Новая роль'
-            
             toastStore.show(`Роль пользователя ${user.username} изменена на "${roleName}"`, 'success')
         } catch (error) {
-            console.error('Ошибка при обновлении роли:', error)
-            
             await fetchUsers()
-            
             toastStore.show(error.response?.data?.message || 'Не удалось обновить роль', 'error')
-        }
-
-        isLoading.value = false
+        } finally { isLoading.value = false }
     }
 
     onMounted(() => {
         fetchGenres()
         fetchUsers()
         fetchRoles()
+        fetchReportTypes()
     })
 </script>
 
@@ -228,6 +238,9 @@
             </button>
             <button :class="{ active: currentTab === 'users' }" @click="currentTab = 'users'">
                 Пользователи и роли
+            </button>
+            <button :class="{ active: currentTab === 'reports' }" @click="currentTab = 'reports'">
+                Типы жалоб
             </button>
         </div>
 
@@ -249,40 +262,15 @@
                     </form>
 
                     <div class="search-wrapper">
-                        <input 
-                            v-model="genresSearchQuery" 
-                            type="text" 
-                            placeholder="Поиск жанра..." 
-                            class="search-input"
-                        />
-                        <button 
-                            v-if="genresSearchQuery" 
-                            @click="genresSearchQuery = ''" 
-                            class="btn-clear-search"
-                            type="button"
-                            title="Очистить поиск"
-                        >
-                            &times;
-                        </button>
+                        <input v-model="genresSearchQuery" type="text" placeholder="Поиск жанра..." class="search-input"/>
+                        <button v-if="genresSearchQuery" @click="genresSearchQuery = ''" class="btn-clear-search" type="button">&times;</button>
                     </div>
                 </div>
 
                 <div v-if="totalGenresPages > 1" class="pagination">
-                    <button :disabled="genresCurrentPage === 1" @click="genresCurrentPage--" class="btn-page">
-                    &laquo;
-                    </button>
-                    <button 
-                    v-for="page in totalGenresPages" 
-                    :key="page" 
-                    :class="{ active: genresCurrentPage === page }"
-                    @click="genresCurrentPage = page"
-                    class="btn-page"
-                    >
-                    {{ page }}
-                    </button>
-                    <button :disabled="genresCurrentPage === totalGenresPages" @click="genresCurrentPage++" class="btn-page">
-                    &raquo;
-                    </button>
+                    <button :disabled="genresCurrentPage === 1" @click="genresCurrentPage--" class="btn-page">&laquo;</button>
+                    <button v-for="page in totalGenresPages" :key="page" :class="{ active: genresCurrentPage === page }" @click="genresCurrentPage = page" class="btn-page">{{ page }}</button>
+                    <button :disabled="genresCurrentPage === totalGenresPages" @click="genresCurrentPage++" class="btn-page">&raquo;</button>
                 </div>
 
                 <table class="admin-table" v-if="filteredGenres.length > 0">
@@ -304,47 +292,22 @@
                         </tr>
                     </tbody>
                 </table>
-                <div v-else class="no-data">
-                    {{ genres.value?.length === 0 ? 'Жанры не найдены. Добавьте первый жанр выше.' : 'По вашему запросу ничего не найдено.' }}
-                </div>
+                <div v-else class="no-data">Ничего не найдено.</div>
             </div>
 
             <div v-if="currentTab === 'users'" class="tab-content">
                 <h2>Пользователи</h2>
-
                 <div class="users-management-header">
-                    <div class="header-spacer"></div> 
-                    
+                    <div class="header-spacer"></div>
                     <div class="search-wrapper">
-                        <input 
-                            v-model="usersSearchQuery" 
-                            type="text" 
-                            placeholder="Поиск по имени, нику или email..." 
-                            class="search-input"
-                        />
-                        <button 
-                            v-if="usersSearchQuery" 
-                            @click="usersSearchQuery = ''" 
-                            class="btn-clear-search"
-                            type="button"
-                            title="Очистить поиск"
-                        >
-                            &times;
-                        </button>
+                        <input v-model="usersSearchQuery" type="text" placeholder="Поиск по нику или email..." class="search-input" />
+                        <button v-if="usersSearchQuery" @click="usersSearchQuery = ''" class="btn-clear-search" type="button">&times;</button>
                     </div>
                 </div>
 
                 <div v-if="totalUsersPages > 1" class="pagination">
                     <button :disabled="usersCurrentPage === 1" @click="usersCurrentPage--" class="btn-page">&laquo;</button>
-                    <button 
-                        v-for="page in totalUsersPages" 
-                        :key="page" 
-                        :class="{ active: usersCurrentPage === page }"
-                        @click="usersCurrentPage = page"
-                        class="btn-page"
-                    >
-                        {{ page }}
-                    </button>
+                    <button v-for="page in totalUsersPages" :key="page" :class="{ active: usersCurrentPage === page }" @click="usersCurrentPage = page" class="btn-page">{{ page }}</button>
                     <button :disabled="usersCurrentPage === totalUsersPages" @click="usersCurrentPage++" class="btn-page">&raquo;</button>
                 </div>
 
@@ -365,37 +328,68 @@
                             <td>{{ user.id }}</td>
                             <td><span class="user-username">{{ user.username }}</span></td>
                             <td>{{ user.email }}</td>
-                            <td>
-                                <span class="password-shield" title="Пароль зашифрован">••••••</span>
-                            </td>
+                            <td><span class="password-shield">••••••</span></td>
                             <td>{{ formatDate(user.registration_date) }}</td>
+                            <td><span :class="['status-badge', user.isActivated ? 'status-active' : 'status-inactive']">{{ user.isActivated ? 'Да' : 'Нет' }}</span></td>
                             <td>
-                                <span :class="['status-badge', user.isActivated ? 'status-active' : 'status-inactive']">
-                                    {{ user.isActivated ? 'Да' : 'Нет' }}
-                                </span>
-                            </td>
-                            <td>
-                                <select 
-                                    v-model.number="user.id_role" 
-                                    @change="updateUserRole(user.id, user.id_role)" 
-                                    class="role-select"
-                                >
-                                    <option 
-                                        v-for="role in availableRoles.filter(r => r.id !== 1)" 
-                                        :key="role.id" 
-                                        :value="role.id"
-                                    >
-                                        {{ role.name }}
-                                    </option>
+                                <select v-model.number="user.id_role" @change="updateUserRole(user.id, user.id_role)" class="role-select">
+                                    <option v-for="role in availableRoles.filter(r => r.id !== 1)" :key="role.id" :value="role.id">{{ role.name }}</option>
                                 </select>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <div v-else class="no-data">
-                    {{ users.length === 0 ? 'Пользователи не найдены.' : 'По вашему запросу ничего не найдено.' }}
-                </div>
+                <div v-else class="no-data">Пользователи не найдены.</div>
             </div>
+
+            <div v-if="currentTab === 'reports'" class="tab-content">
+                <h2>Типы жалоб</h2>
+
+                <div class="genres-management-header">
+                    <form @submit.prevent="saveReportType" class="genre-form">
+                        <input v-model="reportTypeForm.name" type="text" placeholder="Название типа жалобы" required />
+                        <button type="submit" class="btn-primary" :disabled="isLoading">
+                            {{ isEditingReportType ? 'Сохранить' : 'Добавить тип' }}
+                        </button>
+                        <button v-if="isEditingReportType" type="button" @click="resetReportTypeForm" class="btn-secondary">
+                            Отмена
+                        </button>
+                    </form>
+
+                    <div class="search-wrapper">
+                        <input v-model="reportTypesSearchQuery" type="text" placeholder="Поиск типа..." class="search-input"/>
+                        <button v-if="reportTypesSearchQuery" @click="reportTypesSearchQuery = ''" class="btn-clear-search" type="button">&times;</button>
+                    </div>
+                </div>
+
+                <div v-if="totalReportTypesPages > 1" class="pagination">
+                    <button :disabled="reportTypesCurrentPage === 1" @click="reportTypesCurrentPage--" class="btn-page">&laquo;</button>
+                    <button v-for="page in totalReportTypesPages" :key="page" :class="{ active: reportTypesCurrentPage === page }" @click="reportTypesCurrentPage = page" class="btn-page">{{ page }}</button>
+                    <button :disabled="reportTypesCurrentPage === totalReportTypesPages" @click="reportTypesCurrentPage++" class="btn-page">&raquo;</button>
+                </div>
+
+                <table class="admin-table" v-if="filteredReportTypes.length > 0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название типа</th>
+                            <th class="actions-th">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="type in paginatedReportTypes" :key="type.id">
+                            <td>{{ type.id }}</td>
+                            <td>{{ type.name }}</td>
+                            <td class="actions-td">
+                                <button @click="editReportType(type)" class="btn-edit">Редактировать</button>
+                                <button @click="deleteReportType(type.id)" class="btn-delete" :disabled="isLoading">Удалить</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div v-else class="no-data">Типы жалоб не найдены.</div>
+            </div>
+
         </div>
     </div>
 </template>
