@@ -458,6 +458,28 @@
             flex-direction: column;
             gap: 50px;
 
+            & > :first-child {
+                margin-top: -40px;
+                
+                padding: 20px 24px;
+                
+                background: linear-gradient(
+                    to bottom,
+                    rgba(var(--bg-tertiary-rgb, 18, 18, 20), 0.75) 0%,
+                    var(--bg-tertiary, #121214) 100%
+                );
+                
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                
+                border-radius: 16px 16px 0 0;
+                
+                position: relative;
+                z-index: 2;
+
+                box-shadow: 0 -8px 24px rgba(0, 0, 0, var(--shadow-opacity, 0.3));
+            }
+
             .artists-grid {
                 display: flex;
                 flex-wrap: wrap;
@@ -550,20 +572,20 @@
             }
 
             .genre-badge {
-                background-color: rgba(255, 255, 255, 0.07);
+                background-color: var(--bg-hover);
                 color: var(--text-primary);
                 padding: 6px 14px;
                 border-radius: 20px;
                 font-size: 14px;
                 font-weight: 500;
-                border: 1px solid rgba(255, 255, 255, 0.05);
+                border: 1px solid gray;
                 transition: all 0.2s ease;
                 cursor: default;
 
                 &:hover {
-                    background-color: var(--accent-color, #4caf50);
+                    background-color: var(--accent-color);
                     color: #fff;
-                    border-color: var(--accent-color, #4caf50);
+                    border-color: var(--accent-color);
                     transform: translateY(-1px);
                 }
             }

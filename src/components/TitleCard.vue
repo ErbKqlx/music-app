@@ -1,6 +1,6 @@
 <script setup>
     import ActionBar from '@/components/ActionBar.vue'
-    import { onMounted, watch, ref, computed } from 'vue';
+    import { onMounted, onBeforeUnmount, watch, ref, computed, nextTick } from 'vue';
     import { useRoute } from 'vue-router';
     import { useThemeStore } from '../stores/theme.js';
     import "../../node_modules/colorthief/dist/color-thief.umd.js"
@@ -36,46 +36,125 @@
 
     const cardRef = ref(null)
     const imageRef = ref(null)
+    let observer = null;
 
     const colorThief = new ColorThief();
 
+    function getLuminance(r, g, b) {
+        const a = [r, g, b].map((v) => {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    function extractColor(imgElement) {
+        if (!cardRef.value || !imgElement.src) return;
+
+        if (!themeStore.isDarkMode) {
+            setDefaultFallback();
+            return;
+        }
+
+        if (imgElement.src === window.location.href || imgElement.src.endsWith('/') || imgElement.src === '') {
+            return;
+        }
+
+        const tempImg = new Image();
+        tempImg.crossOrigin = 'anonymous'; 
+        
+        tempImg.onload = () => {
+            try {
+                if (tempImg.naturalWidth === 0) return;
+                let color = colorThief.getColor(tempImg);
+                
+                if (color) {
+                    let [r, g, b] = color;
+                    const luminance = getLuminance(r, g, b);
+                    
+                    if (luminance > 0.4) {
+                        const darkenFactor = 0.35; 
+                        r = Math.round(r * darkenFactor);
+                        g = Math.round(g * darkenFactor);
+                        b = Math.round(b * darkenFactor);
+                    }
+                    
+                    const rgbString = `${r}, ${g}, ${b}`;
+                    cardRef.value.style.setProperty('--card-accent-color', rgbString);
+                }
+            } catch (error) {
+                console.error("ColorThief Error:", error);
+                setDefaultFallback();
+            }
+        };
+
+        tempImg.onerror = () => {
+            setDefaultFallback();
+        };
+
+        tempImg.src = imgElement.src;
+    }
+
+    function setDefaultFallback() {
+        if (!cardRef.value) return;
+        
+        if (themeStore.isDarkMode) {
+            cardRef.value.style.setProperty('--card-accent-color', '26, 26, 26'); // #1a1a1a
+        } else {
+            cardRef.value.style.setProperty('--card-accent-color', 'var(--bg-tertiary)'); // #ffffff
+        }
+    }
+
     function getDominantImageColor() {
-        if (!cardRef.value || !imageRef.value) return;
+        if (!imageRef.value) return;
 
         const imgElement = imageRef.value.querySelector('img');
-        if (!imgElement) return;
-
-        imgElement.crossOrigin = 'anonymous';
-
-        const setColor = () => {
-            try {
-                const color = colorThief.getColor(imgElement);
-                cardRef.value.style.setProperty('--card-accent-color', `rgb(${color[0]}, ${color[1]}, ${color[2]})`);
-            } catch (error) {
-                cardRef.value.style.setProperty('--card-accent-color', 'rgb(100, 100, 100)');
-            }
+        
+        if (!imgElement || !imgElement.src || imgElement.src === window.location.href) {
+            setDefaultFallback();
+            return;
         }
 
-        if (imgElement.complete && imgElement.naturalHeight !== 0) {
-            setColor();
-        } else {
-            imgElement.addEventListener('load', setColor, { once: true });
-        }
+        extractColor(imgElement);
     }
 
     const updateBackground = () => {
         if (!cardRef.value) return;
-        
-        if (themeStore.isDarkMode) {
+        nextTick(() => {
             getDominantImageColor();
-        } else {
-            cardRef.value.style.setProperty('--card-accent-color', 'var(--bg-tertiary)');
-        }
+        });
     }
 
-    onMounted(() => updateBackground())
-    watch(() => route.params.id, () => setTimeout(updateBackground, 50));
-    watch(() => themeStore.isDarkMode, () => setTimeout(updateBackground, 100));
+    onMounted(() => {
+        updateBackground();
+
+        if (imageRef.value) {
+            observer = new MutationObserver((mutations) => {
+                updateBackground();
+            });
+            
+            observer.observe(imageRef.value, { 
+                childList: true, 
+                subtree: true, 
+                attributes: true, 
+                attributeFilter: ['src'] 
+            });
+        }
+    })
+
+    onBeforeUnmount(() => {
+        if (observer) observer.disconnect();
+    })
+
+    watch(() => props.title, () => {
+        nextTick(() => updateBackground());
+    });
+
+    watch(() => route.params.id, () => {
+        nextTick(() => updateBackground());
+    });
+
+    watch(() => themeStore.isDarkMode, () => updateBackground());
 </script>
 
 <template>
@@ -88,7 +167,7 @@
                 <span class="content-type-badge">{{ localizedType.toUpperCase() }}</span>
                 
                 <div class="title">
-                    <h1>{{ title }}</h1>
+                    <h1 :title="title">{{ title }}</h1>
                     <span v-if="explicitContent" class="explicit-badge" title="Нецензурная лексика">E</span>
                 </div>
 
@@ -109,23 +188,34 @@
 <style scoped>
     .top-card {
         display: flex;
-        gap: 24px;
-        padding: 24px;
-        background: linear-gradient(var(--card-accent-color, var(--bg-tertiary)), var(--bg-tertiary));
+        gap: 32px;
+        padding: 40px 40px 60px 40px;
+        
+        background-color: rgb(var(--card-accent-color, 18, 18, 20)) !important;
+        
+        background-image: linear-gradient(
+            to bottom, 
+            rgba(var(--card-accent-color, 18, 18, 20), 0.9) 0%, 
+            rgba(var(--card-accent-color, 18, 18, 20), 0.6) 60%, 
+            rgba(var(--bg-tertiary, 18, 18, 20), 0) 100%
+        ) !important;
+        
         align-items: flex-end;
+        transition: background 0.5s ease;
+        min-height: 260px;
+        position: relative;
+        z-index: 1;
         
         .image-slot {
             aspect-ratio: 1 / 1;
-            
-            width: 192px; 
-            height: 192px;
-            min-width: 192px;
-            
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            
-            border-radius: 6px; 
+            width: 230px;
+            height: 230px;
+            min-width: 230px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+            border-radius: 8px; 
             overflow: hidden; 
             display: flex;
+            transition: transform 0.3s ease;
         }
 
         &.type-artist .image-slot,
@@ -135,12 +225,9 @@
 
         .image-slot :deep(img) {
             display: block;
-            
             width: 100% !important;
             height: 100% !important;
-            
             object-fit: cover !important; 
-            
             margin: 0 !important;
         }
 
@@ -150,13 +237,15 @@
             justify-content: flex-end;
             flex-grow: 1;
             min-width: 0;
+
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
             
             .content-type-badge {
                 font-size: 12px;
-                font-weight: bold;
+                font-weight: 700;
                 letter-spacing: 1px;
                 color: var(--text-primary);
-                opacity: 0.7;
+                opacity: 0.9;
             }
 
             .title {
@@ -166,15 +255,19 @@
                 width: 100%;
                 
                 h1 {
-                    font-size: clamp(2rem, 4vw, 4.5rem);
-                    font-weight: 800;
-                    margin: 4px 0;
-                    color: var(--text-primary);
-                    line-height: 1.1;
+                    font-size: clamp(2.2rem, 4.5vw, 5rem);
+                    font-weight: 900;
+                    margin: 8px 0;
                     
+                    color: var(--text-primary, #fff); 
+                    
+                    line-height: 1.1;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    letter-spacing: -1px;
+
+                    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
                 }
             }
             
@@ -182,36 +275,55 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                color: var(--text-primary);
-                font-size: 18px;
-                font-weight: bold;
-                width: 24px;
-                height: 24px;
-                border-radius: 3px;
-                border: 1px solid var(--border-hover);
+                color: var(--text-secondary);
+                font-size: 14px;
+                font-weight: 700;
+                width: 20px;
+                height: 20px;
+                border-radius: 4px;
+                background: rgba(255, 255, 255, 0.1);
                 user-select: none;
+                flex-shrink: 0;
             }
 
             .metadata {
                 display: flex;
                 align-items: center;
                 flex-wrap: wrap;
-                gap: 8px;
+                gap: 6px;
                 margin-top: 8px;
                 font-size: 14px;
+                font-weight: 500;
                 color: var(--text-primary);
-                
-                /* :deep(> *:not(:last-child)::after) {
-                    content: "•";
-                    margin-left: 8px;
-                    display: inline-block;
-                    opacity: 0.6;
-                } */
             }
         }
 
         .actions {
             margin-top: 24px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .top-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 24px;
+            
+            .image-slot {
+                width: 180px;
+                height: 180px;
+                min-width: 180px;
+            }
+            
+            .info {
+                align-items: center;
+                width: 100%;
+                
+                .title {
+                    justify-content: center;
+                }
+            }
         }
     }
 </style>

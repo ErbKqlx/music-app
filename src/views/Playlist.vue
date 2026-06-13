@@ -253,6 +253,28 @@
 
         .info{
             height: 1vh;
+
+            & > :first-child {
+                margin-top: -40px;
+                
+                padding: 20px 24px;
+                
+                background: linear-gradient(
+                    to bottom,
+                    rgba(var(--bg-tertiary-rgb, 18, 18, 20), 0.75) 0%,
+                    var(--bg-tertiary, #121214) 100%
+                );
+                
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                
+                border-radius: 16px 16px 0 0;
+                
+                position: relative;
+                z-index: 2;
+
+                box-shadow: 0 -8px 24px rgba(0, 0, 0, var(--shadow-opacity, 0.3));
+            }
         }
 
         
@@ -289,6 +311,7 @@
             text-align: center;
             margin-top: 50px;
             color: var(--text-secondary);
+            margin: 10px 10px;
         }
     }
 
