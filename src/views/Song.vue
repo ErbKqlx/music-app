@@ -307,14 +307,14 @@
                     Исполнители
                 </template>
                 <template #content>
-                    <div class="artists-list">
+                    <div class="artists-grid">
                         <div class="artist-card" @click="toArtist(artist.id)" v-for="artist in songData?.data.artists" :key="artist.id">
-                            <div class="image">
-                                <Image class="round-image" :url="artist.user[0].avatar"/>
+                            <div class="artist-avatar-wrapper">
+                                <Image class="round-image" :url="artist.user[0]?.avatar"/>
                             </div>
-                            <div class="info">
-                                <div class="artist-name">{{ artist.name }}</div>
-                                <div class="artist-bio additional-info">{{ artist.bio || 'Нет описания'}}</div>
+                            <div class="artist-card-info">
+                                <div class="artist-card-name">{{ artist.name }}</div>
+                                <div class="artist-card-bio">{{ artist.bio || 'Нет описания' }}</div>
                             </div>
                         </div>
                     </div>
@@ -458,58 +458,88 @@
             flex-direction: column;
             gap: 50px;
 
-            .albums-list{
+            .artists-grid {
                 display: flex;
-                /* gap: 50px; */
                 flex-wrap: wrap;
+                gap: 20px;
+                margin-top: 16px;
+                width: 100%;
             }
 
-            .artists-list{
+            .artist-card {
                 display: flex;
-                /* gap: 10px; */
-                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                flex: 1 1 calc(50% - 20px);
+                min-width: 340px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.02);
+                border-radius: 16px;
+                padding: 20px;
+                box-sizing: border-box;
+                cursor: pointer;
+                transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                            transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                            border-color 0.25s ease;
 
-                .image{
-                    width: 10vw;
-                    align-self: center;
-                }
-
-                .artist-card{
-                    display: flex;
-                    gap: 10px;
-                    padding: 10px;
-
-                    .info{
-                        gap: 10px;
-                        flex-grow: 1;
-
-                        .artist-name{
-                            width: 100%;
-                            font-size: 32px;
-                            margin-bottom: 10px;
-                            color: var(--text-primary);
-                        }
-
-                        .artist-bio{
-                            /* flex-grow: 1; */
-                            width: 100%;
-                            overflow-wrap: break-word;
-                            flex-grow: 1;
-                            line-height: 1.6;
-                        }
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.06);
+                    border-color: rgba(255, 255, 255, 0.08);
+                    transform: translateY(-4px);
+                    
+                    .artist-avatar-wrapper {
+                        transform: scale(1.04);
+                        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
                     }
                 }
+
+                &:active {
+                    transform: translateY(-1px) scale(0.98);
+                }
             }
 
-            .artists-list div{
-                width: 49%;
-                /* background-color: rgb(41, 41, 41); */
-                border-radius: 5px;
-                cursor: pointer;
+            .artist-avatar-wrapper {
+                width: 90px;
+                height: 90px;
+                flex-shrink: 0;
+                border-radius: 50%;
+                overflow: hidden;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+                transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+                .round-image {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
             }
 
-            .artist-card:hover{
-                background-color: var(--bg-hover);
+            .artist-card-info {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                flex-grow: 1;
+                min-width: 0;
+            }
+
+            .artist-card-name {
+                font-size: 22px;
+                font-weight: 700;
+                color: var(--text-primary);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .artist-card-bio {
+                font-size: 14px;
+                line-height: 1.5;
+                color: var(--text-secondary, #b3b3b3);
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .genres-list {
