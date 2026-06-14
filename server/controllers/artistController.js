@@ -1,24 +1,59 @@
 import Response from "../configs/response.js";
 import db from "../models/index.js";
+import { literal } from "sequelize";
+import { getFileUrl } from "../utils/fileHelper.js";
 
-const Artist = db.artist
-const Song = db.song
+const Artist = db.artist;
+const Song = db.song;
+const User = db.user;
 
-class ArtistController{
-    static async getArtist(req, res){
+class ArtistController {
+    static async getArtist(req, res) {
         try {
             const { id } = req.params;
+
+            const listensCountSubquery = `(
+                SELECT COUNT(*)
+                FROM public.songs_histories AS history
+                WHERE history.id_song = "songs"."id"
+            )`;
+
+            const topSongsIdsSubquery = `(
+                SELECT "id_song" 
+                FROM public."songs_artists" -- Замени на реальное имя твоей промежуточной таблицы, если оно другое!
+                WHERE "id_artist" = ${Number(id)}
+                ORDER BY (
+                    SELECT COUNT(*) 
+                    FROM public.songs_histories AS history 
+                    WHERE history.id_song = "id_song"
+                ) DESC
+                LIMIT 5
+            )`;
 
             const artistData = await Artist.findByPk(id, {
                 include: [
                     {
+                        model: User,
+                        as: 'user',
+                        attributes: ['avatar']
+                    },
+                    {
                         model: Song,
                         as: 'songs',
-                        attributes: ['id', 'name', 'image', 'release_date', 'length'], 
-                        limit: 5,
-                        order: [['listens', 'DESC']]
+                        attributes: [
+                            'id', 'name', 'image', 'release_date', 'length', 'explicit_content', 'song_url',
+                            [literal(listensCountSubquery), 'listens_count']
+                        ],
+                        where: {
+                            id: {
+                                [db.Sequelize.Op.in]: literal(topSongsIdsSubquery)
+                            }
+                        },
+                        through: { attributes: [] },
+                        required: false
                     },
-                ]
+                ],
+                order: [[literal(listensCountSubquery), 'DESC']]
             });
 
             if (!artistData) {
@@ -28,23 +63,23 @@ class ArtistController{
                 });
             }
 
+            const topSongs = artistData.songs || [];
+            topSongs.forEach(song => {
+                song.image = getFileUrl(song.image);
+                song.song_url = getFileUrl(song.song_url);
+            });
+
             return Response.success(
                 res, 
                 "Вывод исполнителя", 
                 {
                     id: artistData.id,
                     name: artistData.name,
-                    image: artistData.image,
                     bio: artistData.bio || null,
-
-                    topSongs: artistData.songs || [],
+                    image: getFileUrl(artistData.user.avatar, 'uploads/default/placeholder_avatar.jpg'), 
+                    topSongs: topSongs,
                 }
-            )
-
-            return res.status(200).json({
-                success: true,
-                
-            });
+            );
 
         } catch (error) {
             console.error('Ошибка в getArtist контроллере:', error);
@@ -56,4 +91,4 @@ class ArtistController{
     }
 }
 
-export default ArtistController
+export default ArtistController;

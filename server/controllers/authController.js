@@ -180,6 +180,7 @@ class AuthController{
 
             user.isActivated = true;
             user.activationCode = null;
+            user.avatar = getFileUrl(user.avatar, 'uploads/default/placeholder_avatar.jpg')
             await user.save();
 
             const token = jwt.sign({ id: user.id, role: user.role?.name }, authConfig.secret, { 

@@ -60,6 +60,10 @@
         }
         catch (error){
             console.log('Ошибка при загрузке профиля ' + error)
+
+            if (error.response.status == 404){
+                router.push({name: 'NotFound'})
+            }
         }
     }
 
@@ -144,13 +148,15 @@
                             :key="song.id"
                             :title="song.name" 
                             description="Трек"
+                            :explicit-content="song.explicit_content"
+
                         >
                             <template #image>
                                 <Image :url="song.image"/>
                             </template>
                         </Card>
                     </div>
-                    <div v-else class="empty">
+                    <div v-else class="empty empty-history">
                         Истории прослушанных треков нет
                     </div>
                 </template>
@@ -173,6 +179,28 @@
             flex-direction: column;
             gap: 32px;
             padding: 24px;
+
+            & > :first-child {
+                margin-top: -40px;
+                
+                padding: 20px 24px;
+                
+                background: linear-gradient(
+                    to bottom,
+                    rgba(var(--bg-tertiary-rgb, 18, 18, 20), 0.75) 0%,
+                    var(--bg-tertiary, #121214) 100%
+                );
+                
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                
+                border-radius: 16px 16px 0 0;
+                
+                position: relative;
+                z-index: 2;
+
+                box-shadow: 0 -8px 24px rgba(0, 0, 0, var(--shadow-opacity, 0.3));
+            }
         }
 
         .profile-metadata {
@@ -218,7 +246,7 @@
 
         .empty {
             color: var(--text-secondary);
-            font-size: 18px;
+            font-size: 24px;
             text-align: center;
             margin-top: 30px;
             display: flex;
@@ -233,8 +261,8 @@
             gap: 16px;
         }
 
-        .history-list{
-            padding-bottom: 10px;
+        .empty-history{
+            padding-bottom: 100px;
         }
     }
 </style>

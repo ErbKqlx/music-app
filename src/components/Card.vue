@@ -1,15 +1,18 @@
 <script setup>
-    defineProps({
-        title: {
-            type: String,
-            default: '',
-        },
-        description: {
-            type: String,
-            default: '',
-        },
-    })
-
+defineProps({
+    title: {
+        type: String,
+        default: '',
+    },
+    description: {
+        type: String,
+        default: '',
+    },
+    explicitContent: {
+        type: Boolean,
+        default: false
+    }
+})
 </script>
 
 <template>
@@ -18,8 +21,11 @@
             <slot name="image"></slot>
         </div>
         <div class="info">
-            <span>{{ title }}</span>
-            <span class="additional-info">
+            <div class="title-wrapper">
+                <span :title="title">{{ title }}</span>
+                <span v-if="explicitContent" class="explicit-badge" title="Нецензурная лексика">E</span>
+            </div>
+            <span class="additional-info" :title="description">
                 {{ description }}
             </span>
         </div>
@@ -27,49 +33,83 @@
 </template>
 
 <style scoped>
-    .card{
-        padding: 10px 15px;
-        border-radius: 5px;
+    .card {
+        padding: 14px;
+        border-radius: 8px;
         width: 220px;
-        
+        background-color: transparent;
+        transition: background-color 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        user-select: none;
 
-        /* .artist-image{
+        .image {
+            width: 100%;
             aspect-ratio: 1 / 1;
-            width: 10vw;
-            background-color: lightgray;
-            border-radius: 100%;
-            margin-bottom: 10px;
-        } */
-
-        .image{
-            width: 10vw;
-            margin-bottom: 10px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            background-color: var(--bg-secondary, #282828);
+            
+            & :deep(img) {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover;
+                display: block;
+            }
         }
 
-        .info{
+        .info {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 4px;
             color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 700;
+            min-width: 0;
 
-            font-size: 20px;
+            .title-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                width: 100%;
+                min-width: 0;
 
-            span{
-                white-space: nowrap;
-            
-                overflow: hidden;
-                text-overflow: ellipsis;
+                span {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    flex-grow: 1;
+                }
             }
             
+            .explicit-badge {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-secondary, #b3b3b3);
+                font-size: 10px;
+                font-weight: 700;
+                width: 16px;
+                height: 16px;
+                border-radius: 3px;
+                background: rgba(255, 255, 255, 0.1);
+                flex-shrink: 0;
+            }
 
-            .additional-info{
+            .additional-info {
                 font-size: 14px;
+                font-weight: 500;
+                color: var(--text-secondary, #b3b3b3);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
     }
 
-    .card:hover{
-        /* background-color: rgb(70, 70, 70); */
+    .card:hover {
         background-color: var(--bg-hover);
         cursor: pointer;
     }

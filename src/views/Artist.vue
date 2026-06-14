@@ -1,260 +1,212 @@
 <script setup>
-    import { ref, onMounted, computed } from 'vue'
-    import { useRoute } from 'vue-router'
-    import http from '../http'
-    import { usePlayerStore } from '../stores/player'
-    import SongsList from '@/components/SongsList.vue'
-    import SongCard from '@/components/SongCard.vue'
-    import Card from '@/components/Card.vue'
-    import Image from '@/components/Image.vue'
-    import Button from '@/components/Input/Button.vue'
-    import Play from '@/assets/svg/play.svg?component'
-    import Pause from '@/assets/svg/pause.svg?component'
+    import TitleCard from '@/components/TitleCard.vue';
+    import Card from '@/components/Card.vue';
+    import Image from '@/components/Image.vue';
+    import Section from '@/components/Section.vue';
+    import router from '@/router/index.js';
+    import http from '../http';
+    import { onMounted, ref, watch } from 'vue';
+    import { useRoute } from 'vue-router';
+    import { useModalStore } from '@/stores/modal'; 
 
-    const route = useRoute()
-    const playerStore = usePlayerStore()
+    const route = useRoute();
+    const artist = ref(null);
+    const modalStore = useModalStore();
 
-    const artist = ref(null)
-    const topSongs = ref([])
-    const albums = ref([])
-    const isLoading = ref(true)
-
-    const isCurrentArtistPlaying = computed(() => {
-        return playerStore.isPlaying && playerStore.currentSong?.artist_id === artist.value?.id
-    })
-
-    async function fetchArtistData() {
-        try {
-            isLoading.value = true
-            const artistId = route.params.id
-
-            const [artistRes, songsRes, albumsRes] = await Promise.all([
-                http.get(`/artists/${artistId}`),
-                http.get(`/artists/${artistId}/top-songs`),
-                http.get(`/artists/${artistId}/albums`)
-            ])
-
-            artist.value = artistRes.data.data
-            topSongs.value = songsRes.data.data
-            albums.value = albumsRes.data.data
-        } catch (error) {
-            console.error('Ошибка при загрузке страницы исполнителя:', error)
-        } finally {
-            isLoading.value = false
-        }
+    function toSong(id) {
+        router.push('/song/' + id);
     }
 
-    function handlePlayArtist() {
-        if (topSongs.value.length === 0) return
+    function openBioModal() {
+        modalStore.openModal('artistBio', {
+            name: artist.value.name,
+            bio: artist.value.bio
+        });
+    }
 
-        if (isCurrentArtistPlaying.value) {
-            playerStore.pauseSong()
-        } else {
-            playerStore.setQueue([...topSongs.value])
-            playerStore.playSong(topSongs.value[0])
+    async function fetchArtistData(id) {
+        try {
+            const response = await http.get('/artists/' + id);
+            artist.value = response.data.data; 
+        }
+        catch (error) {
+            console.error('Ошибка при загрузке страницы исполнителя: ' + error);
+            if (error.response?.status === 404) {
+                router.push({ name: 'NotFound' });
+            }
         }
     }
 
     onMounted(() => {
-        fetchArtistData()
-    })
+        fetchArtistData(route.params.id);
+    });
+
+    watch(() => route.params.id, (newId) => {
+        fetchArtistData(newId);
+    });
 </script>
 
 <template>
-    <div v-if="isLoading" class="loader-container">
-        <div class="loader">Загрузка профиля...</div>
-    </div>
+    <div class="profile-container" v-if="artist">
+        <TitleCard 
+            type="artist" 
+            :title="artist.name"
+        >
+            <template #image>
+                <Image :url="artist.image" :alt="artist.name"/>
+            </template>
 
-    <div v-else-if="artist" class="artist-page">
-        <div class="artist-hero" :style="{ backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.1), var(--bg-tertiary)), url(${artist.banner || artist.image})` }">
-            <div class="hero-content">
-                <h1 class="artist-name">{{ artist.name }}</h1>
-                <p class="listeners-count" v-if="artist.listeners">
-                    {{ artist.listeners.toLocaleString() }} слушателей за месяц
-                </p>
-            </div>
-        </div>
-
-        <div class="artist-actions">
-            <Button @click="handlePlayArtist" class="btn-play-artist">
-                <component :is="isCurrentArtistPlaying ? Pause : Play" fill="black" />
-                <span>{{ isCurrentArtistPlaying ? 'Пауза' : 'Слушать' }}</span>
-            </Button>
-        </div>
-
-        <div class="artist-body">
-            
-            <section class="content-section" v-if="topSongs.length > 0">
-                <h2>Популярные треки</h2>
-                <SongsList>
-                    <SongCard 
-                        v-for="(song, index) in topSongs.slice(0, 5)" 
-                        :key="song.id"
-                        :song="song"
-                        :index="index + 1"
-                    />
-                </SongsList>
-            </section>
-
-            <section class="content-section" v-if="albums.length > 0">
-                <h2>Релизы</h2>
-                <div class="albums-grid">
-                    <Card 
-                        v-for="album in albums" 
-                        :key="album.id"
-                        :title="album.name"
-                        :description="album.release_year ? `${album.release_year} • Альбом` : 'Релиз'"
-                        @click="$router.push(`/album/${album.id}`)"
-                    >
-                        <template #image>
-                            <Image :url="album.image"/>
-                        </template>
-                    </Card>
+            <template #metadata>
+                <div class="profile-metadata">
+                    <span class="bio-text-short">{{ artist.bio || 'Исполнитель' }}</span>
+                    <button v-if="artist.bio" @click="openBioModal" class="more-bio-btn">
+                        Подробнее
+                    </button>
                 </div>
-            </section>
+            </template>
 
-            <section class="content-section bio-section" v-if="artist.bio">
-                <h2>О себе</h2>
-                <div class="bio-card">
-                    <p class="bio-text">{{ artist.bio }}</p>
+            <template #actions>
+                <div class="profile-actions">
+                    <button class="play-btn">Слушать</button>
                 </div>
-            </section>
-        </div>
-    </div>
+            </template>
+        </TitleCard>
 
-    <div v-else class="no-data">
-        Исполнитель не найден
+        <div class="profile-content">
+            <Section>
+                <template #title>Популярные треки</template>
+                <template #content>
+                    <div class="history-list" v-if="artist.topSongs && artist.topSongs.length > 0">
+                        <Card 
+                            @click="toSong(song.id)" 
+                            v-for="song in artist.topSongs" 
+                            :key="song.id"
+                            :title="song.name" 
+                            :description="`Прослушиваний: ${song.listens_count || 0}`"
+                            :explicit-content="song.explicit_content"
+                        >
+                            <template #image>
+                                <Image :url="song.image"/>
+                            </template>
+                        </Card>
+                    </div>
+                    <div v-else class="empty">
+                        У этого исполнителя пока нет треков
+                    </div>
+                </template>
+            </Section>
+        </div>
     </div>
 </template>
 
 <style scoped>
-    .loader-container, .no-data {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 50vh;
-        color: var(--text-secondary);
-        font-size: 16px;
-    }
-
-    .artist-page {
+    .profile-container {
+        background-color: var(--bg-tertiary);
         flex-grow: 1;
-        background-color: var(--bg-tertiary, #121214);
-        border-radius: 10px;
         overflow-y: auto;
-        height: 100%;
-        box-sizing: border-box;
-    }
+        border-radius: 10px;
+        padding-bottom: 24px;
 
-    .artist-hero {
-        height: 40vh;
-        min-height: 280px;
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        align-items: flex-end;
-        padding: 30px 40px;
-        position: relative;
-
-        .hero-content {
+        .profile-content {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            z-index: 2;
+            gap: 32px;
+            padding: 24px;
+            height: 1vh;
 
-            .verified-badge {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                font-size: 12px;
-                font-weight: 600;
-                color: #3d9bfd;
-            }
-
-            .artist-name {
-                font-size: clamp(36px, 6vw, 72px);
-                font-weight: 900;
-                margin: 0;
-                color: #fff;
-                line-height: 1.1;
-                letter-spacing: -2px;
-            }
-
-            .listeners-count {
-                margin: 0;
-                font-size: 14px;
-                color: var(--text-secondary, #b3b3b3);
-                font-weight: 500;
+            & > :first-child {
+                margin-top: -40px;
+                padding: 20px 24px;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(var(--bg-tertiary-rgb, 18, 18, 20), 0.75) 0%,
+                    var(--bg-tertiary, #121214) 100%
+                );
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-radius: 16px 16px 0 0;
+                position: relative;
+                z-index: 2;
+                box-shadow: 0 -8px 24px rgba(0, 0, 0, var(--shadow-opacity, 0.3));
             }
         }
-    }
 
-    .artist-actions {
-        padding: 24px 40px 10px 40px;
-        display: flex;
-        align-items: center;
-
-        .btn-play-artist {
-            background-color: var(--text-primary, #fff) !important;
-            color: var(--bg-primary, #000) !important;
-            border-radius: 30px;
-            padding: 12px 32px;
-            font-size: 15px;
-            font-weight: 700;
+        .profile-metadata {
             display: flex;
             align-items: center;
-            gap: 10px;
-            border: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s;
+            gap: 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            width: 100%;
 
-            &:hover {
-                transform: scale(1.04);
+            .bio-text-short {
+                opacity: 0.8;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 450px;
             }
 
-            svg {
-                width: 18px;
-                height: 18px;
+            .more-bio-btn {
+                background: transparent;
+                border: none;
+                color: var(--text-primary);
+                font-weight: 700;
+                font-size: 13px;
+                cursor: pointer;
+                text-decoration: underline;
+                opacity: 0.6;
+                padding: 0;
+                flex-shrink: 0;
+                transition: opacity 0.2s;
+
+                &:hover {
+                    opacity: 1;
+                }
             }
         }
-    }
 
-    .artist-body {
-        padding: 10px 40px 40px 40px;
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
+        .profile-actions {
+            margin-top: 8px;
 
-        .content-section {
-            h2 {
-                font-size: 24px;
-                font-weight: 800;
-                color: var(--text-primary, #fff);
-                margin-top: 0;
-                margin-bottom: 18px;
+            .play-btn {
+                background-color: var(--accent-color);
+                color: #fff;
+                border: none;
+                padding: 12px 32px;
+                border-radius: 24px;
+                font-weight: 700;
+                font-size: 14px;
+                cursor: pointer;
+                transition: transform 0.1s, filter 0.2s;
+
+                &:hover {
+                    filter: brightness(1.1);
+                    transform: scale(1.03);
+                }
+
+                &:active {
+                    transform: scale(0.97);
+                }
             }
         }
 
-        .albums-grid {
+        .empty {
+            color: var(--text-secondary);
+            font-size: 18px;
+            text-align: center;
+            margin-top: 30px;
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
             gap: 16px;
         }
 
-        .bio-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 24px;
-            max-width: 800px;
-
-            .bio-text {
-                margin: 0;
-                font-size: 15px;
-                line-height: 1.6;
-                color: var(--text-secondary, #b3b3b3);
-                white-space: pre-line;
-            }
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-bottom: 10px;
         }
     }
 </style>

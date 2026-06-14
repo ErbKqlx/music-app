@@ -126,29 +126,13 @@
 </script>
 
 <template>
-    <Modal @close="modalStore.closeModal" size="playlist">
+    <Modal @close="modalStore.closeModal">
         <template #header>
-            <h2 class="modal-title">{{ isEdit ? 'Редактирование' : 'Создание' }} плейлиста</h2>
+            <h2 class="modal-title">Заявка</h2>
         </template>
 
         <template #body>
             <form @submit.prevent="handleSubmit" class="create-playlist-form">
-                <div class="upload-section" @click="triggerFileInput">
-                    <div v-if="previewImage" class="image-preview">
-                        <img :src="previewImage" alt="Превью" />
-                    </div>
-                    <div v-else class="upload-placeholder">
-                        <span>Выбрать обложку</span>
-                    </div>
-                    <input 
-                        type="file" 
-                        ref="fileInput" 
-                        @change="onFileChange" 
-                        accept="image/*" 
-                        hidden 
-                    />
-                </div>
-
                 <div class="inputs-section">
                     <div class="field">
                         <label>Название</label>
@@ -157,14 +141,6 @@
                             v-model="formData.name" 
                             placeholder="Мой плейлист" 
                             required>
-                    </div>
-
-                    <div class="field checkbox-field">
-                        <label class="switch">
-                            <input type="checkbox" v-model="formData.public" :value="formData.public">
-                            <span class="slider"></span>
-                        </label>
-                        <span>Открытый плейлист</span>
                     </div>
                 </div>
             </form>

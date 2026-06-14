@@ -153,7 +153,7 @@
 
         <template #footer>
             <div class="actions">
-                <Button class="secondary" @click="modalStore.closeModal" :disabled="isLoading">Отмена</Button>
+                <Button class="secondary-btn" @click="modalStore.closeModal" :disabled="isLoading">Отмена</Button>
                 <Button @click="handleSubmit" :disabled="isLoading">Сохранить</Button>
             </div>
         </template>
@@ -293,10 +293,14 @@
         width: 100%;
     }
 
-    .secondary {
-        border: 1px solid #555;
+    .secondary-btn {
         background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.15);
         color: var(--text-primary);
+    }
+    
+    .secondary-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
     }
 
     .loading {

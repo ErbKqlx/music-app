@@ -16,6 +16,8 @@
     import { useUserStore } from './stores/user.js';
     import ToastContainer from '@/components/ToastContainer.vue'
     import SettingsModal from '@/components/Modals/SettingsModal.vue'
+    import ArtistApplication from './components/Modals/ArtistApplication.vue';
+    import ArtistBioModal from './components/Modals/ArtistBioModal.vue';
 
     const lyricsStore = useLyricsStore()
     const playerStore = usePlayerStore()
@@ -48,6 +50,8 @@
             <SongUploadModal v-if="modalStore.activeModal === 'song'" />
             <SelectPlaylists v-if="modalStore.activeModal === 'selectPlaylists'" />
             <SettingsModal v-if="modalStore.activeModal === 'settings'" />
+            <ArtistApplication v-if="modalStore.activeModal === 'artistApplication'" />
+            <ArtistBioModal v-if="modalStore.activeModal === 'artistBio'" />
         </div>
         <PlayerBar/>
         <ToastContainer />
@@ -60,27 +64,19 @@
 </template>
 
 <style scoped>
-  .wrapper{
-    /* display: flex;
-    flex-grow: 1;
-    padding: 0 10px; */
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 10px;
-    flex-grow: 1;
-    transition: padding-right 0.3s ease;
+    .wrapper{
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        flex-grow: 1;
+        transition: padding-right 0.3s ease;
+    }
 
-    /* .main-content{
-      flex-grow: 1;
-      transition: all 0.3s ease;
-    } */
-  }
+    .queue-open {
+        padding-right: 350px;
+    }
 
-  .queue-open {
-    padding-right: 350px;
-  }
-
-  .queue-open .main-content {
-     max-width: calc(100% - 350px);
-  }
+    .queue-open .main-content {
+        max-width: calc(100% - 350px);
+    }
 </style>

@@ -49,6 +49,15 @@ class PlaylistController{
                         ]
                     ]
                 },
+                include: [
+                    {
+                        model: Song,
+                        attributes: ['id'],
+                        through: {
+                            attributes: []
+                        }
+                    }
+                ],
                 order: [['updated_at', 'DESC']]
             })
 
@@ -310,17 +319,6 @@ class PlaylistController{
             })
         }
 
-        // const song = await Song.findByPk(id_song);
-        // if (!song) {
-        //     return res.status(404).json({ errorMessage: 'Указанный трек не найден' });
-        // }
-
-        // const hasSong = await playlist.hasSong(id_song);
-        // if (hasSong) {
-        //     return res.status(200).json({ message: 'Этот трек уже есть в плейлисте' });
-        // }
-
-        // await playlist.addSong(id_song);
         const [connection, created] = await PlaylistsSongs.findOrCreate({
             where: {
                 id_playlist: id_playlist,

@@ -129,6 +129,7 @@
         
         <div class="header-actions">
             <RouterLink to="/admin" class="clickable" v-if="userStore.isAdmin">Панель администратора</RouterLink>
+            <span @click="modalStore.openModal('artistApplication')" class="application clickable" v-if="userStore.isAuthenticated">Стать исполнителем</span>
             
             <div v-if="userStore.currentUser" class="profile-container" @click.stop>
                 <div class="profile-trigger" @click="toggleProfileMenu">
@@ -277,6 +278,17 @@
         border-color: var(--accent-color);
     }
 
+    .header-actions .application{
+        color: var(--text-primary);
+        align-self: center;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .header-actions .application:hover{
+        color: var(--accent-color);
+    }
+
     a {
         /* color: white; */
         color: var(--text-primary);
@@ -287,6 +299,7 @@
 
     a:hover {
         color: var(--accent-color);
+        text-decoration: none;
     }
 
     .admin-panel{

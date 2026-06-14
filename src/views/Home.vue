@@ -177,7 +177,9 @@
                         v-for="song in filteredPopularSongs.slice(0, 12)" 
                         :title="song.name" 
                         description="Трек" 
-                        :key="song.id">
+                        :key="song.id"
+                        :explicit-content="song.explicit_content"
+                        >
 
                         <template #image>
                             <Image :url="song.image"/>

@@ -32,6 +32,10 @@ class UserController{
 
         const user = await User.findByPk(userId)
 
+        if (!user) {
+            return res.status(404).json({ errorMessage: 'Пользователь не найден' });
+        }
+
         // console.log(user.avatar)
         user.avatar = getFileUrl(user.avatar, 'uploads/default/placeholder_avatar.jpg')
 
@@ -136,7 +140,7 @@ class UserController{
 
         } catch (error) {
             console.error("Ошибка в updateUserRole:", error);
-            // Используем 500 статус для ошибок сервера
+
             return res.status(500).json({ message: 'Ошибка сервера при обновлении роли', error: error.message });
         }
     }

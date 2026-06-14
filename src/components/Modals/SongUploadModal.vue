@@ -239,7 +239,7 @@
 </script>
 
 <template>
-    <Modal @close="modalStore.closeModal">
+    <Modal @close="modalStore.closeModal" size="large">
         <template #header>
             <h2 class="modal-title">{{ isEdit ? 'Редактирование' : 'Загрузка' }} трека</h2>
         </template>
@@ -345,7 +345,7 @@
 
         <template #footer>
             <div class="actions">
-                <Button class="secondary" @click="modalStore.closeModal">Отмена</Button>
+                <Button class="secondary-btn" @click="modalStore.closeModal">Отмена</Button>
                 <Button @click="handleSubmit">{{ isEdit ? 'Сохранить' : 'Загрузить' }}</Button>
             </div>
         </template>
@@ -370,7 +370,7 @@
 
     .create-song-form {
         display: flex;
-        gap: 20px;
+        gap: 32px;
         padding: 10px 0;
         max-height: 70vh;
         overflow-y: auto;
@@ -416,7 +416,7 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
-        width: 400px;
+        /* width: 400px; */
     }
 
     .genres-section{
@@ -496,8 +496,14 @@
         width: 100%;
     }
 
-    .secondary {
-        border: 1px solid #555;
+    .secondary-btn {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: var(--text-primary);
+    }
+    
+    .secondary-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
     }
 
     .switch {

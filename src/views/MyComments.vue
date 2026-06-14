@@ -185,7 +185,7 @@
         text-align: center;
         color: var(--text-secondary);
         padding: 4px;
-        font-size: 16px;
+        font-size: 24px;
     }
 
     .comments-list {
