@@ -20,7 +20,7 @@ class ArtistController {
 
             const topSongsIdsSubquery = `(
                 SELECT "id_song" 
-                FROM public."songs_artists" -- Замени на реальное имя твоей промежуточной таблицы, если оно другое!
+                FROM public."songs_artists"
                 WHERE "id_artist" = ${Number(id)}
                 ORDER BY (
                     SELECT COUNT(*) 

@@ -76,11 +76,12 @@ defineProps({
                 width: 100%;
                 min-width: 0;
 
-                span {
+                span:first-child {
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    flex-grow: 1;
+                    flex-shrink: 1;
+                    min-width: 0;
                 }
             }
             
@@ -91,11 +92,18 @@ defineProps({
                 color: var(--text-secondary, #b3b3b3);
                 font-size: 10px;
                 font-weight: 700;
-                width: 16px;
+                
                 height: 16px;
+                aspect-ratio: 1 / 1; 
+                
                 border-radius: 3px;
-                background: rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                
                 flex-shrink: 0;
+                flex-grow: 0;
+                
+                line-height: 1;
             }
 
             .additional-info {

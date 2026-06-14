@@ -129,7 +129,7 @@
         
         <div class="header-actions">
             <RouterLink to="/admin" class="clickable" v-if="userStore.isAdmin">Панель администратора</RouterLink>
-            <span @click="modalStore.openModal('artistApplication')" class="application clickable" v-if="userStore.isAuthenticated">Стать исполнителем</span>
+            <span @click="modalStore.openModal('artistApplication')" class="application clickable" v-if="userStore.currentUser?.role_name === 'Пользователь'">Стать исполнителем</span>
             
             <div v-if="userStore.currentUser" class="profile-container" @click.stop>
                 <div class="profile-trigger" @click="toggleProfileMenu">
@@ -178,6 +178,10 @@
 
                         <div class="dropdown-item" @click="toComments">
                             <span>Мои комментарии</span>
+                        </div>
+
+                        <div class="dropdown-item" @click="" v-if="userStore.isModerator">
+                            <span>Жалобы</span>
                         </div>
 
                         <div class="dropdown-item theme-toggle" @click="toggleTheme">

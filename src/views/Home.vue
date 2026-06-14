@@ -198,9 +198,9 @@
                         <h2>Новые релизы</h2>
                         <p class="section-subtitle">Свежие треки, вышедшие недавно</p>
                     </div>
-                    <div v-if="userStore.currentUser" class="list-controls">
-                        <label for="sort-select" class="additional-info">Сортировка:</label>
-                        <select id="sort-select" v-model="sortKey" class="sort-select">
+                    <div class="list-controls">
+                        <label v-if="userStore.currentUser" for="sort-select" class="additional-info">Сортировка:</label>
+                        <select v-if="userStore.currentUser" id="sort-select" v-model="sortKey" class="sort-select">
                             <option value="date-desc">Дата (сначала новые)</option>
                             <option value="date-asc">Дата (сначала старые)</option>
                             <option value="length-desc">Длительность (по убыванию)</option>

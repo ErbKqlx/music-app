@@ -264,5 +264,9 @@
         .empty-history{
             padding-bottom: 100px;
         }
+
+        .history-list{
+            padding-bottom: 20px;
+        }
     }
 </style>

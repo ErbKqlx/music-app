@@ -456,7 +456,7 @@ class SongController{
                 order: [
                     ['listened_at', 'DESC']
                 ],
-                limit: 5,
+                limit: 6,
                 include: ['song']
             })
 
