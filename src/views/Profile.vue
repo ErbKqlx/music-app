@@ -101,13 +101,23 @@
             </template>
 
             <template #actions>
+            <div class="profile-actions-wrapper">
                 <div class="profile-actions" v-if="isCurrentUser">
                     <button class="settings-btn" @click="modalStore.openModal('settings')" title="Настройки профиля">
                         <Settings width="20" height="20" />
                         <span>Редактировать профиль</span>
                     </button>
                 </div>
-            </template>
+
+                <RouterLink 
+                    v-if="userData?.artistId" 
+                    :to="'/artist/' + userData.artistId" 
+                    class="artist-profile-link"
+                >
+                    Профиль исполнителя
+                </RouterLink>
+            </div>
+        </template>
         </TitleCard>
 
         <div class="profile-content">
@@ -182,42 +192,32 @@
 
             & > :first-child {
                 margin-top: -40px;
-                
                 padding: 20px 24px;
-                
                 background: linear-gradient(
                     to bottom,
                     rgba(var(--bg-tertiary-rgb, 18, 18, 20), 0.75) 0%,
                     var(--bg-tertiary, #121214) 100%
                 );
-                
                 backdrop-filter: blur(20px);
                 -webkit-backdrop-filter: blur(20px);
-                
                 border-radius: 16px 16px 0 0;
-                
                 position: relative;
                 z-index: 2;
-
                 box-shadow: 0 -8px 24px rgba(0, 0, 0, var(--shadow-opacity, 0.3));
             }
         }
 
-        .profile-metadata {
+        .profile-actions-wrapper {
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
-
-            .separator {
-                opacity: 0.5;
-                user-select: none;
-            }
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 8px;
         }
 
         .profile-actions {
-            margin-top: 8px;
+            display: flex;
+            align-items: center;
 
             .settings-btn {
                 background-color: rgba(255, 255, 255, 0.1);
@@ -244,6 +244,19 @@
             }
         }
 
+        .artist-profile-link {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            transition: color 0.2s;
+
+            &:hover {
+                color: var(--accent-color);
+            }
+        }
+
         .empty {
             color: var(--text-secondary);
             font-size: 24px;
@@ -267,6 +280,20 @@
 
         .history-list{
             padding-bottom: 20px;
+        }
+    }
+
+    .profile-metadata {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-primary);
+        font-size: 14px;
+
+        .separator {
+            opacity: 0.5;
+            user-select: none;
+            margin: 0 4px; 
         }
     }
 </style>

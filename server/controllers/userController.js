@@ -8,6 +8,7 @@ import { deleteFile } from "../utils/filesystem.js"
 
 const User = db.user
 const Role = db.role
+const Artist = db.artist
 
 class UserController{
     static async getUsers(req, res){
@@ -26,30 +27,36 @@ class UserController{
         }
     }
 
-    static async getUserData(req, res){
-        // return Response.success(res, 'Профиль')
-        const userId = req.params.id
+    static async getUserData(req, res) {
+        try {
+            const userId = req.params.id;
+            const user = await User.findByPk(userId);
 
-        const user = await User.findByPk(userId)
+            if (!user) {
+                return res.status(404).json({ errorMessage: 'Пользователь не найден' });
+            }
 
-        if (!user) {
-            return res.status(404).json({ errorMessage: 'Пользователь не найден' });
+            user.avatar = getFileUrl(user.avatar, 'uploads/default/placeholder_avatar.jpg');
+
+            const artistProfile = await db.artist.findOne({
+                where: { id_user: user.id },
+                attributes: ['id']
+            });
+
+            return res.status(200).json({
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+                id_role: user.id_role,
+                role_name: user.role?.name,
+                registration_date: user.registration_date,
+                artistId: artistProfile ? artistProfile.id : null
+            });
+        } catch (error) {
+            console.error('Ошибка в getUserData:', error);
+            return res.status(500).json({ errorMessage: 'Внутренняя ошибка сервера' });
         }
-
-        // console.log(user.avatar)
-        user.avatar = getFileUrl(user.avatar, 'uploads/default/placeholder_avatar.jpg')
-
-        // console.log()
-
-        return res.status(200).json({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            avatar: user.avatar,
-            id_role: user.id_role,
-            role_name: user.role?.name,
-            registration_date: user.registration_date,
-        })
     }
 
     static async updateUserData(req, res) {

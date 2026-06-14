@@ -57,19 +57,18 @@
             </template>
 
             <template #metadata>
-                <div class="profile-metadata">
-                    <span class="bio-text-short">{{ artist.bio || 'Исполнитель' }}</span>
-                    <button v-if="artist.bio" @click="openBioModal" class="more-bio-btn">
-                        Подробнее
-                    </button>
+                <div class="profile-metadata-wrapper">
+                    <span class="monthly-listens">
+                        {{ artist.monthlyListens?.toLocaleString('ru-RU') || 0 }} слушателей за месяц
+                    </span>
                 </div>
             </template>
 
-            <template #actions>
+            <!-- <template #actions>
                 <div class="profile-actions">
                     <button class="play-btn">Слушать</button>
                 </div>
-            </template>
+            </template> -->
         </TitleCard>
 
         <div class="profile-content">
@@ -92,6 +91,18 @@
                     </div>
                     <div v-else class="empty">
                         У этого исполнителя пока нет треков
+                    </div>
+                </template>
+            </Section>
+
+            <Section v-if="artist.bio">
+                <template #title>Биография</template>
+                <template #content>
+                    <div class="artist-bio-block">
+                        <p class="bio-preview-text">{{ artist.bio }}</p>
+                        <button @click="openBioModal" class="more-bio-btn">
+                            Читать полностью
+                        </button>
                     </div>
                 </template>
             </Section>
@@ -131,33 +142,50 @@
             }
         }
 
-        .profile-metadata {
+        .profile-metadata-wrapper {
             display: flex;
             align-items: center;
-            gap: 12px;
             color: var(--text-primary);
             font-size: 14px;
             width: 100%;
+        }
 
-            .bio-text-short {
-                opacity: 0.8;
-                white-space: nowrap;
+        .monthly-listens {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .artist-bio-block {
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+
+            .bio-preview-text {
+                color: var(--text-secondary, #b3b3b3);
+                font-size: 15px;
+                line-height: 1.6;
+                margin: 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;  
                 overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 450px;
             }
 
             .more-bio-btn {
                 background: transparent;
                 border: none;
-                color: var(--text-primary);
+                color: var(--text-primary, #fff);
                 font-weight: 700;
-                font-size: 13px;
+                font-size: 14px;
                 cursor: pointer;
                 text-decoration: underline;
-                opacity: 0.6;
+                opacity: 0.8;
                 padding: 0;
-                flex-shrink: 0;
                 transition: opacity 0.2s;
 
                 &:hover {

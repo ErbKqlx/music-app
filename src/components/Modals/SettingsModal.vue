@@ -112,7 +112,7 @@
 </script>
 
 <template>
-    <Modal @close="modalStore.closeModal">
+    <Modal @close="modalStore.closeModal" size="playlist">
         <template #header>
             <h2 class="modal-title">Редактирование профиля</h2>
         </template>

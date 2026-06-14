@@ -36,7 +36,11 @@ router.get(
     UserController.getUsers
 )
 
-router.get('/users/:id', [authJwt.verifyToken], UserController.getUserData)
+router.get(
+    '/users/:id', 
+    [authJwt.verifyToken], 
+    UserController.getUserData
+)
 
 router.patch(
     '/users/:id', 

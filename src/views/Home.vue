@@ -199,13 +199,13 @@
                         <p class="section-subtitle">Свежие треки, вышедшие недавно</p>
                     </div>
                     <div class="list-controls">
-                        <label v-if="userStore.currentUser" for="sort-select" class="additional-info">Сортировка:</label>
+                        <!-- <label v-if="userStore.currentUser" for="sort-select" class="additional-info">Сортировка:</label>
                         <select v-if="userStore.currentUser" id="sort-select" v-model="sortKey" class="sort-select">
                             <option value="date-desc">Дата (сначала новые)</option>
                             <option value="date-asc">Дата (сначала старые)</option>
                             <option value="length-desc">Длительность (по убыванию)</option>
                             <option value="length-asc">Длительность (по возрастанию)</option>
-                        </select>
+                        </select> -->
                         <Button @click="startQueue(sortedNewSongs.slice(0, 15))" class="play-all-button">
                             <Play color="var(--bg-primary)"/>
                             <span>Слушать всё</span>

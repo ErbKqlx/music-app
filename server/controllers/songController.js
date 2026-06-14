@@ -96,6 +96,7 @@ class SongController{
         const artistsData = await Promise.all(artists.map(async artist => {
             const user = await artist.getUser()
             const userData = artists.map(user => {
+                    console.log(user)
                     user.avatar = getFileUrl(user.avatar, 'uploads/default/placeholder_avatar.jpg')
 
                     return {

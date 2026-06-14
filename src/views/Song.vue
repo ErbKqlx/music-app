@@ -313,8 +313,8 @@
                                 <Image class="round-image" :url="artist.user[0]?.avatar"/>
                             </div>
                             <div class="artist-card-info">
+                                <div class="artist-card-type">Исполнитель</div>
                                 <div class="artist-card-name">{{ artist.name }}</div>
-                                <div class="artist-card-bio">{{ artist.bio || 'Нет описания' }}</div>
                             </div>
                         </div>
                     </div>
@@ -553,15 +553,13 @@
                 text-overflow: ellipsis;
             }
 
-            .artist-card-bio {
+            .artist-card-type {
                 font-size: 14px;
                 line-height: 1.5;
                 color: var(--text-secondary, #b3b3b3);
                 display: -webkit-box;
-                -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
-                text-overflow: ellipsis;
             }
 
             .genres-list {

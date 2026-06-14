@@ -240,6 +240,8 @@
             flex-grow: 0;
             
             line-height: 1;
+
+            user-select: none;
         }
         
         .release-date {
