@@ -34,6 +34,13 @@ class SearchController{
                     where: {
                         name: { [Op.iLike]: `%${query}%` }
                     },
+                    include: [
+                        {
+                            model: User,
+                            as: 'user',
+                            attributes: ['avatar']
+                        },
+                    ],
                     limit: 10
                 }),
                 User.findAll({
@@ -61,15 +68,13 @@ class SearchController{
 
             const artists = rawArtists.map(artist => {
                 const artistData = artist.toJSON();
-                artistData.image = getFileUrl(artistData.image, 'uploads/default/placeholder_avatar.jpg');
+                artistData.user.avatar = getFileUrl(artistData.user.avatar, 'uploads/default/placeholder_avatar.jpg');
                 return artistData;
             });
 
             const users = rawUsers.map(user => {
                 const userData = user.toJSON();
-                console.log(userData.avatar)
                 userData.avatar = getFileUrl(userData.avatar, 'uploads/default/placeholder_avatar.jpg');
-                console.log(userData.avatar)
                 return userData;
             });
 

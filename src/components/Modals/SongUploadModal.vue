@@ -293,7 +293,7 @@
                                     class="search-item" 
                                     @click="addArtist(artist)"
                                 >
-                                    <img :src="artist.avatar || '/default-avatar.png'" class="search-avatar" />
+                                    <img :src="artist.user.avatar" class="search-avatar" />
                                     <span>{{ artist.name }}</span>
                                 </div>
                             </div>

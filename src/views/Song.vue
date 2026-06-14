@@ -310,7 +310,7 @@
                     <div class="artists-grid">
                         <div class="artist-card" @click="toArtist(artist.id)" v-for="artist in songData?.data.artists" :key="artist.id">
                             <div class="artist-avatar-wrapper">
-                                <Image class="round-image" :url="artist.user[0]?.avatar"/>
+                                <Image class="round-image" :url="artist.image"/>
                             </div>
                             <div class="artist-card-info">
                                 <div class="artist-card-type">Исполнитель</div>

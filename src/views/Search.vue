@@ -61,7 +61,7 @@
                 <div class="artists-grid">
                     <div v-for="artist in searchStore.results.artists" :key="artist.id" class="grid-card" @click="navigate('/artist/' + artist.id)">
                         <div class="avatar-wrapper artist-avatar">
-                            <img :src="artist.image" alt="Исполнитель" />
+                            <img :src="artist.user.avatar" alt="Исполнитель" />
                         </div>
                         <!-- <RouterLink :to="'/artist/' + artist.id" class="item-name card-name">{{ artist.name }}</RouterLink> -->
                         <span :to="'/artist/' + artist.id" class="item-name card-name">{{ artist.name }}</span>
