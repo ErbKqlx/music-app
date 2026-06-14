@@ -177,6 +177,14 @@
 
             <template #metadata>
                 <div class="metadata-row">
+                    <span>{{ playlistData?.data.public ? 'Открытый' : 'Закрытый' }}</span>
+
+                    <span class="separator">•</span>
+
+                    <span>{{ playlistData?.data.songs_count }}</span>
+
+                    <span class="separator">•</span>
+
                     <div>
                         Кем создан:
                         <RouterLink :to="'/profile/' + playlistData?.data.user.id">
@@ -185,14 +193,8 @@
                     </div>
                     
                     <span class="separator">•</span>
-                    
-                    <span>{{ playlistData?.data.songs_count }}</span>
-                    <span class="separator">•</span>
-                    
-                    <span>{{ playlistData?.data.public ? 'Открытый' : 'Закрытый' }}</span>
-                    <span class="separator">•</span>
-                    <span>Дата создания: {{ formatDate(playlistData?.data.created_at) }}</span>
 
+                    <span>Дата создания: {{ formatDate(playlistData?.data.created_at) }}</span>
                 </div>
             </template>
 

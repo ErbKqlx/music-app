@@ -89,11 +89,35 @@ class PlaylistController{
     }
 
     static async getOnePlaylist(req, res){
-        const playlist = await Playlist.findOne({ where: {
-            id: req.params.id
-        }}).catch((err) => {
+        const playlist = await Playlist.findOne({ 
+            where: {
+                id: req.params.id
+            },
+            attributes: {
+                include: [
+                    [
+                        Sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM playlists_songs AS ps
+                            WHERE ps.id_playlist = "Playlists"."id"
+                        )`),
+                        'songs_count'
+                    ]
+                ]
+            },
+        }).catch((err) => {
             console.log(err)
         })
+
+        const getTrackWord = (count) => {
+            const num = Math.abs(count) % 100; 
+            const lastDigit = num % 10;
+            
+            if (num > 10 && num < 20) return 'треков';
+            if (lastDigit > 1 && lastDigit < 5) return 'трека';
+            if (lastDigit === 1) return 'трек';
+            return 'треков';
+        };
 
         if (!playlist){
             return res.status(404).json({
@@ -111,6 +135,9 @@ class PlaylistController{
 
 
         playlist.image = getFileUrl(playlist.image)
+
+        const count = parseInt(playlist.getDataValue('songs_count')) || 0;
+        // playlist.setDataValue('songs_count', `${count} ${getTrackWord(count)}`);
         
         
         const user = await playlist.getUser()
@@ -159,7 +186,8 @@ class PlaylistController{
                 songs: songsData,
                 created_at: playlist.created_at,
                 image: playlist.image,
-                public: playlist.public
+                public: playlist.public,
+                songs_count: `${count} ${getTrackWord(count)}`,
             }
         })
     }
