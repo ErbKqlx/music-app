@@ -50,7 +50,7 @@ class ArtistController {
                     {
                         model: User,
                         as: 'user',
-                        attributes: ['avatar']
+                        attributes: ['id', 'avatar']
                     },
                     {
                         model: Song,
@@ -93,6 +93,7 @@ class ArtistController {
                 "Вывод исполнителя", 
                 {
                     id: artistData.id,
+                    id_user: artistData.user.id,
                     name: artistData.name,
                     bio: artistData.bio || null,
                     image: getFileUrl(artistData.user.avatar, 'uploads/default/placeholder_avatar.jpg'), 
@@ -107,6 +108,47 @@ class ArtistController {
                 success: false,
                 message: 'Внутренняя ошибка сервера'
             });
+        }
+    }
+
+    static async updateArtist(req, res) {
+        try {
+            const artistId = req.params.id;
+            const { name, bio } = req.body;
+            const userId = req.userId;
+
+            const artist = await Artist.findByPk(artistId);
+
+            if (!artist) {
+                return res.status(404).json({ errorMessage: 'Профиль исполнителя не найден' });
+            }
+
+            if (artist.id_user !== userId && req.userRole !== 'Администратор' && req.userRole !== 'Модератор') {
+                return res.status(403).json({ errorMessage: 'У вас нет прав на редактирование этого профиля' });
+            }
+
+            if (name && !name.trim()) {
+                return res.status(400).json({ errorMessage: 'Имя исполнителя не может быть пустым' });
+            }
+
+            if (name !== undefined) artist.name = name.trim();
+            if (bio !== undefined) artist.bio = bio.trim();
+
+            await artist.save();
+
+            return Response.success(
+                res, 
+                "Профиль исполнителя успешно обновлен", 
+                {
+                    id: artist.id,
+                    name: artist.name,
+                    bio: artist.bio,
+                    id_user: artist.id_user
+                }
+            );
+        } catch (error) {
+            console.error('Ошибка при обновлении профиля артиста:', error);
+            return res.status(500).json({ errorMessage: 'Внутренняя ошибка сервера' });
         }
     }
 }

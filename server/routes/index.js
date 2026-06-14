@@ -73,6 +73,12 @@ router.get(
     ArtistController.getArtist
 )
 
+router.patch(
+    '/artists/:id', 
+    authJwt.verifyToken, 
+    ArtistController.updateArtist
+)
+
 router.post(
     '/song', 
     authJwt.verifyToken, 

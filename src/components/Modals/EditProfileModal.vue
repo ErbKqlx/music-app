@@ -5,7 +5,7 @@
     import Button from '@/components/Input/Button.vue'
     import http from '@/http.js'
     import { useUserStore } from '@/stores/user'
-    import { useToastStore } from '../../stores/toast'
+    import { useToastStore } from '../../stores/toast.js'
     import ImageCropperModal from './ImageCropperModal.vue'
 
     const modalStore = useModalStore()

@@ -101,23 +101,23 @@
             </template>
 
             <template #actions>
-            <div class="profile-actions-wrapper">
-                <div class="profile-actions" v-if="isCurrentUser">
-                    <button class="settings-btn" @click="modalStore.openModal('settings')" title="Настройки профиля">
-                        <Settings width="20" height="20" />
-                        <span>Редактировать профиль</span>
-                    </button>
-                </div>
+                <div class="profile-actions-wrapper">
+                    <div class="profile-actions" v-if="isCurrentUser">
+                        <button class="settings-btn" @click="modalStore.openModal('editProfile')" title="Настройки профиля">
+                            <Settings width="20" height="20" />
+                            <span>Редактировать профиль</span>
+                        </button>
+                    </div>
 
-                <RouterLink 
-                    v-if="userData?.artistId" 
-                    :to="'/artist/' + userData.artistId" 
-                    class="artist-profile-link"
-                >
-                    Профиль исполнителя
-                </RouterLink>
-            </div>
-        </template>
+                    <RouterLink 
+                        v-if="userData?.artistId" 
+                        :to="'/artist/' + userData.artistId" 
+                        class="artist-profile-link"
+                    >
+                        Профиль исполнителя
+                    </RouterLink>
+                </div>
+            </template>
         </TitleCard>
 
         <div class="profile-content">

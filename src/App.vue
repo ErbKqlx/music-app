@@ -15,9 +15,10 @@
     import SelectPlaylists from './components/Modals/SelectPlaylists.vue';
     import { useUserStore } from './stores/user.js';
     import ToastContainer from '@/components/ToastContainer.vue'
-    import SettingsModal from '@/components/Modals/SettingsModal.vue'
+    import EditProfileModal from '@/components/Modals/EditProfileModal.vue'
     import ArtistApplication from './components/Modals/ArtistApplication.vue';
     import ArtistBioModal from './components/Modals/ArtistBioModal.vue';
+    import EditArtistModal from './components/Modals/EditArtistModal.vue';
 
     const lyricsStore = useLyricsStore()
     const playerStore = usePlayerStore()
@@ -49,9 +50,10 @@
             <PlaylistCreateModal v-if="modalStore.activeModal === 'playlist'" />
             <SongUploadModal v-if="modalStore.activeModal === 'song'" />
             <SelectPlaylists v-if="modalStore.activeModal === 'selectPlaylists'" />
-            <SettingsModal v-if="modalStore.activeModal === 'settings'" />
+            <EditProfileModal v-if="modalStore.activeModal === 'editProfile'" />
             <ArtistApplication v-if="modalStore.activeModal === 'artistApplication'" />
             <ArtistBioModal v-if="modalStore.activeModal === 'artistBio'" />
+            <EditArtistModal v-if="modalStore.activeModal === 'editArtist'" />
         </div>
         <PlayerBar/>
         <ToastContainer />

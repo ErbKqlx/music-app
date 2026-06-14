@@ -5,13 +5,19 @@
     import Section from '@/components/Section.vue';
     import router from '@/router/index.js';
     import http from '../http';
-    import { onMounted, ref, watch } from 'vue';
+    import { computed, onMounted, ref, watch } from 'vue';
     import { useRoute } from 'vue-router';
     import { useModalStore } from '@/stores/modal'; 
+    import Settings from '@/assets/svg/settings.svg?component'
+    import { useUserStore } from '../stores/user';
+
 
     const route = useRoute();
     const artist = ref(null);
     const modalStore = useModalStore();
+    const userStore = useUserStore()
+
+    const isCurrentArtist = computed(() => userStore.currentUser?.id === artist.value?.id_user)
 
     function toSong(id) {
         router.push('/song/' + id);
@@ -21,6 +27,21 @@
         modalStore.openModal('artistBio', {
             name: artist.value.name,
             bio: artist.value.bio
+        });
+    }
+
+    function openEditArtistModal() {
+        modalStore.openModal('editArtist', {
+            id: artist.value.id,
+            name: artist.value.name,
+            bio: artist.value.bio,
+
+            onSuccess: (updatedData) => {
+                if (artist.value) {
+                    artist.value.name = updatedData.name;
+                    artist.value.bio = updatedData.bio;
+                }
+            }
         });
     }
 
@@ -64,11 +85,16 @@
                 </div>
             </template>
 
-            <!-- <template #actions>
-                <div class="profile-actions">
-                    <button class="play-btn">Слушать</button>
+            <template #actions>
+                <div class="profile-actions-wrapper">
+                    <div class="profile-actions" v-if="isCurrentArtist">
+                        <button class="settings-btn" @click="openEditArtistModal" title="Настройки профиля">
+                            <Settings width="20" height="20" />
+                            <span>Редактировать профиль</span>
+                        </button>
+                    </div>
                 </div>
-            </template> -->
+            </template>
         </TitleCard>
 
         <div class="profile-content">
@@ -164,6 +190,7 @@
             flex-direction: column;
             gap: 12px;
             align-items: flex-start;
+            margin-bottom: 20px;
 
             .bio-preview-text {
                 color: var(--text-secondary, #b3b3b3);
@@ -196,6 +223,30 @@
 
         .profile-actions {
             margin-top: 8px;
+
+            .settings-btn {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: var(--text-primary);
+                border: 1px solid var(--border-hover);
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background-color 0.2s, transform 0.1s;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                    transform: scale(1.02);
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
+            }
 
             .play-btn {
                 background-color: var(--accent-color);
