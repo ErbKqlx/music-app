@@ -233,14 +233,22 @@
 <template>
     <div class="admin-panel">
         <div class="admin-nav">
-            <button :class="{ active: currentTab === 'genres' }" @click="currentTab = 'genres'">
+            <button v-if="userStore.isAdmin" :class="{ active: currentTab === 'genres' }" @click="currentTab = 'genres'">
                 Управление жанрами
             </button>
             <button :class="{ active: currentTab === 'users' }" @click="currentTab = 'users'">
-                Пользователи и роли
+                Пользователи{{ userStore.isAdmin ? ' и роли' : '' }}
             </button>
-            <button :class="{ active: currentTab === 'reports' }" @click="currentTab = 'reports'">
+            <button v-if="userStore.isAdmin" :class="{ active: currentTab === 'reports' }" @click="currentTab = 'reports'">
                 Типы жалоб
+            </button>
+
+            <!-- <button :class="{ active: currentTab === 'reports' }" @click="currentTab = 'reports'">
+                Жалобы
+            </button> -->
+
+            <button v-if="userStore.isAdmin" :class="{ active: currentTab === 'applications' }" @click="currentTab = 'applications'">
+                Заявки
             </button>
         </div>
 

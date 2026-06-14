@@ -87,7 +87,7 @@
 
             <template #actions>
                 <div class="profile-actions-wrapper">
-                    <div class="profile-actions" v-if="isCurrentArtist">
+                    <div class="profile-actions" v-if="isCurrentArtist || userStore.isModerator">
                         <button class="settings-btn" @click="openEditArtistModal" title="Настройки профиля">
                             <Settings width="20" height="20" />
                             <span>Редактировать профиль</span>
