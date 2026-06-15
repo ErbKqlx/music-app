@@ -93,15 +93,13 @@
     }
 
     onMounted(() => {
-        // if (userStore.currentUser != null){
-        //     router.push('/profile/' + userStore.currentUser.id)
-        // }
-        
-        if (localStorage.getItem('token') != null){
+        playerStore.stopSong()
+
+        if (userStore.currentUser && userStore.currentUser.id) {
             router.push('/profile/' + userStore.currentUser.id)
-        }
-        else{
-            playerStore.stopSong()
+        } else {
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
         }
     })
 </script>

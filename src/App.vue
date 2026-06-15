@@ -37,6 +37,9 @@
 </script>
 
 <template>
+    <ToastContainer />
+
+
     <template v-if="!hideLayout">
         <Header></Header>
         <div class="wrapper" :class="{ 'queue-open': playerStore.isQueueOpen }">
@@ -56,7 +59,6 @@
             <EditArtistModal v-if="modalStore.activeModal === 'editArtist'" />
         </div>
         <PlayerBar/>
-        <ToastContainer />
     </template>
 
     <RouterView v-else/>

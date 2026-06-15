@@ -38,7 +38,10 @@ const verifyToken = (req, res, next) => {
             }
 
             if (user.is_banned) {
-                return Response.forbidden(res, "Ваш аккаунт заблокирован");
+                return res.status(403).send({ 
+                    message: "Ваш аккаунт заблокирован", 
+                    code: "ACCOUNT_BANNED" 
+                });
             }
 
             req.userId = decoded.id;

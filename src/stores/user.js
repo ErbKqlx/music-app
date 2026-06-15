@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import router from "../router";
 import { usePlayerStore } from "./player";
+import { useToastStore } from "./toast";
 
 export const useUserStore = defineStore('user', () => {
     const getInitialUser = () => {
@@ -44,13 +45,18 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
-    function logout() {
+    function logout(reason = null) {
         currentUser.value = null;
         localStorage.removeItem("user");
         localStorage.removeItem("token");
 
         const playerStore = usePlayerStore()
         playerStore.stopSong()
+
+        if (reason) {
+            const toastStore = useToastStore()
+            toastStore.show(reason, 'error')
+        }
 
         router.push('/login')
     }

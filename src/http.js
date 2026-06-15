@@ -1,6 +1,7 @@
 import axios from "axios"
 import router from '@/router/index.js'
 import { useUserStore } from "./stores/user";
+import { useToastStore } from "./stores/toast";
 
 const instance = axios.create({
     baseURL: "http://localhost:8080/api",
@@ -31,17 +32,26 @@ instance.interceptors.response.use(
     (error) => {
         if (error.response && error.response.status === 401) {
             console.warn("Токен истек или невалиден")
-            
-            // localStorage.removeItem('token')
-            
 
             const userStore = useUserStore();
             userStore.logout();
-            // router.push('/')
-        
-            // if (router.currentRoute.value.path !== '/') {
-            //     router.push('/')
-            // }
+        }
+
+        if (error.response && error.response.status === 403) {
+            const data = error.response.data;
+            
+            console.log(data.code)
+
+            if (data && data.code === 'ACCOUNT_BANNED') {
+                console.error("Пользователь заблокирован в системе");
+                
+                const userStore = useUserStore();
+                
+                userStore.logout(data.message || 'Ваш аккаунт заблокирован.'); 
+
+                // router.push('/login')
+
+            }
         }
         
         return Promise.reject(error)
