@@ -788,6 +788,18 @@
             }
         }
 
+        .admin-table td {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .admin-table td.actions-td {
+            max-width: none;
+            overflow: visible;
+        }
+
         button, select {
             font-family: inherit;
         }
@@ -820,8 +832,22 @@
             font-size: 14px;
         }
 
-        .actions-th { width: 200px; }
-        .actions-td { display: flex; align-items: center; }
+        .actions-th { 
+            width: 200px; 
+            min-width: 200px;
+        }
+
+        .actions-td { 
+            display: table-cell;
+            vertical-align: middle; 
+            white-space: nowrap;
+            
+            & > button, & > span, & > template {
+                display: inline-flex;
+                align-items: center;
+                vertical-align: middle;
+            }
+        }
 
         .role-select {
             padding: 6px 10px;
