@@ -146,6 +146,12 @@ router.delete(
     CommentController.deleteComment
 )
 
+router.post(
+    '/comments/:id/report',
+    authJwt.verifyToken,
+    ReportController.reportComment
+)
+
 router.get(
     '/report-types',
     authJwt.verifyToken, 

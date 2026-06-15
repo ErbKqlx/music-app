@@ -35,8 +35,14 @@
     const comments = ref([])
     const newCommentText = ref('')
     const isCommentsLoading = ref(false)
+
     const editingCommentId = ref(null)
     const editingCommentText = ref('')
+
+    const reportingCommentId = ref(null)
+    const reportCommentText = ref('')
+    const reportTypes = ref([])
+    const reportType = ref(null)
 
     function toArtist(id){
         router.push('/artist/' + id)
@@ -51,6 +57,21 @@
         } catch (error) {
             console.error('Ошибка при загрузке трека ' + error)
             toastStore.show('Ошибка при загрузке трека', 'error')
+        }
+    }
+
+    async function fetchReportTypes() {
+        try {
+            const response = await http.get('/report-types', {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+            })
+            reportTypes.value = response.data.data
+            
+            if (reportTypes.value.length > 0) {
+                reportType.value = reportTypes.value[0].id
+            }
+        } catch (error) {
+            console.error('Ошибка при загрузке типов жалоб:', error)
         }
     }
 
@@ -184,6 +205,26 @@
         editingCommentText.value = ''
     }
 
+    function startReportComment(comment) {
+        reportingCommentId.value = comment.id
+        reportCommentText.value = ''
+
+        if (reportTypes.value.length === 0) {
+            fetchReportTypes()
+        } else {
+            reportType.value = reportTypes.value[0].id
+        }
+    }
+
+    function cancelReportComment() {
+        reportingCommentId.value = null
+        reportCommentText.value = ''
+
+        if (reportTypes.value.length > 0) {
+            reportType.value = reportTypes.value[0].id
+        }
+    }
+
     async function saveUpdatedComment(commentId) {
         if (!editingCommentText.value.trim()) return
 
@@ -223,10 +264,39 @@
         return (updated - created) > 1000
     }
 
+    async function reportComment(commentId) {
+        if (!reportCommentText.value.trim() || !reportType.value) return
+
+        try {
+            const payload = { 
+                id_report_type: reportType.value,
+                text: reportCommentText.value.trim() 
+            }
+
+            await http.post(`/comments/${commentId}/report`, payload, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+            })
+            
+            toastStore.show('Жалоба успешно отправлена и будет рассмотрена модератором.', 'success')
+            cancelReportComment()
+        } catch (error) {
+            console.error('Ошибка при отправке жалобы:', error)
+
+            if (error.response?.status === 409) {
+                toastStore.show(error.response.data.message, 'error')
+            } else if (error.response?.status === 400) {
+                toastStore.show(error.response.data.message, 'error')
+            } else {
+                toastStore.show('Не удалось отправить жалобу. Попробуйте позже.', 'error')
+            }
+        }
+    }
+
     watch(() => route.params.id, (newId) => {
         if (newId) {
             fetchSongData(newId);
             fetchComments(newId);
+            fetchReportTypes()
         }
     });
 
@@ -235,6 +305,7 @@
         if (id) {
             fetchSongData(id)
             fetchComments(id)
+            fetchReportTypes()
         }
     })
 </script>
@@ -388,6 +459,32 @@
                                         </div>
                                     </div>
 
+                                    <div v-else-if="reportingCommentId === comment.id" class="edit-comment-form">
+                                        <div class="report-select-wrapper">
+                                            <label for="report-reason">Причина:</label>
+                                            <select id="report-reason" v-model="reportType">
+                                                <option 
+                                                    v-for="type in reportTypes" 
+                                                    :key="type.id" 
+                                                    :value="type.id"
+                                                >
+                                                    {{ type.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <textarea 
+                                            v-model="reportCommentText" 
+                                            placeholder="Опишите проблему подробнее (например, таймкод или контекст)..." 
+                                            rows="2"
+                                        ></textarea>
+
+                                        <div class="edit-actions">
+                                            <button @click="reportComment(comment.id)" class="btn-save">Пожаловаться</button>
+                                            <button @click="cancelReportComment" class="btn-cancel">Отмена</button>
+                                        </div>
+                                    </div>
+
                                     <div v-else class="comment-text">
                                         {{ comment.text }}
                                     </div>
@@ -402,6 +499,15 @@
                                         Редактировать
                                     </button>
                                     
+                                    <button 
+                                        v-if="userStore.currentUser && !canEditComment(comment) && reportingCommentId !== comment.id" 
+                                        @click="startReportComment(comment)" 
+                                        class="btn-report-comment"
+                                        title="Пожаловаться на нарушение"
+                                    >
+                                        Пожаловаться
+                                    </button>
+
                                     <button 
                                         v-if="canDeleteComment(comment)" 
                                         @click="deleteComment(comment.id)" 
@@ -729,6 +835,24 @@
                             background-color: rgba(244, 67, 54, 0.1);
                         }
                     }
+
+                    .btn-report-comment {
+                        background: none;
+                        border: none;
+                        color: var(--text-secondary);
+                        font-size: 12px;
+                        cursor: pointer;
+                        padding: 4px 8px;
+                        border-radius: 4px;
+                        opacity: 0.6;
+                        transition: opacity 0.2s, background-color 0.2s, color 0.2s;
+
+                        &:hover {
+                            opacity: 1;
+                            background-color: rgba(255, 152, 0, 0.1);
+                            color: #ff9800;
+                        }
+                    }
                 }
             }
         }
@@ -934,6 +1058,33 @@
 
         &:hover {
             transform: scale(1.05);
+        }
+    }
+
+    .report-select-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+
+        select {
+            background-color: var(--bg-primary, #121214);
+            color: var(--text-primary, #fff);
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+
+            /* &:focus {
+                border-color: var(--accent-color);
+            } */
         }
     }
 </style>

@@ -120,6 +120,70 @@ class ReportController {
             return Response.serverError(res, "Не удалось удалить рассмотренные жалобы");
         }
     }
+
+    static async reportComment(req, res) {
+        try {
+            const { id } = req.params;
+            const { id_report_type, text } = req.body;
+            const id_user = req.userId;
+
+            if (!id_report_type) {
+                return Response.badRequest(res, "Не указан тип жалобы");
+            }
+
+            const reportTypeExists = await ReportType.findByPk(id_report_type);
+            if (!reportTypeExists) {
+                return res.status(404).json({ message: "Указанный тип жалобы не найден" });
+            }
+
+            const comment = await Comment.findByPk(id);
+            if (!comment) {
+                return res.status(404).json({ message: "Комментарий, на который вы жалуетесь, не найден" });
+            }
+
+            if (Number(comment.id_user) === Number(id_user)) {
+                return res.status(400).json({ message: "Вы не можете отправить жалобу на свой собственный комментарий" });
+            }
+
+            const DEFAULT_PENDING_STATUS_ID = 3;
+            
+            const existingReport = await Report.findOne({
+                where: {
+                    id_comment: id,
+                    id_user: id_user,
+                    id_report_status: DEFAULT_PENDING_STATUS_ID 
+                }
+            });
+
+            if (existingReport) {
+                return res.status(409).json({ message: "Вы уже отправили жалобу на этот комментарий. Она находится на рассмотрении." });
+            }
+
+            const newReport = await Report.create({
+                id_comment: id,
+                id_user: id_user,
+                id_report_type: id_report_type,
+                id_report_status: DEFAULT_PENDING_STATUS_ID,
+                text: text ? text.trim() : null,
+                created_at: new Date(),
+            });
+
+            const reportWithIncludes = await Report.findByPk(newReport.id, {
+                include: [
+                    { model: User, as: 'user', attributes: ['id', 'username', 'email'] },
+                    { model: ReportType, as: 'reportType', attributes: ['id', 'name'] },
+                    { model: Comment, as: 'comment', attributes: ['id', 'text', 'id_user'] },
+                    { model: ReportStatus, as: 'reportStatus', attributes: ['id', 'name'] }
+                ]
+            });
+
+            return Response.success(res, "Жалоба успешно отправлена и будет рассмотрена модератором", reportWithIncludes);
+
+        } catch (error) {
+            console.error("Ошибка в reportComment:", error);
+            return Response.serverError(res, "Не удалось отправить жалобу");
+        }
+    }
 }
 
 export default ReportController;
