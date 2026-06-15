@@ -348,15 +348,25 @@
         }
     }
 
-    const handleApplicationAction = async (applicationId, status) => {
+    const handleApplicationAction = async (applicationId, action) => {
         try {
             isLoading.value = true
-            await http.patch(`/artist-applications/${applicationId}`, { status }, getAuthConfig())
+
+            const url = `/artist-requests/${applicationId}/${action}`
+            
+            await http.post(url, { }, getAuthConfig())
             const index = artistApplications.value.findIndex(a => a.id === applicationId)
             if (index !== -1) {
-                artistApplications.value[index].status = status
+                artistApplications.value[index].requestStatus.name = action === 'approve' ? 'Одобрена' : 'Отклонена'
+                
+                artistApplications.value[index].id_request_status = action === 'approve' ? 1 : 2
             }
-            toastStore.show(status === 'accepted' ? 'Заявка одобрена! Права обновлены.' : 'Заявка отклонена', 'success')
+
+            toastStore.show(
+                action === 'approve' ? 'Заявка одобрена! Исполнитель создан.' : 'Заявка отклонена', 
+                'success'
+            )
+
             await fetchUsers()
         } catch (error) {
             toastStore.show('Не удалось изменить статус заявки', 'error')
@@ -660,7 +670,7 @@
                             <th>ID</th>
                             <th>Пользователь</th>
                             <th>Псевдоним</th>
-                            <th>Описание</th>
+                            <th>Биография</th>
                             <th>Дата подачи</th>
                             <th>Статус</th>
                             <th class="actions-th">Действия</th>
@@ -669,21 +679,21 @@
                     <tbody>
                         <tr v-for="app in paginatedArtistApplications" :key="app.id">
                             <td>{{ app.id }}</td>
-                            <td>{{ app.User?.username }}</td>
-                            <td><strong>{{ app.stage_name }}</strong></td>
-                            <td class="comment-text-cell">{{ app.description || 'Нет описания' }}</td>
-                            <td>{{ formatDate(app.createdAt) }}</td>
+                            <td>{{ app.user?.email }}</td>
+                            <td><strong>{{ app.name }}</strong></td>
+                            <td class="comment-text-cell">{{ app.bio || 'Нет описания' }}</td>
+                            <td>{{ formatDate(app.created_at) }}</td>
                             <td>
                                 <span :class="['status-badge', 
-                                    app.status === 'pending' ? 'status-pending' : 
-                                    app.status === 'accepted' ? 'status-active' : 'status-inactive']">
-                                    {{ app.status === 'pending' ? 'Ожидает' : app.status === 'accepted' ? 'Одобрено' : 'Отклонено' }}
+                                    app.requestStatus.name === 'В ожидании' ? 'status-pending' : 
+                                    app.requestStatus.name === 'Одобрена' ? 'status-active' : 'status-inactive']">
+                                    {{ app.requestStatus.name === 'В ожидании' ? 'Ожидает' : app.requestStatus.name === 'Одобрена' ? 'Одобрено' : 'Отклонено' }}
                                 </span>
                             </td>
                             <td class="actions-td">
-                                <template v-if="app.status === 'pending'">
-                                    <button @click="handleApplicationAction(app.id, 'accepted')" class="btn-primary btn-small">Одобрить</button>
-                                    <button @click="handleApplicationAction(app.id, 'rejected')" class="btn-delete btn-small">Отклонить</button>
+                                <template v-if="app.requestStatus.name === 'В ожидании'">
+                                    <button @click="handleApplicationAction(app.id, 'approve')" class="btn-primary btn-small">Одобрить</button>
+                                    <button @click="handleApplicationAction(app.id, 'reject')" class="btn-delete btn-small">Отклонить</button>
                                 </template>
                                 <template v-else>
                                     <span class="text-muted">Обработано</span>

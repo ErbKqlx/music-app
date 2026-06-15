@@ -11,16 +11,31 @@ const User = db.user;
 const RECAPTCHA_SECRET = '6Lcc1yAtAAAAABH1BuKAHwBo1MfpwY1AZJLjWDAv';
 
 class ArtistRequestController {
-    
-    // static async getRequests(req, res){
-    //     try{
-            
-    //     }
-    //     catch (error) {
-    //         console.error("Ошибка при выводе заявок:", error);
-    //         return Response.serverError(res, "Не удалось вывести заявки");
-    //     }
-    // }
+    static async getRequests(req, res) {
+        try {
+            const requests = await ArtistRequest.findAll({
+                include: [
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['id', 'username', 'email']
+                    },
+                    {
+                        model: RequestStatus,
+                        as: 'requestStatus',
+                        attributes: ['id', 'name']
+                    }
+                ],
+                order: [['created_at', 'DESC']]
+            });
+
+            return Response.success(res, "Список заявок успешно получен", requests);
+
+        } catch (error) {
+            console.error("Ошибка при выводе заявок:", error);
+            return Response.serverError(res, "Не удалось вывести заявки");
+        }
+    }
 
     static async createRequest(req, res) {
         try {
@@ -92,6 +107,14 @@ class ArtistRequestController {
                 bio: request.bio,
             });
 
+            const user = await User.findByPk(request.id_user);
+            if (user) {
+                const ARTIST_ROLE_ID = 4;
+                
+                user.id_role = ARTIST_ROLE_ID;
+                await user.save();
+            }
+
             const APPROVED_STATUS = 1; 
             request.id_request_status = APPROVED_STATUS;
             await request.save();
@@ -99,6 +122,30 @@ class ArtistRequestController {
             return Response.success(res, "Заявка успешно одобрена, исполнитель создан", newArtist);
         } catch (error) {
             console.error("Ошибка при одобрении заявки:", error);
+            return Response.serverError(res, "Ошибка при обработке заявки");
+        }
+    }
+
+    static async rejectRequest(req, res) {
+        try {
+            const { id } = req.params;
+            
+            const request = await ArtistRequest.findByPk(id);
+            if (!request) {
+                return res.status(404).json({ message: "Заявка не найдена" });
+            }
+
+            if (request.id_request_status !== 3) {
+                return res.status(400).json({ message: "Эта заявка уже была обработана" });
+            }
+
+            const REJECTED_STATUS = 2;
+            request.id_request_status = REJECTED_STATUS;
+            await request.save();
+
+            return Response.success(res, "Заявка успешно отклонена");
+        } catch (error) {
+            console.error("Ошибка при отклонении заявки:", error);
             return Response.serverError(res, "Ошибка при обработке заявки");
         }
     }

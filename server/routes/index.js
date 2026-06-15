@@ -82,6 +82,12 @@ router.get(
     ArtistController.getArtist
 )
 
+router.get(
+    '/artist-requests',
+    authJwt.verifyToken,
+    ArtistRequestController.getRequests,
+)
+
 router.post(
     '/artist-requests',
     authJwt.verifyToken,
@@ -94,6 +100,13 @@ router.post(
     authJwt.checkRole(['Администратор']), 
     ArtistRequestController.approveRequest,
 )
+
+router.post(
+    '/artist-requests/:id/reject', 
+    authJwt.verifyToken,
+    authJwt.checkRole(['Администратор']), 
+    ArtistRequestController.rejectRequest
+);
 
 router.patch(
     '/artists/:id', 
