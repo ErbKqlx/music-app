@@ -12,6 +12,7 @@
     import { usePlaylistStore } from '@/stores/playlist';
     import { useFormErrors } from '@/composables/useFormErrors';
     import { usePlayerStore } from '../stores/player';
+    import { useThemeStore } from '../stores/theme'
 
     const { errors, setErrors, clearErrors, getErrors, hasErrors } = useFormErrors()
 
@@ -42,6 +43,7 @@
     const userStore = useUserStore()
     const playlistStore = usePlaylistStore()
     const playerStore = usePlayerStore()
+    const themeStore = useThemeStore()
 
     async function sendData(){
         if (form.value.isSending) return
@@ -94,6 +96,7 @@
 
     onMounted(() => {
         playerStore.stopSong()
+        themeStore.setTheme(true)
 
         if (userStore.currentUser && userStore.currentUser.id) {
             router.push('/profile/' + userStore.currentUser.id)

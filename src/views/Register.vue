@@ -9,8 +9,10 @@
     import { email, helpers, required, sameAs } from '@vuelidate/validators';
     import { useFormErrors } from '@/composables/useFormErrors';
     import { usePlayerStore } from '../stores/player';
+    import { useThemeStore } from '../stores/theme';
 
     const playerStore = usePlayerStore()
+    const themeStore = useThemeStore()
 
     const { errors, setErrors, clearErrors, getErrors, hasErrors } = useFormErrors()
 
@@ -70,6 +72,7 @@
 
     onMounted(() => {
         playerStore.stopSong()
+        themeStore.setTheme(true)
     })
 </script>
 
