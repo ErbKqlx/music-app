@@ -1,6 +1,6 @@
 import Response from "../configs/response.js";
 import db from "../models/index.js";
-import { literal } from "sequelize";
+import { literal, Op } from "sequelize";
 import { getFileUrl } from "../utils/fileHelper.js";
 
 const Artist = db.artist;
@@ -147,6 +147,23 @@ class ArtistRequestController {
         } catch (error) {
             console.error("Ошибка при отклонении заявки:", error);
             return Response.serverError(res, "Ошибка при обработке заявки");
+        }
+    }
+
+    static async deleteReviewedRequests(req, res){
+        try {
+            const deletedCount = await ArtistRequest.destroy({
+                where: {
+                    id_request_status: {
+                        [Op.ne]: 3
+                    }
+                }
+            });
+
+            return Response.success(res, `Удалено обработанных заявок: ${deletedCount}`, deletedCount);
+        } catch (error) {
+            console.error("Ошибка при очистке архива заявок:", error);
+            return Response.serverError(res, "Не удалось очистить архив заявок");
         }
     }
 }

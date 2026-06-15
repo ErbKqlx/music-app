@@ -348,6 +348,22 @@
         }
     }
 
+    const deleteReviewedApplications = async () => {
+        try {
+            isLoading.value = true
+            await http.delete('/artist-requests/reviewed', getAuthConfig())
+            
+            artistApplications.value = artistApplications.value.filter(app => app.id_request_status === 3)
+            
+            toastStore.show('Рассмотреные заявки успешно удалены', 'success')
+        } catch (error) {
+            console.error(error)
+            toastStore.show(error.response?.data?.message || 'Не удалось удалить жалобы', 'error')
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     const handleApplicationAction = async (applicationId, action) => {
         try {
             isLoading.value = true
@@ -651,6 +667,15 @@
             <div v-if="currentTab === 'artist-apps'" class="tab-content">
                 <h2>Заявки на статус исполнителя</h2>
                 <div class="users-management-header">
+                    <button 
+                        @click="deleteReviewedApplications" 
+                        class="btn-secondary" 
+                        :disabled="isLoading"
+                        style="margin-bottom: 0;"
+                    >
+                        Очистить рассмотренные
+                    </button>
+
                     <div class="header-spacer"></div>
                     <div class="search-wrapper">
                         <input v-model="artistApplicationsSearchQuery" type="text" placeholder="Поиск по нику или псевдониму..." class="search-input" />

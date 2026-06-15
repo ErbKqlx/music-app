@@ -24,6 +24,13 @@ const router = express.Router()
 const Song = db.song
 const Artist = db.artist
 
+router.delete(
+    '/artist-requests/reviewed',
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Администратор']),
+    ArtistRequestController.deleteReviewedRequests
+)
+
 router.get(
     '/roles',
     authJwt.verifyToken,
@@ -107,6 +114,7 @@ router.post(
     authJwt.checkRole(['Администратор']), 
     ArtistRequestController.rejectRequest
 );
+
 
 router.patch(
     '/artists/:id', 
