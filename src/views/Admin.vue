@@ -194,7 +194,7 @@
     const fetchArtistApplications = async () => {
         try {
             isLoading.value = true
-            const response = await http.get('/artist-applications', getAuthConfig())
+            const response = await http.get('/artist-requests', getAuthConfig())
             artistApplications.value = response.data.data || response.data
         } catch (error) {
             console.error('Ошибка при загрузке заявок:', error)
@@ -660,7 +660,7 @@
                             <th>ID</th>
                             <th>Пользователь</th>
                             <th>Псевдоним</th>
-                            <th>Описание / Ссылки</th>
+                            <th>Описание</th>
                             <th>Дата подачи</th>
                             <th>Статус</th>
                             <th class="actions-th">Действия</th>

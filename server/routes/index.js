@@ -17,6 +17,7 @@ import { uploadAvatar } from "../middlewares/uploadAvatar.js"
 import RoleController from "../controllers/roleController.js"
 import ReportTypeController from "../controllers/reportTypeController.js"
 import ReportController from "../controllers/reportController.js"
+import ArtistRequestController from "../controllers/artistRequestController.js"
 
 const router = express.Router()
 
@@ -79,6 +80,19 @@ router.get(
     '/artists/:id', 
     authJwt.verifyToken, 
     ArtistController.getArtist
+)
+
+router.post(
+    '/artist-requests',
+    authJwt.verifyToken,
+    ArtistRequestController.createRequest,
+)
+
+router.post(
+    '/artist-requests/:id/approve',
+    authJwt.verifyToken,
+    authJwt.checkRole(['Администратор']), 
+    ArtistRequestController.approveRequest,
 )
 
 router.patch(

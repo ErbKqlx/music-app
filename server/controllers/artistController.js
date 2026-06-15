@@ -151,6 +151,36 @@ class ArtistController {
             return res.status(500).json({ errorMessage: 'Внутренняя ошибка сервера' });
         }
     }
+
+    static async createArtist(req, res){
+        try {
+            const { name, bio } = req.body;
+            const userId = req.userId;
+
+            if (name && !name.trim()) {
+                return res.status(400).json({ errorMessage: 'Имя исполнителя не может быть пустым' });
+            }
+
+            if (bio && !bio.trim()) {
+                return res.status(400).json({ errorMessage: 'Биография исполнителя не может быть пустой' });
+            }
+
+            return Response.success(
+                res, 
+                "Исполнитель создан", 
+                {
+                    id: artist.id,
+                    name: artist.name,
+                    bio: artist.bio,
+                    id_user: artist.id_user,
+                    created_at: Date.now()
+                }
+            );
+        } catch (error) {
+            console.error('Ошибка при создании исполнителя:', error);
+            return res.status(500).json({ errorMessage: 'Внутренняя ошибка сервера' });
+        }
+    }
 }
 
 export default ArtistController;

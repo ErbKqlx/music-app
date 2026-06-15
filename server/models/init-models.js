@@ -17,6 +17,8 @@ import _Users from "./Users.js";
 import _SongsHistories from "./SongsHistories.js";
 import _SongsGenres from "./SongsGenres.js";
 import _ReportStatuses from "./ReportStatuses.js";
+import _ArtistRequests from "./ArtistRequests.js";
+import _RequestStatuses from "./RequestStatuses.js";
 
 function initModels(sequelize) {
   // var Albums = _Albums(sequelize, DataTypes);
@@ -37,6 +39,9 @@ function initModels(sequelize) {
   // var Subgenres = _Subgenres(sequelize, DataTypes);
   var Users = _Users(sequelize, DataTypes);
   var SongsHistories = _SongsHistories(sequelize, DataTypes);
+  var ArtistRequests = _ArtistRequests(sequelize, DataTypes)
+  var RequestStatuses = _RequestStatuses(sequelize, DataTypes)
+
 
   // SongsAlbums.belongsTo(Albums, { as: "album", foreignKey: "id_album"});
   // Albums.hasMany(SongsAlbums, { as: "songsAlbums", foreignKey: "id_album"});
@@ -63,6 +68,12 @@ function initModels(sequelize) {
 
   Reports.belongsTo(ReportStatuses, { as: "reportStatus", foreignKey: "id_report_status"});
   ReportStatuses.hasMany(Reports, { as: "reports", foreignKey: "id_report_status"});
+
+  ArtistRequests.belongsTo(RequestStatuses, { as: "requestStatus", foreignKey: "id_request_status"});
+  RequestStatuses.hasMany(ArtistRequests, { as: "artistRequests", foreignKey: "id_request_status"});
+
+  ArtistRequests.belongsTo(Users, { as: "user", foreignKey: "id_user"});
+  Users.hasMany(ArtistRequests, { as: "artistRequests", foreignKey: "id_user"});
 
   Users.belongsTo(Roles, { as: "role", foreignKey: "id_role"});
   Roles.hasMany(Users, { as: "users", foreignKey: "id_role"});
@@ -126,6 +137,8 @@ function initModels(sequelize) {
     // Subgenres,
     Users,
     SongsHistories,
+    ArtistRequests,
+    RequestStatuses,
   };
 }
 export default initModels;

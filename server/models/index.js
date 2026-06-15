@@ -55,6 +55,9 @@ db.comment = models.Comments
 db.report_type = models.ReportTypes
 db.report = models.Reports
 db.report_status = models.ReportStatuses
+db.artist_request = models.ArtistRequests
+db.request_status = models.RequestStatuses
+
 
 // db.role.belongsToMany(db.user, { through: })
 

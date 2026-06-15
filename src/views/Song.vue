@@ -475,7 +475,7 @@
 
                                         <textarea 
                                             v-model="reportCommentText" 
-                                            placeholder="Опишите проблему подробнее (например, таймкод или контекст)..." 
+                                            placeholder="Опишите проблему подробнее" 
                                             rows="2"
                                         ></textarea>
 
