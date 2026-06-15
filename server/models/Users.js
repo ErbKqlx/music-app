@@ -37,7 +37,8 @@ export default function(sequelize, DataTypes) {
       allowNull: true
     },
     activationCode: { type: DataTypes.STRING },
-    isActivated: { type: DataTypes.BOOLEAN, defaultValue: false }
+    isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
+    is_banned: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }
   }, {
     tableName: 'users',
     schema: 'public',

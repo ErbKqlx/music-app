@@ -7,6 +7,7 @@ import PlaylistsSongs from "./PlaylistsSongs.js";
 import Song from "./Songs.js"
 import ReportTypes from "./ReportTypes.js";
 import Reports from "./Reports.js";
+import ReportStatuses from "./ReportStatuses.js";
 import initModels from "./init-models.js";
 // import config from "../configs/db.config";
 
@@ -53,6 +54,7 @@ db.songs_histories = models.SongsHistories
 db.comment = models.Comments
 db.report_type = models.ReportTypes
 db.report = models.Reports
+db.report_status = models.ReportStatuses
 
 // db.role.belongsToMany(db.user, { through: })
 

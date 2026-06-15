@@ -16,6 +16,7 @@ import CommentController from "../controllers/commentController.js"
 import { uploadAvatar } from "../middlewares/uploadAvatar.js"
 import RoleController from "../controllers/roleController.js"
 import ReportTypeController from "../controllers/reportTypeController.js"
+import ReportController from "../controllers/reportController.js"
 
 const router = express.Router()
 
@@ -56,6 +57,13 @@ router.patch(
     
     UserController.updateUserRole
 )
+
+router.patch(
+    '/users/:id/ban', 
+    authJwt.verifyToken,
+    authJwt.checkRole(['Модератор', 'Администратор']),
+    UserController.toggleBan
+);
 
 router.get('/users/:id/playlists', [authJwt.verifyToken], PlaylistController.getPlaylists)
 router.get('/playlist/:id', [authJwt.verifyToken], PlaylistController.getOnePlaylist)
@@ -163,6 +171,27 @@ router.delete(
     authJwt.verifyToken, 
     authJwt.checkRole(['Администратор']),
     ReportTypeController.deleteReportType
+)
+
+router.get(
+    '/reports/comments',
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Модератор', 'Администратор']),
+    ReportController.getCommentReports
+)
+
+router.patch(
+    '/reports/:id/status',
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Модератор', 'Администратор']),
+    ReportController.updateReportStatus
+)
+
+router.delete(
+    '/reports/reviewed',
+    authJwt.verifyToken, 
+    authJwt.checkRole(['Модератор', 'Администратор']),
+    ReportController.deleteReviewedReports
 )
 
 router.get(

@@ -151,6 +151,42 @@ class UserController{
             return res.status(500).json({ message: 'Ошибка сервера при обновлении роли', error: error.message });
         }
     }
+
+    static async toggleBan(req, res) {
+        try {
+            const { id } = req.params;
+            const { is_banned } = req.body;
+            
+            const currentUserRole = req.userRole;
+
+            const targetUser = await User.findByPk(id, {
+                include: [{ model: Role, as: 'role', attributes: ['name'] }]
+            });
+
+            if (!targetUser) {
+                return Response.notFound(res, "Пользователь не найден");
+            }
+
+            const targetUserRole = targetUser.role?.name;
+            
+            if (targetUserRole === 'Администратор') {
+                return Response.forbidden(res, "Нельзя заблокировать администратора системы");
+            }
+
+            if (currentUserRole === 'Модератор' && targetUserRole === 'Модератор') {
+                return Response.forbidden(res, "Модератор не может заблокировать другого модератора");
+            }
+
+            targetUser.is_banned = is_banned;
+            await targetUser.save();
+
+            const actionText = is_banned ? "заблокирован" : "разблокирован";
+            return Response.success(res, `Пользователь успешно ${actionText}`, targetUser);
+        } catch (error) {
+            console.error("Ошибка в toggleBan:", error);
+            return Response.serverError(res, "Не удалось изменить статус блокировки");
+        }
+    }
 }
 
 export default UserController

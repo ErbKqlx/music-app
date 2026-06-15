@@ -16,6 +16,7 @@ import _SongsArtists from "./SongsArtists.js";
 import _Users from "./Users.js";
 import _SongsHistories from "./SongsHistories.js";
 import _SongsGenres from "./SongsGenres.js";
+import _ReportStatuses from "./ReportStatuses.js";
 
 function initModels(sequelize) {
   // var Albums = _Albums(sequelize, DataTypes);
@@ -26,6 +27,7 @@ function initModels(sequelize) {
   var PlaylistsSongs = _PlaylistsSongs(sequelize, DataTypes);
   var ReportTypes = _ReportTypes(sequelize, DataTypes);
   var Reports = _Reports(sequelize, DataTypes);
+  var ReportStatuses = _ReportStatuses(sequelize, DataTypes)
   var Roles = _Roles(sequelize, DataTypes);
   var Songs = _Songs(sequelize, DataTypes);
   // var SongsAlbums = _SongsAlbums(sequelize, DataTypes);
@@ -58,6 +60,10 @@ function initModels(sequelize) {
 
   Reports.belongsTo(ReportTypes, { as: "reportType", foreignKey: "id_report_type"});
   ReportTypes.hasMany(Reports, { as: "reports", foreignKey: "id_report_type"});
+
+  Reports.belongsTo(ReportStatuses, { as: "reportStatus", foreignKey: "id_report_status"});
+  ReportStatuses.hasMany(Reports, { as: "reports", foreignKey: "id_report_status"});
+
   Users.belongsTo(Roles, { as: "role", foreignKey: "id_role"});
   Roles.hasMany(Users, { as: "users", foreignKey: "id_role"});
   Comments.belongsTo(Songs, { as: "song", foreignKey: "id_song"});
@@ -110,6 +116,7 @@ function initModels(sequelize) {
     PlaylistsSongs,
     ReportTypes,
     Reports,
+    ReportStatuses,
     Roles,
     Songs,
     // SongsAlbums,

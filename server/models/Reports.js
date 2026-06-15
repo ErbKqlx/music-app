@@ -17,7 +17,7 @@ export default function(sequelize, DataTypes) {
     },
     id_comment: {
       type: DataTypes.BIGINT,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'comments',
         key: 'id'
@@ -39,10 +39,14 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: false
     },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
+    id_report_status: {
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      references: {
+        model: 'report_statuses',
+        key: 'id'
+      }
+    }
   }, {
     tableName: 'reports',
     schema: 'public',
