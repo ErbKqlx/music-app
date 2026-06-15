@@ -102,8 +102,8 @@
         if (!artistApplicationsSearchQuery.value.trim()) return artistApplications.value
         const query = artistApplicationsSearchQuery.value.toLowerCase().trim()
         return artistApplications.value.filter(app => 
-            (app.User?.username && app.User.username.toLowerCase().includes(query)) ||
-            (app.stage_name && app.stage_name.toLowerCase().includes(query))
+            (app.user?.email && app.user.email.toLowerCase().includes(query)) ||
+            (app.name && app.name.toLowerCase().includes(query))
         )
     })
 
