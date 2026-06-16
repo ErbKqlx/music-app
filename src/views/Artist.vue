@@ -160,6 +160,14 @@
                             <span>Редактировать профиль</span>
                         </button>
                     </div>
+
+                    <RouterLink 
+                        v-if="userStore.isArtist" 
+                        :to="'/profile/' + artist.id_user" 
+                        class="artist-profile-link"
+                    >
+                        Учетная запись
+                    </RouterLink>
                 </div>
             </template>
         </TitleCard>
@@ -548,6 +556,28 @@
         .profile-split-row {
             flex-direction: column;
             gap: 32px;
+        }
+    }
+
+    .profile-actions-wrapper{
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .artist-profile-link {
+        color: var(--text-primary);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        padding: 8px 16px;
+        margin-top: 7px;
+        transition: color 0.2s;
+
+        &:hover {
+            color: var(--accent-color);
         }
     }
 </style>
