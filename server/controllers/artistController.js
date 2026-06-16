@@ -80,6 +80,29 @@ class ArtistController {
                 });
             }
 
+            const latestSongData = await Song.findOne({
+                attributes: ['id', 'name', 'image', 'release_date'],
+                include: [{
+                    model: Artist,
+                    as: 'artists',
+                    where: { id: Number(id) },
+                    attributes: [],
+                    through: { attributes: [] }
+                }],
+                order: [['release_date', 'DESC']],
+                limit: 1
+            });
+
+            let latestRelease = null;
+            if (latestSongData) {
+                latestRelease = {
+                    id: latestSongData.id,
+                    name: latestSongData.name,
+                    image: getFileUrl(latestSongData.image),
+                    release_date: latestSongData.release_date,
+                };
+            }
+
             const topSongs = artistData.songs || [];
             topSongs.forEach(song => {
                 song.image = getFileUrl(song.image);
@@ -99,6 +122,7 @@ class ArtistController {
                     image: getFileUrl(artistData.user.avatar, 'uploads/default/placeholder_avatar.jpg'), 
                     monthlyListens: monthlyListens,
                     topSongs: topSongs,
+                    latestRelease: latestRelease,
                 }
             );
 

@@ -15,6 +15,7 @@
     import Settings from '@/assets/svg/settings.svg?component'
     import { useUserStore } from '../stores/user';
     import { usePlayerStore } from '../stores/player';
+    import { formatDate } from '../composables/formatDate';
 
     const route = useRoute();
     const modalStore = useModalStore();
@@ -187,17 +188,39 @@
                 </template>
             </Section>
 
-            <Section v-if="artist.bio">
-                <template #title>Биография</template>
-                <template #content>
-                    <div class="artist-bio-block">
-                        <p class="bio-preview-text">{{ artist.bio }}</p>
-                        <button @click="openBioModal" class="more-bio-btn">
-                            Читать полностью
-                        </button>
-                    </div>
-                </template>
-            </Section>
+            <div class="profile-split-row" v-if="artist.bio || artist.latestRelease">
+                
+                <Section v-if="artist.bio" class="bio-column">
+                    <template #title>Биография</template>
+                    <template #content>
+                        <div class="artist-bio-block">
+                            <p class="bio-preview-text">{{ artist.bio }}</p>
+                            <button @click="openBioModal" class="more-bio-btn">
+                                Читать полностью
+                            </button>
+                        </div>
+                    </template>
+                </Section>
+
+                <Section v-if="artist.latestRelease" class="release-column">
+                    <template #title>Последний релиз</template>
+                    <template #content>
+                        <div class="latest-release-block" @click="router.push('/song/' + artist.latestRelease.id)">
+                            <div class="release-cover-wrap">
+                                <Image :url="artist.latestRelease.image" :alt="artist.latestRelease.name" />
+                            </div>
+                            <div class="release-info">
+                                <span class="release-name">{{ artist.latestRelease.name }}</span>
+                                <span class="release-meta">
+                                    Трек • 
+                                    {{ formatDate(new Date(artist.latestRelease.release_date)) }}
+                                </span>
+                            </div>
+                        </div>
+                    </template>
+                </Section>
+                
+            </div>
 
             <Section>
                 <template #title>
@@ -281,7 +304,7 @@
 
         .artist-bio-block {
             background-color: rgba(255, 255, 255, 0.03);
-            padding: 20px;
+            padding: 25px;
             border-radius: 8px;
             max-width: 800px;
             display: flex;
@@ -296,7 +319,7 @@
                 line-height: 1.6;
                 margin: 0;
                 display: -webkit-box;
-                -webkit-line-clamp: 5;
+                -webkit-line-clamp: 3;
                 -webkit-box-orient: vertical;  
                 overflow: hidden;
             }
@@ -447,6 +470,84 @@
                 opacity: 0.5;
                 cursor: not-allowed;
             }
+        }
+    }
+
+    .profile-split-row {
+        display: flex;
+        gap: 24px;
+        width: 100%;
+        
+        .bio-column {
+            flex: 1.5;
+        }
+        .release-column {
+            flex: 1;
+        }
+    }
+
+    .artist-bio-block {
+        max-width: 100% !important;
+        height: calc(100% - 20px);
+    }
+
+    .latest-release-block {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        background-color: rgba(255, 255, 255, 0.03);
+        padding: 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        height: calc(100% - 20px);
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .release-cover-wrap {
+            width: 110px;
+            height: 110px;
+            min-width: 110px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            
+            :deep(img) {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        .release-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            
+            .release-name {
+                color: var(--text-primary, #fff);
+                font-size: 18px;
+                font-weight: 700;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .release-meta {
+                color: var(--text-secondary, #b3b3b3);
+                font-size: 14px;
+            }
+        }
+    }
+
+    @media (max-width: 1024px) {
+        .profile-split-row {
+            flex-direction: column;
+            gap: 32px;
         }
     }
 </style>

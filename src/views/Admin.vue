@@ -1006,7 +1006,8 @@
     .password-shield {
         color: #666;
         letter-spacing: 2px;
-        cursor: help;
+        /* cursor: help; */
+        user-select: none;
     }
 
     .status-badge {
