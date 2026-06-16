@@ -84,6 +84,12 @@
             userData.value = { ...userData.value, ...newVal };
         }
     }, { deep: true });
+
+    watch(() => modalStore.activeModal, (newModal, oldModal) => {
+        if (oldModal === 'editProfile' && newModal === null) {
+            fetchUserData(route.params.id)
+        }
+    })
 </script>
 
 <template>
