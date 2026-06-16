@@ -18,6 +18,8 @@
 
     const fileInput = ref(null)
     const previewImage = ref(null)
+
+    const modalPayload = modalStore.modalData;
     const isEdit = computed(() => !!modalStore.modalData);
 
     const isCropping = ref(false)
@@ -25,11 +27,13 @@
     const currentFileType = ref('image/jpeg')
 
     const formData = reactive({
-        name: modalStore.modalData?.name || '' ,
-        public: modalStore.modalData?.public || false,
-        image: modalStore.modalData?.image || null,
+        name: isEdit.value ? modalPayload.playlist.name : '',
+        public: isEdit.value ? modalPayload.playlist.public : false,
+        image: isEdit.value ? modalPayload.playlist.image : null,
         id_user: Number(userStore.currentUser?.id)
     })
+
+    const playlistId = isEdit.value ? modalPayload.playlist.id : null;
 
     function onFileChange(e) {
         const file = e.target.files[0]
@@ -78,49 +82,41 @@
         data.append('public', formData.public ? 1 : 0)
         data.append('id_user', formData.id_user)
 
-        if (formData.image) {
+        if (formData.image instanceof File) {
             data.append('image', formData.image)
         }
 
-        const playlistId = modalStore.modalData?.id
-
-        try{
-            if (isEdit.value){
-                await http.patch(`/playlist/${playlistId}`, data,
-                {
-                    headers: { Authorization: "Bearer " + localStorage.getItem('token')},
+        try {
+            if (isEdit.value) {
+                await http.patch(`/playlist/${playlistId}`, data, {
+                    headers: { Authorization: "Bearer " + localStorage.getItem('token') },
                 })
                 
                 await playlistStore.fetchPlaylists(userStore.currentUser.id)
+                
+                if (modalPayload?.onUpdate) {
+                    await modalPayload.onUpdate();
+                }
 
-                // router.push(`/playlist/${playlistId}`)
-                // location.reload()
                 toastStore.show('Плейлист обновлен', 'success')
-            }
-            else{
-                await http.post('/playlist', data,
-                {
+            } else {
+                const response = await http.post('/playlist', data, {
                     headers: { Authorization: "Bearer " + localStorage.getItem('token')},
                 });
-
                 await playlistStore.fetchPlaylists(userStore.currentUser.id)
-
-                // router.push(`/profile/${userStore.currentUser.id}`)
                 toastStore.show('Плейлист добавлен', 'success')
-
             }
-        }
-        catch (error){
-            console.log('Ошибка при создании плейлиста ' + error)
-            toastStore.show('Ошибка при создании плейлиста', 'error')
+        } catch (error) {
+            console.log('Ошибка при сохранении плейлиста ' + error)
+            toastStore.show('Ошибка при сохранении плейлиста', 'error')
         }
 
         modalStore.closeModal()
     }
 
     onMounted(() => {
-        if (modalStore.modalData) {
-            previewImage.value = modalStore.modalData.image
+        if (isEdit.value) {
+            previewImage.value = modalPayload.playlist.image
         }
     })
 </script>

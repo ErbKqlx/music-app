@@ -117,7 +117,10 @@
                 { 
                     label: 'Редактировать информацию о плейлисте', 
                     action: () => {
-                        modalStore.openModal('playlist', playlistData?.value.data)
+                        modalStore.openModal('playlist', {
+                            playlist: playlistData?.value.data,
+                            onUpdate: () => fetchPlaylistData(route.params.id) // Передаем колбэк
+                        })
                     }
                 },
                 { 
