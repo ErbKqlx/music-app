@@ -20,7 +20,7 @@ const host = 'http://localhost:8080'
 class SongController{
     static async getSongs(req, res) {
         try {
-            const { id_genre, page, limit } = req.query;
+            const { id_genre, id_artist, page, limit } = req.query;
 
             const p = parseInt(page, 10) || 1;
             const l = parseInt(limit, 10) || 20;
@@ -32,6 +32,10 @@ class SongController{
                 whereCondition['$genres.id$'] = id_genre; 
             }
 
+            if (id_artist) {
+                whereCondition['$artists.id$'] = id_artist;
+            }
+
             const { count, rows: songs } = await Song.findAndCountAll({
                 where: whereCondition,
                 attributes: ['id', 'name', 'length', 'release_date', 'explicit_content', 'image', 'song_url'],
@@ -40,14 +44,15 @@ class SongController{
                         model: Artist,
                         as: 'artists',
                         through: { attributes: [] },
-                        attributes: ['id', 'name']
+                        attributes: ['id', 'name'],
+                        required: id_artist ? true : false 
                     },
                     {
                         model: db.genre,
                         as: 'genres',
                         attributes: [],
                         through: { attributes: [] },
-                        required: true
+                        required: id_genre ? true : false 
                     }
                 ],
                 order: [

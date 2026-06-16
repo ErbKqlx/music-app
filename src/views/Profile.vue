@@ -18,10 +18,12 @@
     import Section from '@/components/Section.vue';
     import { useUserStore } from '../stores/user';
     import { useModalStore } from '../stores/modal';
+    import { usePlaylistStore } from '../stores/playlist';
 
     const route = useRoute()
     const userStore = useUserStore()
     const modalStore = useModalStore()
+    const playlistStore = usePlaylistStore()
 
     const userData = ref(null)
     const songsData = ref(null)
@@ -54,9 +56,9 @@
             const playlists = await http.get(`/users/${id}/playlists`, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
-            savedPlaylists.value = playlists.data
-            playlistCount.value = savedPlaylists.value.playlists?.length || 0
 
+            await playlistStore.fetchPlaylists(id)
+            console.log(playlistStore.savedPlaylists.playlists)
         }
         catch (error){
             console.log('Ошибка при загрузке профиля ' + error)
@@ -124,10 +126,10 @@
             <Section>
                 <template #title>Плейлисты</template>
                 <template #content>
-                    <div class="playlists-list" v-if="playlistCount > 0">
+                    <div class="playlists-list" v-if="playlistStore.savedPlaylists.playlists.length > 0">
                         <Card 
                             @click="toPlaylist(playlist.id)" 
-                            v-for="playlist in savedPlaylists.playlists" 
+                            v-for="playlist in playlistStore.savedPlaylists.playlists" 
                             :key="playlist.id"
                             :title="playlist.name" 
                             description="Плейлист"

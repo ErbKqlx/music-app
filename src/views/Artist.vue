@@ -3,6 +3,10 @@
     import Card from '@/components/Card.vue';
     import Image from '@/components/Image.vue';
     import Section from '@/components/Section.vue';
+    import SongsList from '@/components/SongsList.vue';
+    import SongCard from '@/components/SongCard.vue';
+    import Button from '@/components/Input/Button.vue';
+    import Play from '@/assets/svg/play.svg?component';
     import router from '@/router/index.js';
     import http from '../http';
     import { computed, onMounted, ref, watch } from 'vue';
@@ -10,14 +14,39 @@
     import { useModalStore } from '@/stores/modal'; 
     import Settings from '@/assets/svg/settings.svg?component'
     import { useUserStore } from '../stores/user';
-
+    import { usePlayerStore } from '../stores/player';
 
     const route = useRoute();
-    const artist = ref(null);
     const modalStore = useModalStore();
-    const userStore = useUserStore()
+    const userStore = useUserStore();
+    const playerStore = usePlayerStore();
+
+    const artist = ref(null);
+    
+    const allSongs = ref([]);
+    const isLoadingMore = ref(false);
+    const sortKey = ref('date-desc');
+    const currentPage = ref(1);
+    const totalPages = ref(1);
+    const limit = 20;
 
     const isCurrentArtist = computed(() => userStore.currentUser?.id === artist.value?.id_user)
+
+    const sortedSongs = computed(() => {
+        const songs = [...allSongs.value];
+        switch (sortKey.value) {
+            case 'date-desc':
+                return songs.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+            case 'date-asc':
+                return songs.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
+            case 'length-desc':
+                return songs.sort((a, b) => b.length - a.length);
+            case 'length-asc': 
+                return songs.sort((a, b) => a.length - b.length);
+            default:
+                return songs;
+        }
+    });
 
     function toSong(id) {
         router.push('/song/' + id);
@@ -35,7 +64,6 @@
             id: artist.value.id,
             name: artist.value.name,
             bio: artist.value.bio,
-
             onSuccess: (updatedData) => {
                 if (artist.value) {
                     artist.value.name = updatedData.name;
@@ -47,8 +75,17 @@
 
     async function fetchArtistData(id) {
         try {
+            currentPage.value = 1;
+            
             const response = await http.get('/artists/' + id);
-            artist.value = response.data.data; 
+            artist.value = response.data.data;
+
+            const songsRes = await http.get(`/songs?id_artist=${id}&page=1&limit=${limit}`, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+            });
+            
+            allSongs.value = songsRes.data.data.songs || [];
+            totalPages.value = songsRes.data.data.totalPages || 1;
         }
         catch (error) {
             console.error('Ошибка при загрузке страницы исполнителя: ' + error);
@@ -56,6 +93,35 @@
                 router.push({ name: 'NotFound' });
             }
         }
+    }
+
+    async function loadMoreSongs() {
+        if (currentPage.value >= totalPages.value || isLoadingMore.value) return;
+
+        try {
+            isLoadingMore.value = true;
+            const nextPage = currentPage.value + 1;
+
+            const res = await http.get(`/songs?id_artist=${route.params.id}&page=${nextPage}&limit=${limit}`, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('token') }
+            });
+
+            allSongs.value = [...allSongs.value, ...res.data.data.songs];
+            currentPage.value = nextPage;
+        } catch (error) {
+            console.error('Ошибка при дозагрузке треков исполнителя:', error);
+        } finally {
+            isLoadingMore.value = false;
+        }
+    }
+
+    function startQueue(songs, startSong = null) {
+        playerStore.isShuffled = false;
+        playerStore.setQueue([...songs]);
+        const songToPlay = startSong || songs[0];
+        if (playerStore.currentSong == songToPlay) {
+            playerStore.isPlaying ? playerStore.pauseSong() : playerStore.playSong(playerStore.currentSong);
+        } else { playerStore.playSong(songToPlay); }
     }
 
     onMounted(() => {
@@ -115,8 +181,8 @@
                             </template>
                         </Card>
                     </div>
-                    <div v-else class="empty">
-                        У этого исполнителя пока нет треков
+                    <div v-else class="empty-text">
+                        У этого исполнителя пока нет популярных треков
                     </div>
                 </template>
             </Section>
@@ -130,6 +196,38 @@
                             Читать полностью
                         </button>
                     </div>
+                </template>
+            </Section>
+
+            <Section>
+                <template #title>
+                    <div class="all-songs-header">
+                        <h2>Все треки исполнителя</h2>
+                        <div class="list-controls">
+                            <label for="sort-select" class="additional-info">Сортировка:</label>
+                            <select id="sort-select" v-model="sortKey" class="sort-select">
+                                <option value="date-desc">Дата (новые)</option>
+                                <option value="date-asc">Дата (старые)</option>
+                            </select>
+                            <Button @click="startQueue(sortedSongs)" class="play-all-button">
+                                <Play color="var(--bg-primary)"/>
+                                <span>Слушать всё</span>
+                            </Button>
+                        </div>
+                    </div>
+                </template>
+                <template #content>
+                    <SongsList v-if="sortedSongs.length > 0">
+                        <SongCard v-for="(song, index) in sortedSongs" :song="song" :index="index + 1" :key="song.id" />
+                    </SongsList>
+                    
+                    <div class="pagination-container" v-if="currentPage < totalPages">
+                        <button class="load-more-btn" @click="loadMoreSongs" :disabled="isLoadingMore">
+                            {{ isLoadingMore ? 'Загрузка...' : 'Показать еще' }}
+                        </button>
+                    </div>
+
+                    <div class="empty-text" v-if="sortedSongs.length === 0">У этого исполнителя нет треков</div>
                 </template>
             </Section>
         </div>
@@ -198,7 +296,7 @@
                 line-height: 1.6;
                 margin: 0;
                 display: -webkit-box;
-                -webkit-line-clamp: 3;
+                -webkit-line-clamp: 5;
                 -webkit-box-orient: vertical;  
                 overflow: hidden;
             }
@@ -247,38 +345,13 @@
                     transform: scale(0.98);
                 }
             }
-
-            .play-btn {
-                background-color: var(--accent-color);
-                color: #fff;
-                border: none;
-                padding: 12px 32px;
-                border-radius: 24px;
-                font-weight: 700;
-                font-size: 14px;
-                cursor: pointer;
-                transition: transform 0.1s, filter 0.2s;
-
-                &:hover {
-                    filter: brightness(1.1);
-                    transform: scale(1.03);
-                }
-
-                &:active {
-                    transform: scale(0.97);
-                }
-            }
         }
 
-        .empty {
+        .empty-text {
             color: var(--text-secondary);
-            font-size: 18px;
+            font-size: 16px;
             text-align: center;
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
+            padding: 20px 0;
         }
 
         .history-list {
@@ -286,6 +359,94 @@
             flex-wrap: wrap;
             gap: 16px;
             padding-bottom: 10px;
+        }
+
+        .all-songs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            
+            h2 {
+                margin: 0;
+                font-size: 32px;
+                color: var(--text-primary);
+            }
+        }
+
+        .list-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .additional-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .sort-select {
+            background-color: var(--text-tertiary, #282828);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(50, 50, 50);
+            }
+
+            option {
+                background-color: rgb(30, 30, 30);
+                color: white;
+            }
+        }
+
+        .play-all-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--text-primary, #fff);
+            color: var(--bg-primary, #000);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+
+            svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px 0 20px 0;
+        }
+
+        .load-more-btn {
+            background-color: transparent;
+            color: var(--text-primary, #fff);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 32px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover:not(:disabled) {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-color: var(--text-primary);
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
         }
     }
 </style>

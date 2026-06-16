@@ -76,7 +76,7 @@
             if (error.response?.status === 409) {
                 toastStore.show(error.response.data.message, 'error')
             } else {
-                toastStore.show('Ошибка при отправлении заявки', 'error')
+                toastStore.show('Ошибка при отправлении заявки: ' + error.response.data.message, 'error')
             }
         }
     }
@@ -93,7 +93,7 @@
                 <div class="inputs-section">
                     <div class="field">
                         <label for="artist-name">Ваш псевдоним</label>
-                        <input id="artist-name" type="text" v-model="formData.name" placeholder="Сценическое имя..." required>
+                        <input id="artist-name" type="text" v-model="formData.name" placeholder="Псевдоним" required>
                     </div>
 
                     <div class="field">

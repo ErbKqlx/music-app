@@ -66,7 +66,7 @@ class ArtistRequestController {
             });
 
             if (existingRequest) {
-                return res.status(409).json({ message: "Ваша заявка уже находится на рассмотрении модератором" });
+                return res.status(409).json({ message: "Ваша заявка уже находится на рассмотрении администратором" });
             }
 
             const alreadyArtist = await Artist.findOne({ where: { id_user } });

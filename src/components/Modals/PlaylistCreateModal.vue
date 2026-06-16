@@ -94,7 +94,7 @@
                 await playlistStore.fetchPlaylists(userStore.currentUser.id)
 
                 // router.push(`/playlist/${playlistId}`)
-                location.reload()
+                // location.reload()
                 toastStore.show('Плейлист обновлен', 'success')
             }
             else{

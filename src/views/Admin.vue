@@ -390,12 +390,14 @@
     }
 
     onMounted(() => {
-        fetchGenres()
         fetchUsers()
-        fetchRoles()
-        fetchReportTypes()
         fetchCommentReports()
-        fetchArtistApplications()
+        if (userStore.isAdmin){
+            fetchRoles()
+            fetchArtistApplications()
+            fetchGenres()
+            fetchReportTypes()
+        }
     })
 </script>
 
@@ -410,16 +412,16 @@
                 Жалобы на комментарии
             </button>
 
-            <button :class="{ active: currentTab === 'artist-apps' }" @click="currentTab = 'artist-apps'">
-                Заявки исполнителей
-            </button>
-
             <template v-if="userStore.isAdmin">
                 <button :class="{ active: currentTab === 'genres' }" @click="currentTab = 'genres'">
                     Жанры
                 </button>
                 <button :class="{ active: currentTab === 'reports' }" @click="currentTab = 'reports'">
                     Типы жалоб
+                </button>
+
+                <button :class="{ active: currentTab === 'artist-apps' }" @click="currentTab = 'artist-apps'">
+                    Заявки исполнителей
                 </button>
             </template>
         </div>

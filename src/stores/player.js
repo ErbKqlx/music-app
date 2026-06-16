@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import http from '../http';
-
+import { Howl } from 'howler';
 
 let sound = null
 
@@ -66,12 +66,15 @@ export const usePlayerStore = defineStore('player', () => {
             return
         }
 
+        if (!currentSong.value || song.id !== currentSong.value.id) {
+            seek.value = 0
+        }
         currentSong.value = song
 
         console.log(sound)
 
         if (sound){
-            seekTime(0)
+            // seekTime(0)
             stopSong()
         }
 
@@ -114,11 +117,7 @@ export const usePlayerStore = defineStore('player', () => {
         });
 
 
-        seekTime(seek.value)
-
-        if (seek.value > currentSong.value.length){
-            seekTime(0)
-        }
+        sound.seek(seek.value)
 
         sound.play()
 
