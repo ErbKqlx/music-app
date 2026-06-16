@@ -440,39 +440,42 @@ class SongController{
         }
     }
 
-    static async getSongsHistory(req, res){
+    static async getSongsHistory(req, res) {
         try {
-            const songsHistory = await SongsHistories.findAll({
-                where: {
-                    id_user: req.userId
-                },
-                order: [
-                    ['listened_at', 'DESC']
+            const recentHistory = await SongsHistories.findAll({
+                where: { id_user: req.userId },
+                attributes: [
+                    'id_song',
+                    [fn('max', col('listened_at')), 'latest_listen'] 
                 ],
+                group: ['id_song'],
+                order: [[literal('latest_listen'), 'DESC']],
                 limit: 6,
-                include: ['song']
-            })
+                raw: true
+            });
 
-            const uniqueSongsMap = new Map();
+            const songIds = recentHistory.map(h => h.id_song);
 
-            songsHistory.map(historyItem => {
-                    const song = historyItem.song;
+            if (songIds.length === 0) {
+                return Response.success(res, "История прослушанных треков пуста", []);
+            }
 
-                    if (song && !uniqueSongsMap.has(song.id)){
-                        song.image = getFileUrl(song.image)
-                        uniqueSongsMap.set(song.id, song)
-                    }
-                    
-                    
-                    return song;
-                })
+            const songs = await Song.findAll({
+                where: { id: songIds },
+            });
+
+            const sortedSongs = songIds
+                .map(id => songs.find(s => s.id === id))
                 .filter(Boolean);
 
-            const songs = Array.from(uniqueSongsMap.values());
+            sortedSongs.forEach(song => {
+                song.image = getFileUrl(song.image);
+                song.song_url = getFileUrl(song.song_url);
+            });
 
-            return Response.success(res, "История прослушанных треков", songs);
+            return Response.success(res, "История прослушанных треков", sortedSongs);
         } catch (error) {
-            console.error(error);
+            console.error("Ошибка при получении истории:", error);
             return res.status(500).json({ message: 'Внутренняя ошибка сервера' });
         }
     }
