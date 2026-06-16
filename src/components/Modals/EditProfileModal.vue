@@ -8,6 +8,13 @@
     import { useToastStore } from '../../stores/toast.js'
     import ImageCropperModal from './ImageCropperModal.vue'
 
+    const props = defineProps({
+        userToEdit: {
+            type: Object,
+            default: null
+        }
+    })
+
     const modalStore = useModalStore()
     const userStore = useUserStore()
     const toastStore = useToastStore()
@@ -20,8 +27,10 @@
     const rawImageSrc = ref(null)
     const currentFileType = ref('image/jpeg')
 
+    const targetUser = computed(() => props.userToEdit || userStore.currentUser)
+
     const formData = reactive({
-        username: userStore.currentUser?.username || '',
+        username: '',
         avatar: null
     })
 
@@ -82,13 +91,13 @@
 
         try {
             isLoading.value = true
-            const userId = userStore.currentUser?.id
+            const userId = targetUser.value?.id
             
             const response = await http.patch(`/users/${userId}`, data, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token') }
             })
 
-            if (response.data && response.data.data.user) {
+            if (response.data && response.data.data.user && userId === userStore.currentUser?.id) {
                 userStore.setUser(response.data.data.user)
             }
 
@@ -104,17 +113,19 @@
         isLoading.value = false
     }
 
-    onMounted(() => {
-        if (userStore.currentUser) {
-            previewImage.value = userStore.currentUser.avatar
+    watch(() => targetUser.value, (newUser) => {
+        if (newUser) {
+            formData.username = newUser.username || ''
+            previewImage.value = newUser.avatar || null
         }
-    })
+    }, { immediate: true, deep: true }) // Добавили deep: true
 </script>
 
 <template>
     <Modal @close="modalStore.closeModal" size="playlist">
         <template #header>
             <h2 class="modal-title">Редактирование профиля</h2>
+            <!-- <pre>{{ targetUser }}</pre> -->
         </template>
 
         <template #body>

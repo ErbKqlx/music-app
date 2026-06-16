@@ -402,10 +402,7 @@ class SongController{
             const popularSongs = await Song.findAll({
                 attributes: [
                     'id', 'name', 'length', 'release_date', 'explicit_content', 'image', 'song_url',
-                    [
-                        literal(listensCountSubquery),
-                        'weekly_listens_count'
-                    ]
+                    [literal(listensCountSubquery), 'weekly_listens_count']
                 ],
                 where: whereClause,
                 include: [
@@ -418,7 +415,7 @@ class SongController{
                     {
                         model: db.genre,
                         as: 'genres',
-                        attributes: [], 
+                        attributes: ['id'], 
                         through: { attributes: [] },
                         required: id_genre ? true : false
                     }
@@ -427,7 +424,7 @@ class SongController{
                     [literal('weekly_listens_count'), 'DESC'],
                     ['id', 'DESC']
                 ],
-                limit: 20,
+                limit: 30,
                 subQuery: false
             });
 

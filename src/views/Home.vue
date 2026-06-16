@@ -31,7 +31,10 @@
 
     const filteredPopularSongs = computed(() => {
         if (!selectedGenreId.value) return popularSongs.value;
-        return popularSongs.value.filter(song => Number(song.id_genre) === Number(selectedGenreId.value));
+        
+        return popularSongs.value.filter(song => {
+            return song.genres && song.genres.some(genre => Number(genre.id) === Number(selectedGenreId.value));
+        });
     })
 
     const filteredNewSongs = computed(() => {

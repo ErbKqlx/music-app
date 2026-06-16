@@ -53,7 +53,7 @@
             <PlaylistCreateModal v-if="modalStore.activeModal === 'playlist'" />
             <SongUploadModal v-if="modalStore.activeModal === 'song'" />
             <SelectPlaylists v-if="modalStore.activeModal === 'selectPlaylists'" />
-            <EditProfileModal v-if="modalStore.activeModal === 'editProfile'" />
+            <EditProfileModal v-if="modalStore.activeModal === 'editProfile'" :user-to-edit="modalStore.modalData" />
             <ArtistApplication v-if="modalStore.activeModal === 'artistApplication'" />
             <ArtistBioModal v-if="modalStore.activeModal === 'artistBio'" />
             <EditArtistModal v-if="modalStore.activeModal === 'editArtist'" />

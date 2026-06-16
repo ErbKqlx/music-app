@@ -51,13 +51,15 @@
             })
 
             userData.value = user.data
+            console.log(userData.value)
             songsData.value = songsHistory.data
 
             const playlists = await http.get(`/users/${id}/playlists`, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('token')}
             })
 
-            await playlistStore.fetchPlaylists(id)
+            // await playlistStore.fetchPlaylists(id)
+            savedPlaylists.value = playlists.data.playlists || playlistsRes.data
             console.log(playlistStore.savedPlaylists.playlists)
         }
         catch (error){
@@ -104,8 +106,8 @@
 
             <template #actions>
                 <div class="profile-actions-wrapper">
-                    <div class="profile-actions" v-if="isCurrentUser">
-                        <button class="settings-btn" @click="modalStore.openModal('editProfile')" title="Настройки профиля">
+                    <div class="profile-actions" v-if="isCurrentUser || userStore.isAdmin">
+                        <button class="settings-btn" @click="modalStore.openModal('editProfile', userData)" title="Настройки профиля">
                             <Settings width="20" height="20" />
                             <span>Редактировать профиль</span>
                         </button>
@@ -126,10 +128,10 @@
             <Section>
                 <template #title>Плейлисты</template>
                 <template #content>
-                    <div class="playlists-list" v-if="playlistStore.savedPlaylists.playlists.length > 0">
+                    <div class="playlists-list" v-if="savedPlaylists.length > 0">
                         <Card 
                             @click="toPlaylist(playlist.id)" 
-                            v-for="playlist in playlistStore.savedPlaylists.playlists" 
+                            v-for="playlist in savedPlaylists" 
                             :key="playlist.id"
                             :title="playlist.name" 
                             description="Плейлист"
