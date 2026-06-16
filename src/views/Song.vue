@@ -7,7 +7,7 @@
     import Image from '@/components/Image.vue'
     import Card from '@/components/Card.vue'
     import Wrapper from '@/components/Wrapper.vue'
-    import { onMounted, ref, watch } from 'vue'
+    import { nextTick, onMounted, ref, watch } from 'vue'
     import { useRoute } from 'vue-router'
     import http from '../http'
     import Button from '@/components/Input/Button.vue'
@@ -35,6 +35,8 @@
     const comments = ref([])
     const newCommentText = ref('')
     const isCommentsLoading = ref(false)
+
+    const highlightedCommentId = ref(null);
 
     const editingCommentId = ref(null)
     const editingCommentText = ref('')
@@ -292,6 +294,26 @@
         }
     }
 
+    function scrollToComment() {
+        if (!route.hash) return;
+
+        nextTick(() => {
+            const targetComment = document.querySelector(route.hash);
+            
+            if (targetComment) {
+                targetComment.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                targetComment.classList.add('highlighted-comment');
+                
+                setTimeout(() => {
+                    targetComment.classList.remove('highlighted-comment');
+                }, 2500);
+            } else {
+                setTimeout(scrollToComment, 100);
+            }
+        });
+    }
+
     watch(() => route.params.id, (newId) => {
         if (newId) {
             fetchSongData(newId);
@@ -306,8 +328,22 @@
             fetchSongData(id)
             fetchComments(id)
             fetchReportTypes()
+
+            scrollToComment();
         }
     })
+
+    watch(() => route.hash, (newHash) => {
+        if (newHash) {
+            scrollToComment();
+        }
+    });
+
+    watch(() => comments.value, (newComments) => {
+        if (newComments && newComments.length > 0 && route.hash) {
+            scrollToComment();
+        }
+    }, { deep: true });
 </script>
 
 <template>
@@ -420,6 +456,7 @@
                                     v-if="comment.user?.id" 
                                     :to="'/profile/' + comment.user.id" 
                                     class="comment-avatar-link"
+                                    
                                 >
                                     <div class="comment-avatar">
                                         <Image class="round-image" :url="comment.user?.avatar" />
@@ -485,7 +522,7 @@
                                         </div>
                                     </div>
 
-                                    <div v-else class="comment-text">
+                                    <div v-else class="comment-text" :id="'comment-' + comment.id">
                                         {{ comment.text }}
                                     </div>
                                 </div>
@@ -761,12 +798,15 @@
             .comment-item {
                 display: flex;
                 gap: 15px;
-                /* background-color: rgba(255, 255, 255, 0.02); */
                 background-color: var(--bg-hover);
                 padding: 15px;
                 border-radius: 8px;
                 align-items: flex-start;
-                transition: background-color 0.2s;
+                transition: background-color 0.2s, box-shadow 0.2s; 
+
+                &:global(.highlighted-comment) {
+                    animation: highlight-blink 2.5s ease-in-out !important;
+                }
 
                 &:hover {
                     background-color: rgba(255, 255, 255, 0.04);
@@ -1085,6 +1125,21 @@
             /* &:focus {
                 border-color: var(--accent-color);
             } */
+        }
+    }
+
+    @keyframes highlight-blink {
+        0% {
+            box-shadow: inset 0 0 0 0px transparent;
+        }
+        15% {
+            box-shadow: inset 0 0 0 2000px rgba(234, 179, 8, 0.3);
+        }
+        85% {
+            box-shadow: inset 0 0 0 2000px rgba(234, 179, 8, 0.3);
+        }
+        100% {
+            box-shadow: inset 0 0 0 0px transparent;
         }
     }
 </style>

@@ -5,6 +5,7 @@
     import { formatDate } from '@/composables/formatDate';
     import { useUserStore } from '../stores/user';
     import { useModalStore } from '../stores/modal';
+import router from '../router';
 
     const toastStore = useToastStore()
     const userStore = useUserStore()
@@ -640,7 +641,7 @@
                             </td>
 
                             <td class="comment-text-cell" :title="report.comment?.text">
-                                <span v-if="report.comment">{{ report.comment.text }}</span>
+                                <span @click="router.push(`/song/${report.comment.song?.id}#comment-${report.comment.id}`)" v-if="report.comment">{{ report.comment.text }}</span>
                                 <span v-else class="text-muted"><i>[Комментарий удален]</i></span>
                             </td>
 

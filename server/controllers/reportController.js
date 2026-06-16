@@ -7,6 +7,7 @@ const User = db.user;
 const Comment = db.comment;
 const ReportType = db.report_type;
 const ReportStatus = db.report_status
+const Song = db.song
 
 class ReportController {
     static async getCommentReports(req, res) {
@@ -26,7 +27,14 @@ class ReportController {
                     {
                         model: Comment,
                         as: 'comment',
-                        attributes: ['id', 'text', 'id_user'] 
+                        attributes: ['id', 'text', 'id_user'],
+                        include: [
+                            {
+                                model: Song,
+                                as: 'song',
+                                attributes: ['id', 'name']
+                            }
+                        ]
                     },
                     {
                         model: ReportStatus,

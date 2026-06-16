@@ -301,7 +301,7 @@ class SongController{
     static async getNewSongs(req, res){
         try {
             const newSongs = await Song.findAll({
-                attributes: ['id', 'name', 'length', 'release_date', 'explicit_content', 'image', 'song_url'],
+                attributes: ['id', 'name', 'length', 'release_date', 'explicit_content', 'image', 'song_url', 'lyrics'],
                 
                 include: [
                     {
