@@ -284,5 +284,6 @@ router.delete(
 router.post('/login', AuthController.login)
 router.post('/register', AuthController.register)
 router.post('/verify-code', AuthController.verifyCode);
+router.post("/resend-code", AuthController.resendCode);
 
 export default router

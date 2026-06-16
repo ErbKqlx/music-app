@@ -6,6 +6,7 @@
     import { useUserStore } from '@/stores/user';
     import { useFormErrors } from '@/composables/useFormErrors';
     import { usePlaylistStore } from '../stores/playlist';
+    import { useToastStore } from '../stores/toast';
 
     const route = useRoute();
     const router = useRouter();
@@ -14,8 +15,11 @@
     const isSending = ref(false);
     const email = ref(route.query.email || '');
 
+    const isResending = ref(false);
+
     const userStore = useUserStore()
     const playlistStore = usePlaylistStore()
+    const toastStore = useToastStore()
 
     const { errors, setErrors, clearErrors, getErrors, hasErrors } = useFormErrors()
     
@@ -49,6 +53,25 @@
 
         isSending.value = false;
     }
+
+    async function resendCode() {
+        if (isResending.value || isSending.value) return;
+        
+        isResending.value = true;
+        error.value = '';
+        
+        try {
+            await http.post('/resend-code', { email: email.value });
+            
+            toastStore.show('Новый код отправлен на вашу почту', 'success');
+        } 
+        catch (err) {
+            error.value = err.response?.data?.message || 'Не удалось отправить код повторно';
+        } 
+        finally {
+            isResending.value = false;
+        }
+    }
 </script>
 
 <template>
@@ -76,7 +99,9 @@
             
             <div class="resend">
                 <span>Не пришел код? </span>
-                <a href="#" @click.prevent="$emit('resend')">Отправить снова</a>
+                <a href="#" @click.prevent="resendCode" :class="{ 'disabled-link': isResending }">
+                    {{ isResending ? 'Отправка...' : 'Отправить снова' }}
+                </a>
             </div>
         </form>
     </div>
@@ -85,10 +110,58 @@
 <style scoped>
     .wrapper {
         display: flex;
+        flex-direction: column;
         min-height: 100vh;
         width: 100%;
         align-items: center;
         justify-content: center;
+        
+        background-color: #0d0e12; 
+        position: relative;
+        overflow: hidden;
+    }
+
+    .wrapper::before,
+    .wrapper::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(50px); 
+        opacity: 0.18;
+        z-index: 1;
+        display: block;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        animation: float-bg 12s infinite alternate ease-in-out;
+    }
+
+    .wrapper::before {
+        width: 450px;
+        height: 450px;
+        background: radial-gradient(circle, #7d84ff 0%, transparent 75%);
+        top: -5%;
+        left: -5%;
+    }
+
+    .wrapper::after {
+        width: 550px;
+        height: 550px;
+        background: radial-gradient(circle, #ec4899 0%, transparent 75%);
+        bottom: -10%;
+        right: -10%;
+        animation-duration: 16s;
+        animation-delay: -4s;
+    }
+
+    @keyframes float-bg {
+        0% { 
+            transform: translate(0, 0) scale(1) rotate(0deg); 
+        }
+        50% {
+            transform: translate(120px, 80px) scale(1.2) rotate(180deg);
+        }
+        100% { 
+            transform: translate(-60px, 150px) scale(0.9) rotate(360deg); 
+        }
     }
 
     .verify-form {
@@ -96,67 +169,134 @@
         flex-direction: column;
         min-width: 25vw;
         gap: 20px;
-    }
+        
+        position: relative;
+        z-index: 2; 
 
-    .verify-form > span {
-        font-size: 32px;
-        color: white;
-        text-align: center;
-    }
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 
-    .info {
-        color: rgb(135, 135, 135);
-        text-align: center;
-    }
+        label, span, a, p {
+            font-family: Inter, sans-serif;
+        }
 
-    .field {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
+        > span {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+        }
 
-    label {
-        font-size: 16px;
-        color: white;
-    }
+        .info {
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            font-size: 14px;
+            margin: -5px 0 5px 0;
+        }
 
-    input {
-        border-radius: 5px;
-        height: 33px;
-        font-size: 20px;
-        background-color: rgb(217, 217, 217);
-        border: none;
-        padding: 0 5px;
-        text-align: center;
-        /* letter-spacing: 5px; */
-    }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
 
-    input[type='text']{
-        letter-spacing: 5px;
-    }
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            text-align: center;
+        }
 
-    .error {
-        color: red;
-        font-size: 14px;
-    }
+        input {
+            border-radius: 6px;
+            height: 42px;
+            font-size: 22px;
+            font-weight: 600;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 12px;
+            color: white;
+            text-align: center;
+            transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
 
-    .error-input {
-        border: 1px solid red !important;
-    }
+        input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgb(125, 132, 255);
+            box-shadow: 0 0 10px rgba(125, 132, 255, 0.2);
+        }
 
-    .resend {
-        text-align: center;
-        font-size: 14px;
-        color: white;
-    }
+        input[type='text'] {
+            letter-spacing: 6px;
+            text-indent: 6px;
+        }
 
-    .resend a {
-        color: rgb(125, 132, 255);
-        text-decoration: none;
-        cursor: pointer;
-    }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
 
-    .resend a:hover {
-        text-decoration: underline;
+        input[type='submit'] {
+            height: 44px;
+            font-weight: 600;
+            font-size: 14px;
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            margin-top: 10px;
+            padding: 0;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        input[type='submit']:hover {
+            cursor: pointer;
+            opacity: 0.9;
+        }
+
+        input[type='submit']:active {
+            transform: scale(0.98);
+        }
+
+        .error {
+            color: #ff5c5c;
+            font-size: 12px;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .error-input {
+            border: 1px solid #ff5c5c !important;
+            background-color: rgba(255, 92, 92, 0.05);
+        }
+
+        .resend {
+            text-align: center;
+            font-size: 14px;
+            color: white;
+            margin-top: 5px;
+        }
+
+        .resend a {
+            color: rgb(125, 132, 255);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .resend a:hover {
+            color: rgb(160, 166, 255);
+            text-decoration: underline;
+        }
+
+        .resend a.disabled-link {
+            opacity: 0.5;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
     }
 </style>

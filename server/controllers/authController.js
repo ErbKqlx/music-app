@@ -205,6 +205,37 @@ class AuthController{
             return Response.serverError(res, error.message);
         }
     }
+
+    static async resendCode(req, res) {
+        try {
+            const { email } = req.body;
+
+            if (!email) {
+                return Response.badRequest(res, 'Email обязателен');
+            }
+
+            const user = await User.findOne({ where: { email } });
+
+            if (!user) {
+                return Response.notFound(res, 'Пользователь с таким Email не найден');
+            }
+
+            if (user.isActivated) {
+                return Response.badRequest(res, 'Этот аккаунт уже активирован');
+            }
+
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+            user.activationCode = code;
+            await user.save();
+
+            await sendMail(code, email);
+
+            return Response.success(res, `Новый код успешно отправлен на почту ${email}`);
+        } catch (error) {
+            return Response.serverError(res, error.message);
+        }
+    }
 }
 
 export default AuthController

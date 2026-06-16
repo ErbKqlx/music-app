@@ -4,9 +4,11 @@
     import { useToastStore } from '../stores/toast'
     import { formatDate } from '@/composables/formatDate';
     import { useUserStore } from '../stores/user';
+    import { useModalStore } from '../stores/modal';
 
     const toastStore = useToastStore()
     const userStore = useUserStore()
+    const modalStore = useModalStore()
 
     const currentTab = ref('users')
     const isLoading = ref(false)
@@ -36,7 +38,7 @@
 
     const artistApplications = ref([])
     const artistApplicationsCurrentPage = ref(1)
-    const artistApplicationsSearchQuery = ref('')
+    const artistApplicationsSearchQuery = ref('') 
 
     watch(currentTab, () => {
         genresCurrentPage.value = 1
@@ -388,7 +390,7 @@
             toastStore.show('Не удалось изменить статус заявки', 'error')
         } finally { isLoading.value = false }
     }
-
+    
     onMounted(() => {
         fetchUsers()
         fetchCommentReports()
@@ -708,7 +710,10 @@
                             <td>{{ app.id }}</td>
                             <td>{{ app.user?.email }}</td>
                             <td><strong>{{ app.name }}</strong></td>
-                            <td class="comment-text-cell">{{ app.bio || 'Нет описания' }}</td>
+                            <td title="Посмотреть биографию полностью" class="comment-text-cell" @click="modalStore.openModal('artistBio', {
+                                    name: app.name,
+                                    bio: app.bio
+                                });">{{ app.bio || 'Нет описания' }}</td>
                             <td>{{ formatDate(app.created_at) }}</td>
                             <td>
                                 <span :class="['status-badge', 
@@ -857,6 +862,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            cursor: pointer;
         }
 
         .report-reason {

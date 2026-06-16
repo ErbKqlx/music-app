@@ -147,108 +147,199 @@
 </template>
 
 <style scoped>
-    .wrapper{
+    .wrapper {
         display: flex;
         flex-direction: column;
         min-height: 100vh;
         width: 100%;
         align-items: center;
         justify-content: center;
+        
+        background-color: #0d0e12; 
+        position: relative;
+        overflow: hidden;
+    }
 
-        .registration-form{
+    .wrapper::before,
+    .wrapper::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(50px); 
+        opacity: 0.18;
+        z-index: 1;
+        display: block;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        animation: float-bg 12s infinite alternate ease-in-out;
+    }
+
+    .wrapper::before {
+        width: 450px;
+        height: 450px;
+        background: radial-gradient(circle, #7d84ff 0%, transparent 75%);
+        top: -5%;
+        left: -5%;
+    }
+
+    .wrapper::after {
+        width: 550px;
+        height: 550px;
+        background: radial-gradient(circle, #ec4899 0%, transparent 75%);
+        bottom: -10%;
+        right: -10%;
+        animation-duration: 16s;
+        animation-delay: -4s;
+    }
+
+    @keyframes float-bg {
+        0% { 
+            transform: translate(0, 0) scale(1) rotate(0deg); 
+        }
+        50% {
+            transform: translate(120px, 80px) scale(1.2) rotate(180deg);
+        }
+        100% { 
+            transform: translate(-60px, 150px) scale(0.9) rotate(360deg); 
+        }
+    }
+
+    .registration-form {
+        display: flex;
+        flex-direction: column;
+        width: 30vw;
+        min-height: 33vh;
+        gap: 10px;
+        
+        position: relative;
+        z-index: 2; 
+
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+
+        .register-fields {
             display: flex;
             flex-direction: column;
-            width: 30vw;
-            min-height: 33vh;
-            gap: 10px;
+            gap: 20px;
+            margin-bottom: 35px;
+        }
 
-            .register-fields{
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-                margin-bottom: 35px;
-            }
+        .register-fields div {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .consent-wrapper {
+            display: flex;
+            flex-direction: row !important;
+            align-items: center;
+            gap: 12px !important;
+            margin-top: 5px;
+        }
 
-            .register-fields div{
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            
-            .consent-wrapper{
-                display: flex;
-                flex-direction: row !important;
-                /* justify-content: center; */
-                align-items: center;
-                gap: 15px !important;
-            }
+        label {
+            font-size: 14px;
+            font-weight: 500;
+        }
 
-            label{
-                font-size: 16px;
-            }
+        .have-account {
+            align-self: center;
+            margin-top: 5px;
+        }
+        
+        a, span {
+            font-size: 14px;
+        }
 
-            .have-account{
-                align-self: center;
-            }
-            
-            a, span{
-                font-size: 14px;
-            }
+        > span {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
 
-            > span{
-                font-size: 32px;
-            }
+        label, span, a {
+            color: white;
+            font-family: Inter, sans-serif;
+        }
 
-            label, span, a{
-                color: white;
-                font-family: Inter;
-            }
+        a {
+            color: rgb(125, 132, 255);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
 
-            a{
-                color: rgb(125, 132, 255);
-                text-decoration: none;
-            }
+        a:hover {
+            color: rgb(160, 166, 255);
+            text-decoration: underline;
+        }
 
-            a:hover{
-                text-decoration: underline;
-            }
+        input {
+            border-radius: 6px;
+            height: 38px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 12px;
+            color: white;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
 
-            input{
-                border-radius: 5px;
-                height: 33px;
-                font-size: 20px;
-                background-color: rgb(217 , 217, 217);
-                border: none;
-                padding: 0 5px;
-            }
+        input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgb(125, 132, 255);
+        }
 
-            input[type='submit']{
-                height: 40px;
-                font-weight: bold;
-                font-size: 14px;
-            }
+        input[type='checkbox'] {
+            width: 18px;
+            height: 18px;
+            accent-color: rgb(125, 132, 255);
+            cursor: pointer;
+        }
 
-            input[type='submit']:hover{
-                cursor: pointer;
-                background-color: rgb(140, 140, 140);
-            }
+        input[type='submit'] {
+            height: 44px;
+            font-weight: 600;
+            font-size: 14px;
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            margin-top: 10px;
+            padding: 0;
+            transition: opacity 0.2s, transform 0.1s;
+        }
 
-            input[type='checkbox']{
-                width: 20px;
-            }
+        input[type='submit']:hover {
+            cursor: pointer;
+            opacity: 0.9;
+        }
 
-            .requirements{
-                font-size: 12px;
-                color: rgb(135, 135, 135);
-            }
+        input[type='submit']:active {
+            transform: scale(0.98);
+        }
 
-            .error{
-                color: red;
-            }
+        .requirements {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+            margin: 2px 0;
+        }
 
-            .error-input {
-                border: 1px solid red !important;
-            }
+        .error {
+            color: #ff5c5c;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .error-input {
+            border: 1px solid #ff5c5c !important;
+            background-color: rgba(255, 92, 92, 0.05);
         }
     }
 </style>
