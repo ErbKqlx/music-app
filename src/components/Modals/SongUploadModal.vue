@@ -7,7 +7,7 @@
     import http from '@/http.js'
     import { useUserStore } from '@/stores/user'
     import router from '@/router/index.js';
-    import { helpers, required } from '@vuelidate/validators'
+    import { helpers, required, maxValue } from '@vuelidate/validators'
     import useVuelidate from '@vuelidate/core'
     import 'cropperjs'
     import ImageCropperModal from '@/components/Modals/ImageCropperModal.vue'
@@ -33,11 +33,28 @@
     const selectedArtists = ref([]) 
     const selectedGenreIds = ref([]) 
 
+    const uploadProgress = ref(null)
+
+    const mustHaveGenre = helpers.withMessage(
+        'Выберите хотя бы один жанр', 
+        (value) => Array.isArray(value) && value.length > 0
+    )
+
     const rules = {
-        data: {
-            name: { required: helpers.withMessage('Поле не может быть пустым', required) },
-            song_file: { required: helpers.withMessage('Вы должны загрузить трек', required), }
-        }
+        name: { required: helpers.withMessage('Поле не может быть пустым', required) },
+        song_file: { 
+            required: helpers.withMessage(
+                'Вы должны загрузить трек', 
+                (value) => isEdit.value ? true : !!value
+            ) 
+        },
+        release_date: {
+            maxValue: helpers.withMessage(
+                'Дата релиза не может быть в будущем',
+                (value) => !value || new Date(value) <= new Date()
+            )
+        },
+        genres: { mustHaveGenre }
     }
 
     const formData = reactive({
@@ -51,7 +68,14 @@
         id_user: Number(userStore.currentUser?.id)
     })
 
-    const $v = useVuelidate(rules, formData)
+    const validationState = computed(() => ({
+        name: formData.name,
+        song_file: formData.song_file,
+        release_date: formData.release_date,
+        genres: selectedGenreIds.value
+    }))
+
+    const $v = useVuelidate(rules, validationState)
 
     function toggleGenre(genreId) {
         const index = selectedGenreIds.value.indexOf(genreId)
@@ -153,61 +177,71 @@
     }
 
     async function handleSubmit() {
-        if (true){
-            const data = new FormData()
-            data.append('name', formData.name)
-            data.append('release_date', formData.release_date)
-            data.append('explicit_content', formData.explicit_content ? 1 : 0)
-            data.append('lyrics', formData.lyrics)
-            data.append('length', formData.length)
+        const isFormValid = await $v.value.$validate()
+        
+        if (!isFormValid) {
+            toastStore.show('Пожалуйста, исправьте ошибки в форме', 'error')
+            return
+        }
 
-            selectedGenreIds.value.forEach(id => {
-                data.append('genres[]', id)
-            })
+        const data = new FormData()
+        data.append('name', formData.name)
+        data.append('release_date', formData.release_date)
+        data.append('explicit_content', formData.explicit_content ? 1 : 0)
+        data.append('lyrics', formData.lyrics)
+        data.append('length', formData.length)
 
-            selectedArtists.value.forEach(artist => {
-                data.append('artists[]', artist.id)
-            })
+        selectedGenreIds.value.forEach(id => {
+            data.append('genres[]', id)
+        })
 
-            if (formData.image) {
-                data.append('image', formData.image)
-            }
+        selectedArtists.value.forEach(artist => {
+            data.append('artists[]', artist.id)
+        })
 
-            if (formData.song_file){
-                data.append('song_url', formData.song_file)
-            }
+        if (formData.image) {
+            data.append('image', formData.image)
+        }
 
-            const songId = modalStore.modalData?.id
+        if (formData.song_file){
+            data.append('song_url', formData.song_file)
+        }
 
-            try{
-                if (isEdit.value){
-                    await http.patch(`/song/${songId}`, data, {
-                        headers: { Authorization: "Bearer " + localStorage.getItem('token')},
-                    })
-                    // router.push('/')
-                    location.reload()
-                    toastStore.show('Трек обновлен', 'success')
+        const songId = modalStore.modalData?.id
+
+        try {
+            if (isEdit.value){
+                await http.patch(`/song/${songId}`, data, {
+                    headers: { Authorization: "Bearer " + localStorage.getItem('token')},
+                })
+                location.reload()
+                toastStore.show('Трек обновлен', 'success')
+            } 
+            else {
+                const response = await http.post('/song', data, {
+                    headers: { Authorization: "Bearer " + localStorage.getItem('token')},
+                    onUploadProgress: (progressEvent) => {
+                        const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+                        uploadProgress.value = percentage
+                    }
+                });
+
+                if (response.data?.data?.id){
+                    toastStore.show('Трек загружен', 'success')
+                    router.push(`/song/${response.data.data.id}`)
                 } 
                 else {
-                    const response = await http.post('/song', data, {
-                        headers: { Authorization: "Bearer " + localStorage.getItem('token')},
-                    });
-
-                    if (response.data?.data?.id){
-                        toastStore.show('Трек загружен', 'success')
-                        router.push(`/song/${response.data.data.id}`)
-                    } 
-                    else {
-                        router.push('/')
-                    }
+                    router.push('/')
                 }
-            } catch (error){
-                console.log('Ошибка при загрузке трека ' + error)
-                toastStore.show('Ошибка при загрузке трека', 'error')
             }
-
-            modalStore.closeModal()
+        } catch (error){
+            console.log('Ошибка при загрузке трека ' + error)
+            toastStore.show('Ошибка при загрузке трека', 'error')
         }
+
+        uploadProgress.value = null
+
+        modalStore.closeModal()
     }
 
     async function fetchGenresData(){
@@ -267,14 +301,34 @@
                 <div class="inputs-section">
                     <div class="field">
                         <label>Название <span style="color:red;">*</span></label>
-                        <input type="text" v-model="formData.name" placeholder="Мой трек" required>
-                        <span class="error" v-for="error of $v.data.name.$errors" :key="error.$uid">{{ error.$message }}</span>
+                        <input 
+                            type="text" 
+                            v-model="formData.name" 
+                            placeholder="Мой трек" 
+                            :class="{ 'error-input': $v.name.$error }"
+                            required
+                        >
+                        <span class="error" v-for="error of $v.name.$errors" :key="error.$uid">{{ error.$message }}</span>
                     </div>
 
                     <div class="field">
                         <label>Файл трека (.mp3, .wav) <span style="color:red;">*</span></label>
-                        <input type="file" @change="onAudioChange" accept="audio/*" :required="!isEdit">
-                        <span class="error" v-for="error of $v.data.song_file.$errors" :key="error.$uid">{{ error.$message }}</span>
+                        <input 
+                            type="file" 
+                            @change="onAudioChange" 
+                            accept="audio/*" 
+                            :required="!isEdit"
+                        >
+                        <span class="error" v-for="error of $v.song_file.$errors" :key="error.$uid">
+                            {{ error.$message }}
+                        </span>
+
+                        <div v-if="uploadProgress !== null" class="upload-progress-container">
+                            <div class="progress-bar-wrapper">
+                                <div class="progress-bar-fill" :style="{ width: uploadProgress + '%' }"></div>
+                            </div>
+                            <span class="progress-text">Загрузка: {{ uploadProgress }}%</span>
+                        </div>
                     </div>
 
                     <div class="field artists-field">
@@ -308,7 +362,12 @@
 
                     <div class="field">
                         <label>Дата релиза</label>
-                        <input type="date" v-model="formData.release_date">
+                        <input 
+                            type="date" 
+                            v-model="formData.release_date"
+                            :class="{ 'error-input': $v.release_date.$error }"
+                        >
+                        <span class="error" v-for="error of $v.release_date.$errors" :key="error.$uid">{{ error.$message }}</span>
                     </div>
 
                     <div class="field checkbox-field">
@@ -329,7 +388,7 @@
                     <div class="genres-header">
                         <label>Жанры <span style="color:red;">*</span></label>
                     </div>
-                    <div class="genres-buttons">
+                    <div class="genres-buttons" :class="{ 'error-genres-container': $v.genres.$error }">
                         <Button 
                             @click.prevent="toggleGenre(genre.id)" 
                             v-for="genre in genresData" 
@@ -339,6 +398,9 @@
                             {{ genre.name }}
                         </Button>
                     </div>
+                    <span class="error" v-for="error of $v.genres.$errors" :key="error.$uid" style="margin-top: 8px;">
+                        {{ error.$message }}
+                    </span>
                 </div>
             </form>
         </template>
@@ -547,6 +609,12 @@
         border: 1.5px solid red !important;
     }
 
+    .error-genres-container {
+        border: 1px dashed red;
+        padding: 8px;
+        border-radius: 6px;
+    }
+
     :deep(.cropper-modal.modal-overlay) {
         z-index: 1100;
         background: rgba(0, 0, 0, 0.85);
@@ -638,5 +706,32 @@
         cursor: pointer;
         padding: 0;
         line-height: 1;
+    }
+
+    .upload-progress-container {
+        margin-top: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .progress-bar-wrapper {
+        width: 100%;
+        height: 6px;
+        background-color: #333;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background-color: var(--accent-color, #5577ee);
+        width: 0;
+        transition: width 0.2s ease-out; 
+    }
+
+    .progress-text {
+        font-size: 12px;
+        color: var(--secondary-text-color, #b3b3b3);
     }
 </style>
