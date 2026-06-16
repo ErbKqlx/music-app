@@ -22,8 +22,11 @@ const playerStore = usePlayerStore();
                 v-for="(song, index) in playerStore.queue" 
                 :key="song.id + '-' + index" 
                 class="queue-item"
-                :class="{ 'is-active': index == playerStore.currentIndex }"
-                @click="playerStore.playSong(song)">
+                :class="{ 
+                    'is-active': index == playerStore.currentIndex,
+                    'is-loading': playerStore.isSongLoading && index == playerStore.currentIndex
+                }"
+                @click="playerStore.playSong(song, index)">
                 
                 <div class="song-img">
                     <Image :src="song.image" />
@@ -100,6 +103,12 @@ const playerStore = usePlayerStore();
         border-radius: 4px;
         transition: background 0.2s;
         cursor: pointer;
+    }
+
+    .queue-item.is-loading {
+        pointer-events: none;
+        opacity: 0.6;
+        cursor: wait;
     }
 
     .remove-btn {

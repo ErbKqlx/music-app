@@ -15,6 +15,7 @@ export const usePlayerStore = defineStore('player', () => {
     const originalQueue = ref([])
     const isShuffled = ref(false)
     const isQueueOpen = ref(false)
+    const isSongLoading = ref(false)
 
     let timer = null
     let debounceTimer = null;
@@ -53,42 +54,53 @@ export const usePlayerStore = defineStore('player', () => {
 
     const playSong = (song, index = null) => {
         console.log(song)
+        
+        if (!song) return;
 
-        if (index !== null){
-            currentIndex.value = index
-        }
-        else{
-            currentIndex.value = queue.value.findIndex(s => s.id === song.id)
-        }
-
-        if (song == currentSong.value && sound){
-            sound.play()
+        if (currentSong.value && song.id === currentSong.value.id && sound) {
+            if (!sound.playing()) {
+                sound.play()
+            }
             return
+        }
+
+        if (isSongLoading.value) {
+            console.log('Подождите, предыдущий трек еще загружается...')
+            return
+        }
+
+        if (index !== null) {
+            currentIndex.value = index
+        } else {
+            currentIndex.value = queue.value.findIndex(s => s.id === song.id)
         }
 
         if (!currentSong.value || song.id !== currentSong.value.id) {
             seek.value = 0
         }
+        
         currentSong.value = song
 
-        console.log(sound)
-
-        if (sound){
-            // seekTime(0)
+        if (sound) {
             stopSong()
         }
 
-        if (!currentSong.value){
+        if (!currentSong.value) {
             currentSong.value = queue.value[0]
         }
 
+        isSongLoading.value = true
+
         sound = new Howl({
-            src: [currentSong?.value.song_url],
+            src: [currentSong.value.song_url],
+            html5: true,
             onload: function() {
                 console.log('Sound loaded successfully!');
+                isSongLoading.value = false
             },
-            onplay: function(id){
+            onplay: function(id) {
                 isPlaying.value = true
+                isSongLoading.value = false
                 console.log('Sound is playing! id: ' + id);
                 startTimer()
             },
@@ -99,29 +111,28 @@ export const usePlayerStore = defineStore('player', () => {
             onend: function (id) {
                 console.log('Sound ended! id: ' + id);
                 isPlaying.value = false
-                if (!onRepeat.value){
+                if (!onRepeat.value) {
                     playNext()
                 }
-                
             },
-            onstop: function (id){
+            onstop: function (id) {
                 console.log('Sound stopped! id: ' + id);
                 isPlaying.value = false
+                isSongLoading.value = false
             },
             onloaderror: function(id, err) {
                 console.error('Error loading sound:', err + ' ' + id);
+                isSongLoading.value = false
                 playNext()
             },
             volume: volume.value,
             loop: onRepeat.value,
         });
 
-
         sound.seek(seek.value)
-
         sound.play()
 
-        logSongListen(currentSong?.value.id)
+        logSongListen(currentSong.value.id)
     }
 
     const pauseSong = () => {
@@ -131,12 +142,13 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
     const stopSong = () => {
-        if (sound){
+        if (sound) {
             sound.stop()
             sound.off()
             sound.unload()
             sound = null
         }
+        isSongLoading.value = false
     }
 
     const playNext = () => {
@@ -278,6 +290,7 @@ export const usePlayerStore = defineStore('player', () => {
         currentIndex,
         isShuffled,
         isQueueOpen,
+        isSongLoading,
         updateProgress,
         playSong,
         pauseSong,

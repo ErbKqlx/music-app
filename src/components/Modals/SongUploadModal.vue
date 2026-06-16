@@ -34,6 +34,7 @@
     const selectedGenreIds = ref([]) 
 
     const uploadProgress = ref(null)
+    const isAudioAnalyzing = ref(false)
 
     const mustHaveGenre = helpers.withMessage(
         'Выберите хотя бы один жанр', 
@@ -146,13 +147,15 @@
         if (fileInput.value) fileInput.value.value = ''
     }
 
-    function onAudioChange(e){
+    function onAudioChange(e) {
         const file = e.target.files[0]
         if (!file || !file.type.startsWith('audio/')) {
             alert('Пожалуйста, выберите аудиофайл!')
             return
         }
         formData.song_file = file
+        
+        isAudioAnalyzing.value = true
         
         const fileURL = URL.createObjectURL(file);
 
@@ -161,11 +164,16 @@
             format: [file.name.split('.').pop()],
             onload: function() {
                 formData.length = Math.round(sound.duration());
+                console.log('Длительность определена:', formData.length)
+                
                 URL.revokeObjectURL(fileURL);
                 sound.unload(); 
+                isAudioAnalyzing.value = false
             },
             onloaderror: function(id, error) {
                 console.error('Ошибка при чтении файла: ', error);
+                URL.revokeObjectURL(fileURL);
+                isAudioAnalyzing.value = false
             }
         });
     }
@@ -177,6 +185,11 @@
     }
 
     async function handleSubmit() {
+        if (isAudioAnalyzing.value) {
+            toastStore.show('Пожалуйста, подождите, идет обработка аудиофайла...', 'error')
+            return
+        }
+
         const isFormValid = await $v.value.$validate()
         
         if (!isFormValid) {
@@ -408,7 +421,12 @@
         <template #footer>
             <div class="actions">
                 <Button class="secondary-btn" @click="modalStore.closeModal">Отмена</Button>
-                <Button @click="handleSubmit">{{ isEdit ? 'Сохранить' : 'Загрузить' }}</Button>
+                <Button 
+                    @click="handleSubmit" 
+                    :disabled="isAudioAnalyzing"
+                >
+                    {{ isAudioAnalyzing ? 'Обработка...' : (isEdit ? 'Сохранить' : 'Загрузить') }}
+                </Button>
             </div>
         </template>
     </Modal>
