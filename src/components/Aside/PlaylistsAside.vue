@@ -38,7 +38,7 @@
         <div class="aside-header">
             <div class="header-title" v-if="!isCollapsed">
                 <span class="title-text">Моя медиатека</span>
-                <span class="counter-badge" v-if="playlistStore.savedPlaylists.playlists.length > 0">{{ playlistStore.savedPlaylists.playlists.length }}</span>
+                <span class="counter-badge" v-if="playlistStore.savedPlaylists?.playlists.length > 0">{{ playlistStore.savedPlaylists.playlists.length }}</span>
             </div>
             
             <div class="header-actions">
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <div class="cards-container scrollable-element" v-if="playlistStore.savedPlaylists.playlists.length > 0">
+        <div class="cards-container scrollable-element" v-if="playlistStore.savedPlaylists?.playlists.length > 0">
             <div 
                 v-for="playlist in playlistStore.savedPlaylists.playlists" 
                 :key="playlist.id"

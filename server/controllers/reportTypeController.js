@@ -21,6 +21,11 @@ class ReportTypeController {
                 return Response.badRequest(res, "Название типа жалобы обязательно");
             }
 
+            const candidate = await ReportType.findOne({ where: { name: name.trim() } });
+            if (candidate) {
+                return res.status(400).json({ success: false, message: 'Такой тип жалобы уже существует' });
+            }
+
             const newType = await ReportType.create({ name: name.trim() });
             return Response.success(res, "Тип жалобы успешно добавлен", newType);
         } catch (error) {
@@ -41,6 +46,11 @@ class ReportTypeController {
             const reportType = await ReportType.findByPk(id);
             if (!reportType) {
                 return Response.notFound(res, "Тип жалобы не найден");
+            }
+
+            const candidate = await ReportType.findOne({ where: { name: name.trim() } });
+            if (candidate) {
+                return res.status(400).json({ success: false, message: 'Такой тип жалобы уже существует' });
             }
 
             reportType.name = name.trim();

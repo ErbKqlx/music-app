@@ -324,12 +324,15 @@
 
     onMounted(() => {
         const id = route.params.id
-        if (id) {
+        if (id && userStore.currentUser) {
             fetchSongData(id)
             fetchComments(id)
             fetchReportTypes()
 
             scrollToComment();
+        }
+        else{
+            router.push('/login')
         }
     })
 

@@ -74,6 +74,11 @@ class GenreController{
                 return res.status(404).json({ success: false, message: 'Жанр не найден' });
             }
 
+            const candidate = await Genre.findOne({ where: { name: name.trim() } });
+            if (candidate) {
+                return res.status(400).json({ success: false, message: 'Такой жанр уже существует' });
+            }
+
             genre.name = name.trim();
             await genre.save();
 

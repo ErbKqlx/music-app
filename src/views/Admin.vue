@@ -502,7 +502,7 @@ import router from '../router';
                             <th>ID</th>
                             <th>Никнейм</th>
                             <th>Email</th>
-                            <th>Пароль</th>
+                            <!-- <th>Пароль</th> -->
                             <th>Дата регистрации</th>
                             <th>Активирован</th>
                             <th v-if="userStore.isAdmin">Роль</th>
@@ -513,9 +513,9 @@ import router from '../router';
                     <tbody>
                         <tr v-for="user in paginatedUsers" :key="user.id">
                             <td>{{ user.id }}</td>
-                            <td><span class="user-username">{{ user.username }}</span></td>
+                            <td><RouterLink :to="`/profile/${user.id}`" class="user-username">{{ user.username }}</RouterLink></td>
                             <td>{{ user.email }}</td>
-                            <td><span class="password-shield">••••••</span></td>
+                            <!-- <td><span class="password-shield">••••••</span></td> -->
                             <td>{{ formatDate(user.registration_date) }}</td>
                             <td><span :class="['status-badge', user.isActivated ? 'status-active' : 'status-inactive']">{{ user.isActivated ? 'Да' : 'Нет' }}</span></td>
                             <td v-if="userStore.isAdmin">
@@ -633,10 +633,10 @@ import router from '../router';
                     <tbody>
                         <tr v-for="report in paginatedCommentReports" :key="report.id">
                             <td>{{ report.id }}</td>
-                            <td><span class="user-username">{{ report.user?.email }}</span></td>
+                            <td><RouterLink :to="`/profile/${report.user?.id}`" class="user-username">{{ report.user?.email }}</RouterLink></td>
                             <td><span class="report-reason">{{ report.reportType?.name }}</span></td>
 
-                            <td class="comment-text-cell" :title="report.text">
+                            <td class="report-text-cell" :title="report.text">
                                 {{ report.text || 'Без описания' }}
                             </td>
 
@@ -709,7 +709,7 @@ import router from '../router';
                     <tbody>
                         <tr v-for="app in paginatedArtistApplications" :key="app.id">
                             <td>{{ app.id }}</td>
-                            <td>{{ app.user?.email }}</td>
+                            <td><RouterLink :to="`/profile/${app.user?.id}`">{{ app.user?.email }}</RouterLink></td>
                             <td><strong>{{ app.name }}</strong></td>
                             <td title="Посмотреть биографию полностью" class="comment-text-cell" @click="modalStore.openModal('artistBio', {
                                     name: app.name,
@@ -864,6 +864,14 @@ import router from '../router';
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: pointer;
+        }
+
+        .report-text-cell{
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            user-select: none;
         }
 
         .report-reason {

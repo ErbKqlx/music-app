@@ -131,6 +131,9 @@
             <SubmitButton :disabled="form.isSending" :class="{'disabled': form.isSending}" value="Войти в аккаунт"/>
             <!-- <RouterLink class="password-recovery" to="/password-recovery">Забыли пароль?</RouterLink> -->
         </form>
+
+        <RouterLink to="/" class="home">На главную</RouterLink>
+
     </div>
 </template>
 
@@ -302,5 +305,9 @@
             font-size: 12px;
             margin-top: 2px;
         }
+    }
+
+    .home{
+        margin-top: 10px;
     }
 </style>

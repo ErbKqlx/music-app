@@ -300,6 +300,7 @@
                         </div>
                         <div v-else class="upload-placeholder">
                             <span>Выбрать обложку</span>
+                            <span class="size-limit-hint">(макс. 120 МБ)</span>
                         </div>
                         <input 
                             type="file" 
@@ -325,7 +326,7 @@
                     </div>
 
                     <div class="field">
-                        <label>Файл трека (.mp3, .wav) <span style="color:red;">*</span></label>
+                        <label>Файл трека (.mp3, .wav) <span style="color:red;">*</span> <span class="label-hint">(до 120 МБ)</span></label>
                         <input 
                             type="file" 
                             @change="onAudioChange" 
@@ -751,5 +752,20 @@
     .progress-text {
         font-size: 12px;
         color: var(--secondary-text-color, #b3b3b3);
+    }
+
+    /* Стиль для подсказки внутри выбора обложки */
+    .upload-placeholder .size-limit-hint {
+        font-size: 11px;
+        color: #888;
+        margin-top: -4px;
+    }
+
+    /* Стиль для подсказки в лейблах полей */
+    .label-hint {
+        font-size: 12px;
+        font-weight: normal;
+        color: var(--secondary-text-color, #b3b3b3);
+        margin-left: 4px;
     }
 </style>

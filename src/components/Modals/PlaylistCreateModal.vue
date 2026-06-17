@@ -135,6 +135,7 @@
                     </div>
                     <div v-else class="upload-placeholder">
                         <span>Выбрать обложку</span>
+                        <span class="size-limit-hint">(макс. 120 МБ)</span>
                     </div>
                     <input 
                         type="file" 
@@ -321,5 +322,11 @@
     :deep(.cropper-modal.modal-overlay) {
         z-index: 1100;
         background: rgba(0, 0, 0, 0.85);
+    }
+
+    .upload-placeholder .size-limit-hint {
+        font-size: 11px;
+        color: #888;
+        margin-top: -4px;
     }
 </style>

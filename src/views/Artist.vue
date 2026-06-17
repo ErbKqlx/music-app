@@ -93,6 +93,10 @@
             if (error.response?.status === 404) {
                 router.push({ name: 'NotFound' });
             }
+
+            if (error.response?.status === 403) {
+                router.push('/login');
+            }
         }
     }
 

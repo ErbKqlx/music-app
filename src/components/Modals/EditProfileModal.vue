@@ -118,7 +118,7 @@
             formData.username = newUser.username || ''
             previewImage.value = newUser.avatar || null
         }
-    }, { immediate: true, deep: true }) // Добавили deep: true
+    }, { immediate: true, deep: true })
 </script>
 
 <template>
@@ -137,6 +137,7 @@
                         <img :src="previewImage" />
                         <div class="avatar-edit-overlay">
                             <span>Изменить</span>
+                            <span class="size-limit-hint">до 120 МБ</span>
                         </div>
                     </div>
                     <input 
@@ -324,5 +325,19 @@
     :deep(.cropper-modal.modal-overlay) {
         z-index: 1100;
         background: rgba(0, 0, 0, 0.85);
+    }
+
+    .avatar-edit-overlay {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .avatar-edit-overlay .size-limit-hint {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: normal;
     }
 </style>

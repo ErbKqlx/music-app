@@ -143,6 +143,8 @@
             </div>
             <SubmitButton :disabled="form.isSending" :class="{'disabled': form.isSending}" value="Создать аккаунт"/>
         </form>
+
+        <RouterLink to="/" class="home">На главную</RouterLink>
     </div>
 </template>
 
@@ -341,5 +343,9 @@
             border: 1px solid #ff5c5c !important;
             background-color: rgba(255, 92, 92, 0.05);
         }
+    }
+
+    .home{
+        margin-top: 10px;
     }
 </style>
