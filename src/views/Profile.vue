@@ -60,6 +60,8 @@
 
             // await playlistStore.fetchPlaylists(id)
             savedPlaylists.value = playlists.data.playlists || playlistsRes.data
+            playlistCount.value = savedPlaylists.value.length
+
             console.log(playlistStore.savedPlaylists.playlists)
         }
         catch (error){

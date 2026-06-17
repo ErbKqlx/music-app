@@ -158,6 +158,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         gap: 24px;
+        padding-bottom: 20px;
     }
 
     .grid-card {

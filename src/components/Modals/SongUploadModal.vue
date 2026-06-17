@@ -558,7 +558,7 @@
 
     .field textarea {
         height: 100px;
-        resize: none;
+        resize: vertical;
         font-family: sans-serif;
     }
 
